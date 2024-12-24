@@ -41,7 +41,7 @@ This project implements a barcode-based mail tracking system to efficiently mana
 - **Real-Time Updates**:
   - Provide stakeholders (faculty/students) with email notifications and live status updates for urgent mail.
 - **Tracking Portal**:
-  - Allow users to activate the servide to view detailed tracking information.
+  - Allow users to activate the mail tracking service to view detailed tracking information.
 
 ---
 
@@ -52,21 +52,8 @@ This project implements a barcode-based mail tracking system to efficiently mana
 - **Backend**: Spring Boot (RESTful APIs for managing mail operations).
 - **Database**: MySQL (normalized schema for efficient storage and retrieval).
 - **Frontend**: React (dynamic UI with real-time tracking updates).
-- **Barcode Generation**: ZXing library (for creating and reading barcodes).
-- **Email Notifications**: Spring Boot Mail (for automated updates).
-- **Cloud Deployment**: DigitalOcean (scalable testing and production environment).
 - **Version Control**: GitHub (collaborative development).
 - **Project Management**: Trello (task tracking and milestones).
-
-### **Key Components**
-
-- **REST API Endpoints**:
-  - `/api/super_admin`: Manage administrators.
-  - `/api/mail_admin`: CRUD operations for mail records.
-  - `/api/branch_agent`: CRUD operations for mail records.
-  - `/api/barcode`: Generate and validate barcodes.
-  - `/api/tracking`: Fetch status for urgent mail.
-- **Database Design**:
 
 ---
 
