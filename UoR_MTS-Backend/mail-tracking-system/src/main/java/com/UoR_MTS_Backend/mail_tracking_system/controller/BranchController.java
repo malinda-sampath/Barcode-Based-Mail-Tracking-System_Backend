@@ -14,8 +14,8 @@ public class BranchController {
     private BranchService branchService;
 
     @PostMapping("/save")
-    public String branckSave(@RequestBody BranchDTO branchDTO){
-        branchService.branchSave(branchDTO);
-        return null;
+    public String branchSave(@RequestBody BranchDTO branchDTO){
+        String response = branchService.branchSave(branchDTO);
+        return response;
     }
 }

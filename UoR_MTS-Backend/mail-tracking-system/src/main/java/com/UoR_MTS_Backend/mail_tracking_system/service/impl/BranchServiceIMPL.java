@@ -15,13 +15,10 @@ public class BranchServiceIMPL implements BranchService {
 
     @Override
     public String branchSave(BranchDTO branchDTO) {
-        Branch branch = new Branch(
-                branchDTO.getBranchCode(),
-                branchDTO.getBranchName(),
-                branchDTO.getInsertDate(),
-                branchDTO.getUpdateDate()
-        );
+        Branch branch = new Branch();
+        branch.setBranchCode(branchDTO.getBranchCode());
+        branch.setBranchName(branchDTO.getBranchName());
         branchRepo.save(branch);
-        return null;
+        return "Saved";
     }
 }
