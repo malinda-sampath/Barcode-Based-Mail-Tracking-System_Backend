@@ -26,4 +26,31 @@ public class MailAdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<String> MailAdminUpdate(@PathVariable String id, @RequestBody MailAdminDTO mailAdminDTO) {
+        try {
+            mailAdminService.updateMailAdmin(id, mailAdminDTO); // Calls the service layer
+            return ResponseEntity.ok("Mail admin updated successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String>MailAdminDelete(@PathVariable String id) {
+        try {
+            mailAdminService.deleteMailAdmin(id); // Calls the service layer
+            return ResponseEntity.ok("Mail admin deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?>AllMailAdminsGet() {
+        try {
+            return ResponseEntity.ok(mailAdminService.getAllMailAdmins()); // Calls the service layer
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
