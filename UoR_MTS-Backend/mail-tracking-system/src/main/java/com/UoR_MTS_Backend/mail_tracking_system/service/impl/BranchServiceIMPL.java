@@ -10,6 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class BranchServiceIMPL implements BranchService {
 
@@ -27,7 +30,7 @@ public class BranchServiceIMPL implements BranchService {
         Branch branch = new Branch();
         branch.setBranchCode(branchDTO.getBranchCode());
         branch.setBranchName(branchDTO.getBranchName());
-
+        branch.setUpdateDate(null);
         try {
             // Save branch to the database
             branchRepo.save(branch);
@@ -39,5 +42,47 @@ public class BranchServiceIMPL implements BranchService {
             // Handle generic exceptions
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while saving the branch.");
         }
+    }
+
+    @Override
+    public List<BranchDTO> getAllBranches() {
+        return branchRepo.findAll()
+                .stream()
+                .map(branch -> new BranchDTO(branch.getBranchCode(), branch.getBranchName(), branch.getInsertDate(),branch.getUpdateDate()))
+                .toList();
+    }
+
+    @Override
+    public BranchDTO getBranchById(int id) {
+        return branchRepo.findById(id)
+                .map(branch -> new BranchDTO(branch.getBranchCode(), branch.getBranchName(), branch.getInsertDate(),branch.getInsertDate()))
+                .orElse(null);
+    }
+
+    @Override
+    public String updateBranchById(int id, BranchDTO branchDTO) {
+        Branch existingBranch = branchRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Branch not found with ID: " + id));
+
+        // Update fields
+        if (branchDTO.getBranchName() != null) {
+            existingBranch.setBranchName(branchDTO.getBranchName());
+            existingBranch.setUpdateDate(LocalDateTime.now());
+        }
+        System.out.println(existingBranch);
+
+        // Save updated branch
+        branchRepo.save(existingBranch);
+        return "Branch updated successfully.";
+    }
+
+    @Override
+    public void deleteBranchById(int id) {
+        if (!branchRepo.existsById(id)) {
+            throw new RuntimeException("Branch not found with ID: " + id);
+        }
+
+        // Delete the branch
+        branchRepo.deleteById(id);
     }
 }

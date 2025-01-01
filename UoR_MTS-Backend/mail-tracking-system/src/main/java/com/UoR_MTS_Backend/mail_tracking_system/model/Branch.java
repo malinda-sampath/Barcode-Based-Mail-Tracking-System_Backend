@@ -69,11 +69,6 @@ public class Branch {
         this.insertDate = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updateDate = LocalDateTime.now();
-    }
-
     @Override
     public String toString() {
         return "Branch{" +
