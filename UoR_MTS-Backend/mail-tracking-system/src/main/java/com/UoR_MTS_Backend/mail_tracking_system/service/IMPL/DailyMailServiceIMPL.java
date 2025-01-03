@@ -79,6 +79,8 @@ public class DailyMailServiceIMPL implements DailyMailService {
             // Map the request DTO to the DailyMail entity and update fields
             DailyMail dailyMail = modelMapper.modelMapper().map(requestDailyMailDTO, DailyMail.class);
             dailyMail.setUpdateDateTime(now);
+            dailyMail.setBarcodeId(existingMail.getBarcodeId());
+            dailyMail.setBarcodeImage(existingMail.getBarcodeImage());
 
             dailyMailRepo.save(dailyMail);
 
