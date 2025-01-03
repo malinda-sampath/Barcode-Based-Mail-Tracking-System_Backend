@@ -104,12 +104,10 @@ public class DailyMailServiceIMPL implements DailyMailService {
         }
     }
 
-
     @Override
     @Transactional
     public String deleteDailyMail(int dailyMailId) {
         if (dailyMailRepo.existsById(dailyMailId)){
-
 
             DailyMail existingMail = dailyMailRepo.findById(dailyMailId)
                     .orElseThrow(() -> new RuntimeException("No data found for that id"));
@@ -120,7 +118,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
             String existingBarcodeId = existingMail.getBarcodeId();
 
             dailyMailRepo.deleteById(dailyMailId);
-            //
+            
             MailActivity log = new MailActivity(
                     mailUserId,
                     mailUsername,
@@ -132,10 +130,10 @@ public class DailyMailServiceIMPL implements DailyMailService {
                     now
             );
 
-
             mailActivityRepo.save(log);
 
             return "Mail id: "+dailyMailId+ " Barcode: "+existingBarcodeId+" deleted successfully";
+
         } else {
             throw new RuntimeException("No data found for that id");
         }

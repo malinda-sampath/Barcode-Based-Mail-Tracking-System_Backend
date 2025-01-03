@@ -64,7 +64,8 @@ public class DailyMailController {
         List<RequestDailyMailViewAllDTO> dailyMails = dailyMailService.getAllDailyMails();
         return dailyMails;
     }
-
+  
+  
     @GetMapping("/get-daily-mails-by-barcodeId/{barcodeId}")
     public List<RequestDailyMailViewAllDTO> getAllDailyMailsByBarcodeId(@PathVariable(value = "barcodeId") String barcodeId) {
 
