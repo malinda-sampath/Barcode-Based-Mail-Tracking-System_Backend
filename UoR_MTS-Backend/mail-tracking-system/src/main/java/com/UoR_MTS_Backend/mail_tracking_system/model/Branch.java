@@ -11,7 +11,7 @@ public class Branch {
     @Column(name = "branch_code")
     private int branchCode;
 
-    @Column(name = "branch_name", nullable = false, length = 100)
+    @Column(name = "branch_name", nullable = false, length = 100, unique = true)
     private String branchName;
 
     @Column(name = "insert_date", nullable = false, updatable = false)
