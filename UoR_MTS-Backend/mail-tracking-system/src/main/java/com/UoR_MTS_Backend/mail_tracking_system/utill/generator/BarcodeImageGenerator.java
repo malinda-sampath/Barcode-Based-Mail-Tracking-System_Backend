@@ -15,6 +15,7 @@ import java.io.IOException;
 public class BarcodeImageGenerator {
 
     public static byte[] generateBarcode(String barcodeId) throws WriterException, IOException {
+
         // Create a MultiFormatWriter instance to generate the barcode
         MultiFormatWriter barcodeWriter = new MultiFormatWriter();
 

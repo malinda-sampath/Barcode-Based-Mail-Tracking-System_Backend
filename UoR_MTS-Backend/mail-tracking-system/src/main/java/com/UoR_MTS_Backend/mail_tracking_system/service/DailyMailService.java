@@ -14,4 +14,8 @@ public interface DailyMailService {
     public String deleteDailyMail(int dailyMailId);
 
     public List<RequestDailyMailViewAllDTO> getAllDailyMails();
+  
+    public List<RequestDailyMailViewAllDTO> getAllDailyMailsByBarcodeId(String barcodeId);
+
+    public List<RequestDailyMailViewAllDTO> filterDailyMail(String senderName, String receiverName, String mailType, String trackingNumber, String branchName);
 }

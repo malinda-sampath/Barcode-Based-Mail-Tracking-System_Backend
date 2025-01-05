@@ -11,6 +11,6 @@ public class BarcodeIDGenerator {
     public static String generateUniqueId() {
         String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String uuidPart = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 8); // Take 8 characters of the UUID
-        return timestamp + uuidPart;
+        return "MAIL - " + timestamp + uuidPart;
     }
 }
