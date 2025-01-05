@@ -1,7 +1,16 @@
 package com.UoR_MTS_Backend.mail_tracking_system.utill;
 
-public class StandardResponse {
-    private int code;
+
+import lombok.*;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class StandardResponse<T> {
+    private int status;
     private String message;
-    private Object data;
+    private T data;
+
+
 }
+
