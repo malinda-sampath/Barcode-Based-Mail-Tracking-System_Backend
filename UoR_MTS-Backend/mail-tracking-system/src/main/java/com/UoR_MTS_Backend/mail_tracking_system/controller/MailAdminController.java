@@ -35,7 +35,7 @@ public class MailAdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{delete-id}")
     public ResponseEntity<String>MailAdminDelete(@PathVariable String id) {
         try {
             mailAdminService.deleteMailAdmin(id); // Calls the service layer
@@ -44,7 +44,7 @@ public class MailAdminController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/{id}")
+    @GetMapping("/{all-id}")
     public ResponseEntity<?>AllMailAdminsGet() {
         try {
             return ResponseEntity.ok(mailAdminService.getAllMailAdmins()); // Calls the service layer

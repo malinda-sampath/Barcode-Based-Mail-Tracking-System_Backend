@@ -1,9 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -11,8 +8,9 @@ import java.time.LocalDateTime;
 @Table(name="MailAdmin")
 public class MailAdmin {
     @Id
-    @Column(name="Id",length=45)
-    private String mailAdminId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="Id")
+    private int mailAdminId;
 
     @Column(name="Name",nullable = false)
     private String name;
@@ -41,7 +39,7 @@ public class MailAdmin {
     public MailAdmin() {
     }
 
-    public MailAdmin(String mailAdminId, String name, String userName, String password, String email, String contact, String role, LocalDateTime insertDate, LocalDateTime updateDate) {
+    public MailAdmin(int mailAdminId, String name, String userName, String password, String email, String contact, String role, LocalDateTime insertDate, LocalDateTime updateDate) {
         this.mailAdminId = mailAdminId;
         this.name = name;
         this.userName = userName;
@@ -53,7 +51,7 @@ public class MailAdmin {
         this.updateDate = updateDate;
     }
 
-    public String getMailAdminId() {
+    public int getMailAdminId() {
         return mailAdminId;
     }
 
@@ -89,7 +87,7 @@ public class MailAdmin {
         return updateDate;
     }
 
-    public void setMailAdminId(String mailAdminId) {
+    public void setMailAdminId(int mailAdminId) {
         this.mailAdminId = mailAdminId;
     }
 
