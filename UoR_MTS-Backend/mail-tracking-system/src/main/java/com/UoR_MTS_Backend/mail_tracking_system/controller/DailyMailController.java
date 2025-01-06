@@ -10,7 +10,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.utill.generator.BarcodeImageGene
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
 
 
 import java.io.IOException;
@@ -25,110 +25,137 @@ public class DailyMailController {
     private DailyMailService dailyMailService;
 
     @PostMapping("/add-daily-mail")
-    public ResponseEntity<String> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) {
-        try{
+    public ResponseEntity<StandardResponse<String>> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) {
+        try {
             String uniqueID = BarcodeIDGenerator.generateUniqueId();
-
             byte[] barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
-
             String message = dailyMailService.addDailyMail(dailyMailDTO, barcodeImage, uniqueID);
 
+            return ResponseBuilder.success("Daily mail added successfully.", message);
 
-            return ResponseEntity.ok(message);
+        } catch (Exception e) {
+            // Log the exception (optional)
+            System.err.println("Error adding daily mail: " + e.getMessage());
 
-        } catch (IOException | WriterException e) {
-
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding daily mail: " + e.getMessage());
+            return ResponseBuilder.error("Error adding daily mail.", e.getMessage());
         }
     }
+
 
     @PutMapping("/update-daily-mail")
-    public ResponseEntity<String> updateDailyMail(@RequestBody RequestDailyMailDTO requestDailyMailDTO) {
-        String uniqueID;
-        byte[] barcodeImage;
-
+    public ResponseEntity<StandardResponse<String>> updateDailyMail(@RequestBody RequestDailyMailDTO requestDailyMailDTO) {
         try {
             // Generate unique ID
-            uniqueID = BarcodeIDGenerator.generateUniqueId();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error generating unique ID: " + e.getMessage());
-        }
+            String uniqueID = BarcodeIDGenerator.generateUniqueId();
 
-        try {
             // Generate barcode image
-            barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
-        } catch (IOException | WriterException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error generating barcode image: " + e.getMessage());
-        }
+            byte[] barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
 
-        try {
             // Call the service to update daily mail
             String message = dailyMailService.updateDailyMail(requestDailyMailDTO, barcodeImage, uniqueID);
-            return ResponseEntity.ok(message);
+
+            return ResponseBuilder.success("Daily mail updated successfully.", message);
+
+        } catch (IOException | WriterException e) {
+            // Log the error
+            System.err.println("Error generating barcode image: " + e.getMessage());
+
+            return ResponseBuilder.error("Error generating barcode image.", e.getMessage());
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating daily mail: " + e.getMessage());
+            // Log the error
+            System.err.println("Error updating daily mail: " + e.getMessage());
+
+            return ResponseBuilder.error("Error updating daily mail.", e.getMessage());
         }
     }
-
 
     @DeleteMapping(path = "/delete-daily-mail/{id}")
-    public ResponseEntity<String> deleteDailyMail(@PathVariable(value = "id") int dailyMailId) {
-
+    public ResponseEntity<StandardResponse<String>> deleteDailyMail(@PathVariable(value = "id") int dailyMailId) {
         try {
-
             String message = dailyMailService.deleteDailyMail(dailyMailId);
 
-            // Return a success response with message
-            return ResponseEntity.ok(message);
-
+            if (message != null) {
+                return ResponseBuilder.success("Daily mail deleted successfully.", message);
+            } else {
+                return ResponseBuilder.notFound("Daily mail with ID " + dailyMailId + " not found.");
+            }
         } catch (Exception e) {
-            // If an error occurs, return an error response
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting daily mail: " + e.getMessage());
+            // Log the error
+            System.err.println("Error deleting daily mail: " + e.getMessage());
+
+            return ResponseBuilder.error("Error deleting daily mail.", e.getMessage());
         }
     }
+
 
     @GetMapping("/get-all-daily-mails")
-    public ResponseEntity<?> getAllDailyMails() {
-        List<RequestDailyMailViewAllDTO> dailyMails = dailyMailService.getAllDailyMails();
+    public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getAllDailyMails() {
+        try {
+            List<RequestDailyMailViewAllDTO> dailyMails = dailyMailService.getAllDailyMails();
 
-        if (!dailyMails.isEmpty()) {
-            return ResponseBuilder.success("Daily mails retrieved successfully", dailyMails);
-        } else {
-            return ResponseBuilder.notFound("No daily mails found");
+            if (dailyMails == null || dailyMails.isEmpty()) {
+                return ResponseBuilder.notFound("No daily mails found.");
+            }
+
+            return ResponseBuilder.success("Daily mails retrieved successfully.", dailyMails);
+
+        } catch (Exception e) {
+            // Log the error
+            System.err.println("Error retrieving daily mails: " + e.getMessage());
+
+            return ResponseBuilder.error("Error retrieving daily mails.", null);
         }
     }
+
 
 
 
     @GetMapping("/get-daily-mails-by-barcodeId/{barcodeId}")
-    public ResponseEntity<?> getAllDailyMailsByBarcodeId(@PathVariable(value = "barcodeId") String barcodeId) {
-        List<RequestDailyMailViewAllDTO> allMailActivityByBarcodeId = dailyMailService.getAllDailyMailsByBarcodeId(barcodeId);
+    public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getAllDailyMailsByBarcodeId(@PathVariable String barcodeId) {
+        try {
+            List<RequestDailyMailViewAllDTO> allMailActivityByBarcodeId = dailyMailService.getAllDailyMailsByBarcodeId(barcodeId);
 
-        if (!allMailActivityByBarcodeId.isEmpty()) {
-            return ResponseBuilder.success("Daily mails retrieved successfully by barcode ID", allMailActivityByBarcodeId);
-        } else {
-            return ResponseBuilder.notFound("No daily mails found for the given barcode ID");
+            if (allMailActivityByBarcodeId == null || allMailActivityByBarcodeId.isEmpty()) {
+                return ResponseBuilder.notFound("No daily mails found for the given barcode ID: " + barcodeId);
+            }
+
+            return ResponseBuilder.success("Daily mails retrieved successfully by barcode ID: " + barcodeId, allMailActivityByBarcodeId);
+
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("Error retrieving daily mails by barcode ID: " + e.getMessage());
+
+            return ResponseBuilder.error("Error retrieving daily mails by barcode ID.", null);
         }
     }
 
 
+
     @GetMapping("/daily-mail-filter")
-    public ResponseEntity<?> getMailActivityByFilter(
+    public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getMailActivityByFilter(
             @RequestParam(required = false) String senderName,
             @RequestParam(required = false) String receiverName,
             @RequestParam(required = false) String mailType,
             @RequestParam(required = false) String trackingNumber,
             @RequestParam(required = false) String branchName) {
 
-        List<RequestDailyMailViewAllDTO> mailActivityDTOList = dailyMailService.filterDailyMail(senderName, receiverName, mailType, trackingNumber, branchName);
+        try {
+            List<RequestDailyMailViewAllDTO> mailActivityDTOList = dailyMailService.filterDailyMail(senderName, receiverName, mailType, trackingNumber, branchName);
 
-        if (!mailActivityDTOList.isEmpty()) {
+            if (mailActivityDTOList == null || mailActivityDTOList.isEmpty()) {
+                return ResponseBuilder.notFound("No mail activities found with the provided filters.");
+            }
+
             return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
-        } else {
-            return ResponseBuilder.notFound("No mail activities found with the provided filters");
+
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("Error retrieving mail activities by filter: " + e.getMessage());
+
+            return ResponseBuilder.error("Error retrieving mail activities.", null);
         }
     }
+
 
 }
