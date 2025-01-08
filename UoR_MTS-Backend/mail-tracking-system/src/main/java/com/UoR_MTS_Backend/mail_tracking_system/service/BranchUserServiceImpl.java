@@ -21,31 +21,24 @@ public class BranchUserServiceImpl implements BranchUserService{
     //private PasswordEncoder passwordEncoder;
 
     @Override
-    public BranchUserDto branchUserSave(BranchUserDto branchUserDto) {
+    public String branchUserSave(BranchUserDto branchUserDto) {
         //String hashedPassword = passwordEncoder.encode(branchUserDto.getBranchUserPassword());
         //branchUserDto.setBranchUserPassword(hashedPassword);
         BranchUser branchUser = new BranchUser(
-                branchUserDto.getBranchUserId(),
                 branchUserDto.getBranchUserName(),
                 branchUserDto.getBranchUserPassword(),
                 branchUserDto.getBranchCode()
         );
-        BranchUser savedBranchUser = branchUserRepo.save(branchUser);
 
-        BranchUserDto savedBranchUserDto = new BranchUserDto(
-                savedBranchUser.getBranchUserId(),
-                savedBranchUser.getBranchUserName(),
-                savedBranchUser.getBranchUserPassword(),
-                savedBranchUser.getBranchCode()
-        );
+        branchUserRepo.save(branchUser);
 
-        return savedBranchUserDto;
+        return branchUserDto.getBranchUserName()+" has been saved Successfully";
     }
 
     @Override
-    public BranchUserDto branchUserUpdate(int id, BranchUserDto branchUserDto) {
+    public String branchUserUpdate(int id, BranchUserDto branchUserDto) {
         // Check if a BranchUser exists with the given ID
-        BranchUser existingBranchUser = branchUserRepo.findById(String.valueOf(id))
+        BranchUser existingBranchUser = branchUserRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Branch user not found with ID: " + id));
 
         // Update the fields of the existing user
@@ -60,29 +53,21 @@ public class BranchUserServiceImpl implements BranchUserService{
         }
 
         // Save the updated BranchUser to the database
-        BranchUser updatedBranchUser = branchUserRepo.save(existingBranchUser);
+        branchUserRepo.save(existingBranchUser);
 
         // Convert the updated entity to a DTO and return it
-        return new BranchUserDto(
-                updatedBranchUser.getBranchUserId(),
-                updatedBranchUser.getBranchUserName(),
-                updatedBranchUser.getBranchUserPassword(),
-                updatedBranchUser.getBranchCode()
-        );
+        return existingBranchUser.getBranchUserName() + " has been updated Successfully";
     }
 
 
     @Override
-    public void branchUserDelete(int id){
-        if (!branchUserRepo.existsById(String.valueOf(id))) {
+    public String branchUserDelete(int id){
+        if (!branchUserRepo.existsById(id) ){
             throw new RuntimeException("Branch user not found with ID: " + id);
         }
-        branchUserRepo.deleteById(String.valueOf(id));
-    }
+        branchUserRepo.deleteById(id);
 
-    @Override
-    public void allBranchUserDelete() {
-        branchUserRepo.deleteAll();
+        return "Branch User Deleted Successfully";
     }
 
     @Override
@@ -92,9 +77,7 @@ public class BranchUserServiceImpl implements BranchUserService{
 
     @Override
     public BranchUser getBranchUserById(int branchUserId) {
-        return branchUserRepo.findById(String.valueOf(branchUserId))
+        return branchUserRepo.findById(branchUserId)
                 .orElseThrow(() -> new RuntimeException("Branch user not found with ID: " + branchUserId));
     }
-
-
 }

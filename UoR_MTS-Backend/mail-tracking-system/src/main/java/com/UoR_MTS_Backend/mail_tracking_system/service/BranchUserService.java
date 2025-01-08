@@ -9,13 +9,11 @@ import java.util.List;
 @Service
 public interface BranchUserService {
 
-    BranchUserDto branchUserSave(BranchUserDto branchUserDto);
+    String branchUserSave(BranchUserDto branchUserDto);
 
-    BranchUserDto branchUserUpdate(int id, BranchUserDto branchUserDto);
+    String branchUserUpdate(int id, BranchUserDto branchUserDto);
 
-    void branchUserDelete(int id);
-
-    void allBranchUserDelete();
+    String branchUserDelete(int id);
 
     List<BranchUser> getAllBranchUsers();
 

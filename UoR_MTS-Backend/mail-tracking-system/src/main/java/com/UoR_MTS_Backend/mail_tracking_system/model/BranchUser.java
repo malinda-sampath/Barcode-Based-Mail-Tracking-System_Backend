@@ -16,10 +16,14 @@ public class BranchUser {
     @Column(name = "branch_user_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int branchUserId;
+
     @Column(name = "branch_user_name")
     private String branchUserName;
     @Column(name = "branch_user_password")
     private String branchUserPassword;
     @Column(name = "branch_coge")
     private String branchCode;
+
+    public BranchUser(String branchUserName, String branchUserPassword, String branchCode) {
+    }
 }

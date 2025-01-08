@@ -36,12 +36,6 @@ public class BranchUserController {
         return new ResponseEntity<>("Branch User Deleted Successfully",HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete-all")
-    public ResponseEntity<String> allBranchUserDelete(){
-        branchUserService.allBranchUserDelete();
-        return new ResponseEntity<>("All Branch Users Deleted Successfully",HttpStatus.OK);
-    }
-
     @GetMapping("/get-all")
     public ResponseEntity<List<BranchUser>> getAllBranchUsers() {
         List<BranchUser> branchUsers = branchUserService.getAllBranchUsers();

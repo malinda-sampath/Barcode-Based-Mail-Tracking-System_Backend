@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 
 public class BranchUserDto {
-    private int branchUserId;
     private String branchUserName;
     private String branchUserPassword;
     private String branchCode;
