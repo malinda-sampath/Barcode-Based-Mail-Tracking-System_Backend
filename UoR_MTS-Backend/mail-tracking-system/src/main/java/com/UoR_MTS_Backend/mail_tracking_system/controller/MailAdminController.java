@@ -1,12 +1,18 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailAdminDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.model.MailAdmin;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailAdminService;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -16,41 +22,70 @@ public class MailAdminController {
   @Autowired
     private MailAdminService mailAdminService;
 
-    // Method to save a new MailAdmin
     @PostMapping("/save")
-    public ResponseEntity<String> mailAdminSave(@RequestBody MailAdminDTO mailAdminDTO) {
+    public ResponseEntity<StandardResponse<String>> mailAdminSave(@RequestBody MailAdminDTO mailAdminDTO) {
         try {
-            mailAdminService.saveMailAdmin(mailAdminDTO); // Calls the service layer
-            return ResponseEntity.ok("Mail admin saved successfully.");
+            String message = mailAdminService.saveMailAdmin(mailAdminDTO); // Service method call
+            return ResponseBuilder.success(message, null);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+
+            System.err.println("Error saving mail admin: " + e.getMessage());
+            return ResponseBuilder.error("Error saving mail admin: " + e.getMessage(), null);
         }
     }
-    @PutMapping("/Update/{id}")
-    public ResponseEntity<String> MailAdminUpdate(@PathVariable long id, @RequestBody MailAdminDTO mailAdminDTO) {
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<StandardResponse<String>> mailAdminUpdate(@PathVariable long id, @RequestBody MailAdminDTO mailAdminDTO) {
         try {
-            mailAdminService.updateMailAdmin(id, mailAdminDTO); // Calls the service layer
-            return ResponseEntity.ok("Mail admin updated successfully.");
+            String message = mailAdminService.updateMailAdmin(id, mailAdminDTO);
+            return ResponseBuilder.success(message, null);
+        } catch (EntityNotFoundException e) {
+
+
+            return ResponseBuilder.notFound(e.getMessage());
+        } catch (IllegalArgumentException e) {
+
+            return ResponseBuilder.error(e.getMessage(), null);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+
+            System.err.println("Error updating mail admin: " + e.getMessage());
+            return ResponseBuilder.error("An unexpected error occurred while updating mail admin.", null);
         }
     }
+
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String>MailAdminDelete(@PathVariable long id) {
+    public ResponseEntity<StandardResponse<String>> mailAdminDelete(@PathVariable long id) {
         try {
-            mailAdminService.deleteMailAdmin(id); // Calls the service layer
-            return ResponseEntity.ok("Mail admin deleted successfully.");
+            String message = mailAdminService.deleteMailAdmin(id);
+
+            // If the message indicates success, return a success response
+            return ResponseBuilder.success(message, null);
+
+        } catch (EntityNotFoundException e) {
+            return ResponseBuilder.notFound("Mail admin not found with ID: " + id);
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            System.err.println("Error deleting mail admin: " + e.getMessage());
+            return ResponseBuilder.error("Error deleting mail admin.", null);
         }
     }
+
     @GetMapping("/all/{id}")
-    public ResponseEntity<?>AllMailAdminsGet() {
+    public ResponseEntity<StandardResponse<List<MailAdminDTO>>> allMailAdminsGet() {
         try {
-            return ResponseEntity.ok(mailAdminService.getAllMailAdmins()); // Calls the service layer
+            List<MailAdminDTO> mailAdmins = mailAdminService.getAllMailAdmins(); // Calls the service layer
+
+            if (mailAdmins == null || mailAdmins.isEmpty()) {
+                return ResponseBuilder.notFound("No mail admins found.");
+            }
+
+            return ResponseBuilder.success("Mail admins retrieved successfully.", mailAdmins);
+
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            System.err.println("Error retrieving mail admins: " + e.getMessage());
+            return ResponseBuilder.error("Error retrieving mail admins.", null);
         }
     }
+
 
 }

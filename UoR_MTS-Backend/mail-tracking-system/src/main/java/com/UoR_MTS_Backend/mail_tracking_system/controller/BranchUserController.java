@@ -3,6 +3,8 @@ package com.UoR_MTS_Backend.mail_tracking_system.controller;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchUserDto;
 import com.UoR_MTS_Backend.mail_tracking_system.model.BranchUser;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchUserService;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,39 +21,86 @@ public class BranchUserController {
     private BranchUserService branchUserService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> branchUserSave(@RequestBody BranchUserDto branchUserDto){
-        String message = String.valueOf(branchUserService.branchUserSave(branchUserDto));
-        return new ResponseEntity<>(message, HttpStatus.CREATED);
+    public ResponseEntity<StandardResponse<String>> branchUserSave(@RequestBody BranchUserDto branchUserDto) {
+        try {
+            String message = String.valueOf(branchUserService.branchUserSave(branchUserDto));
+            return ResponseBuilder.success(message, null);
+
+        } catch (Exception e) {
+            // Log the exception (optional)
+            System.err.println("Error saving branch user: " + e.getMessage());
+
+            return ResponseBuilder.error("Error saving branch user.", null);
+        }
     }
+
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> branchUserUpdate(@PathVariable Integer id, @RequestBody BranchUserDto branchUserDto) {
-        String message = String.valueOf(branchUserService.branchUserUpdate(id, branchUserDto));
-        return new ResponseEntity<>(message, HttpStatus.OK);
+    public ResponseEntity<StandardResponse<String>> branchUserUpdate(@PathVariable Integer id, @RequestBody BranchUserDto branchUserDto) {
+        try {
+            String message = String.valueOf(branchUserService.branchUserUpdate(id, branchUserDto));
+            return ResponseBuilder.success(message, null);
+
+        } catch (Exception e) {
+            // Log the exception (optional)
+            System.err.println("Error updating branch user: " + e.getMessage());
+
+            return ResponseBuilder.error("Error updating branch user.", null);
+        }
     }
+
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> branchUserDelete(@PathVariable Integer id){
-        branchUserService.branchUserDelete(id);
-        return new ResponseEntity<>("Branch User Deleted Successfully",HttpStatus.OK);
+    public ResponseEntity<StandardResponse<String>> branchUserDelete(@PathVariable Integer id) {
+        try {
+            String message = branchUserService.branchUserDelete(id);
+
+            // If the message indicates a successful deletion
+            if (message != null) {
+                return ResponseBuilder.success("Branch User Deleted Successfully", null);
+            } else {
+                return ResponseBuilder.error("Branch User with ID " + id + " not found.", null); // If user not found
+            }
+
+        } catch (Exception e) {
+            // Log the exception (optional)
+            System.err.println("Error deleting branch user: " + e.getMessage());
+
+            return ResponseBuilder.error("Error deleting branch user.", null);
+        }
     }
+
+
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<BranchUser>> getAllBranchUsers() {
-        List<BranchUser> branchUsers = branchUserService.getAllBranchUsers();
-        if (branchUsers.isEmpty()) {
-            return ResponseEntity.noContent().build(); // Returns 204 if no data is found
+    public ResponseEntity<StandardResponse<List<BranchUser>>> getAllBranchUsers() {
+        try {
+            List<BranchUser> branchUsers = branchUserService.getAllBranchUsers();
+            if (branchUsers.isEmpty()) {
+                return ResponseBuilder.success("No branch users found.", branchUsers); // Success response with empty list
+            }
+            return ResponseBuilder.success("Branch users retrieved successfully.", branchUsers); // Success response with data
+
+        } catch (Exception e) {
+            // Log the exception (optional)
+            System.err.println("Error retrieving branch users: " + e.getMessage());
+
+            return ResponseBuilder.error("Error retrieving branch users.", null);
         }
-        return ResponseEntity.ok(branchUsers); // Returns 200 with the list of users
     }
 
+
     @GetMapping("/get/{id}")
-    public ResponseEntity<BranchUser> getBranchUserById(@PathVariable("id") Integer branchUserId) {
+    public ResponseEntity<StandardResponse<BranchUser>> getBranchUserById(@PathVariable("id") Integer branchUserId) {
         try {
             BranchUser branchUser = branchUserService.getBranchUserById(branchUserId);
-            return ResponseEntity.ok(branchUser); // Returns 200 with the branch user
+            return ResponseBuilder.success("Branch user retrieved successfully.", branchUser); // Success response with data
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build(); // Returns 404 if branch user not found
+            // Log the exception (optional)
+            System.err.println("Error retrieving branch user: " + e.getMessage());
+
+            return ResponseBuilder.notFound("Branch user not found."); // Error response with message
         }
     }
+
 }

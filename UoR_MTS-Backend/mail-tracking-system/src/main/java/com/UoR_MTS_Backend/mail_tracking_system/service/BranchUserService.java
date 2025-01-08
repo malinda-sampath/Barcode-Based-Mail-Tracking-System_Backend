@@ -18,4 +18,5 @@ public interface BranchUserService {
     List<BranchUser> getAllBranchUsers();
 
     BranchUser getBranchUserById(int branchUserId);
+
 }
