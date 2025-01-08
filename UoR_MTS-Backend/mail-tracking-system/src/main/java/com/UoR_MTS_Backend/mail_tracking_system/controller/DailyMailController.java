@@ -31,13 +31,13 @@ public class DailyMailController {
             byte[] barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
             String message = dailyMailService.addDailyMail(dailyMailDTO, barcodeImage, uniqueID);
 
-            return ResponseBuilder.success("Daily mail added successfully.", message);
+            return ResponseBuilder.success(message, null);
 
         } catch (Exception e) {
             // Log the exception (optional)
             System.err.println("Error adding daily mail: " + e.getMessage());
 
-            return ResponseBuilder.error("Error adding daily mail.", e.getMessage());
+            return ResponseBuilder.error("Error adding daily mail.",null);
         }
     }
 
@@ -54,19 +54,19 @@ public class DailyMailController {
             // Call the service to update daily mail
             String message = dailyMailService.updateDailyMail(requestDailyMailDTO, barcodeImage, uniqueID);
 
-            return ResponseBuilder.success("Daily mail updated successfully.", message);
+            return ResponseBuilder.success(message, null);
 
         } catch (IOException | WriterException e) {
             // Log the error
             System.err.println("Error generating barcode image: " + e.getMessage());
 
-            return ResponseBuilder.error("Error generating barcode image.", e.getMessage());
+            return ResponseBuilder.error("Error generating barcode image."+ e.getMessage(),null);
 
         } catch (Exception e) {
             // Log the error
             System.err.println("Error updating daily mail: " + e.getMessage());
 
-            return ResponseBuilder.error("Error updating daily mail.", e.getMessage());
+            return ResponseBuilder.error("Error updating daily mail."+ e.getMessage(),null);
         }
     }
 
@@ -76,7 +76,7 @@ public class DailyMailController {
             String message = dailyMailService.deleteDailyMail(dailyMailId);
 
             if (message != null) {
-                return ResponseBuilder.success("Daily mail deleted successfully.", message);
+                return ResponseBuilder.success(message, null);
             } else {
                 return ResponseBuilder.notFound("Daily mail with ID " + dailyMailId + " not found.");
             }
@@ -84,7 +84,7 @@ public class DailyMailController {
             // Log the error
             System.err.println("Error deleting daily mail: " + e.getMessage());
 
-            return ResponseBuilder.error("Error deleting daily mail.", e.getMessage());
+            return ResponseBuilder.error("Error deleting daily mail.",null);
         }
     }
 
