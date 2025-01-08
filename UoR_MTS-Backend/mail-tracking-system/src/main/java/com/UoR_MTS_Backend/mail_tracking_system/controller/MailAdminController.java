@@ -41,7 +41,6 @@ public class MailAdminController {
             return ResponseBuilder.success(message, null);
         } catch (EntityNotFoundException e) {
 
-
             return ResponseBuilder.notFound(e.getMessage());
         } catch (IllegalArgumentException e) {
 
@@ -86,6 +85,4 @@ public class MailAdminController {
             return ResponseBuilder.error("Error retrieving mail admins.", null);
         }
     }
-
-
 }

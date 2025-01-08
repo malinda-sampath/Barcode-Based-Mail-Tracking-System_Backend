@@ -23,7 +23,7 @@ public class BranchUserController {
     @PostMapping("/save")
     public ResponseEntity<StandardResponse<String>> branchUserSave(@RequestBody BranchUserDto branchUserDto) {
         try {
-            String message = String.valueOf(branchUserService.branchUserSave(branchUserDto));
+            String message = branchUserService.branchUserSave(branchUserDto);
             return ResponseBuilder.success(message, null);
 
         } catch (Exception e) {
@@ -57,7 +57,7 @@ public class BranchUserController {
 
             // If the message indicates a successful deletion
             if (message != null) {
-                return ResponseBuilder.success("Branch User Deleted Successfully", null);
+                return ResponseBuilder.success(message, null);
             } else {
                 return ResponseBuilder.error("Branch User with ID " + id + " not found.", null); // If user not found
             }

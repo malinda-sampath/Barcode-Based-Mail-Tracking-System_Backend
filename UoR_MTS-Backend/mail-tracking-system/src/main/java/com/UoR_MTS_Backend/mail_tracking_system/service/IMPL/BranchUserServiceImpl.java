@@ -16,13 +16,8 @@ public class BranchUserServiceImpl implements BranchUserService {
     @Autowired
     private BranchUserRepo branchUserRepo;
 
-    //@Autowired
-    //private PasswordEncoder passwordEncoder;
-
     @Override
     public String branchUserSave(BranchUserDto branchUserDto) {
-        //String hashedPassword = passwordEncoder.encode(branchUserDto.getBranchUserPassword());
-        //branchUserDto.setBranchUserPassword(hashedPassword);
         BranchUser branchUser = new BranchUser(
                 branchUserDto.getBranchUserName(),
                 branchUserDto.getBranchUserPassword(),
@@ -51,7 +46,6 @@ public class BranchUserServiceImpl implements BranchUserService {
             existingBranchUser.setBranchCode(branchUserDto.getBranchCode());
         }
 
-        // Save the updated BranchUser to the database
         branchUserRepo.save(existingBranchUser);
 
         // Convert the updated entity to a DTO and return it
