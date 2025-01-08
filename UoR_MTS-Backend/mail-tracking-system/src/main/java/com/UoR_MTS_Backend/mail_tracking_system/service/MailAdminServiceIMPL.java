@@ -6,9 +6,9 @@ import com.UoR_MTS_Backend.mail_tracking_system.repo.MailAdminRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MailAdminServiceIMPL implements MailAdminService {
@@ -18,7 +18,6 @@ public class MailAdminServiceIMPL implements MailAdminService {
 
     @Override
     public void saveMailAdmin(MailAdminDTO mailAdminDTO) {
-
         if (mailAdminRepo.existsByEmail(mailAdminDTO.getEmail())) {
             throw new IllegalArgumentException("Email is already in use.");
         }
@@ -37,33 +36,39 @@ public class MailAdminServiceIMPL implements MailAdminService {
         mailAdmin.setEmail(mailAdminDTO.getEmail());
         mailAdmin.setUserName(mailAdminDTO.getUserName());
         mailAdmin.setPassword("12345");
+        mailAdmin.setRole(mailAdminDTO.getRole());
+        mailAdmin.setContact(mailAdminDTO.getContact());
+        mailAdmin.setInsertDate(LocalDateTime.now());
 
         mailAdminRepo.save(mailAdmin);
-
-        sendNotification(mailAdmin.getEmail(), mailAdmin.getPassword());
     }
 
-
-
     @Override
-    public void updateMailAdmin(String email, MailAdminDTO mailAdminDTO) {
-        // Fetch the existing MailAdmin entity by email
-        MailAdmin mailAdmin = mailAdminRepo.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No MailAdmin found with the provided email."));
+    public void updateMailAdmin(long id, MailAdminDTO mailAdminDTO) {
+        // Fetch the existing MailAdmin entity by id
+        MailAdmin mailAdmin = mailAdminRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No MailAdmin found with the provided id."));
 
         mailAdmin.setName(mailAdminDTO.getName());
         mailAdmin.setUserName(mailAdminDTO.getUserName());
+        mailAdmin.setEmail(mailAdminDTO.getEmail());
+        mailAdmin.setContact(mailAdminDTO.getContact());
+        mailAdmin.setPassword(mailAdminDTO.getPassword());
+        mailAdmin.setRole(mailAdminDTO.getRole());
+        mailAdmin.setUpdateDate(LocalDateTime.now());
+
         mailAdminRepo.save(mailAdmin);
     }
 
     @Override
-    public void deleteMailAdmin(String email) {
-        if (!mailAdminRepo.existsByEmail(email)) {
-            throw new IllegalArgumentException("No MailAdmin found with the provided email.");
+    public void deleteMailAdmin(long id) {
+        if (!mailAdminRepo.existsById(id)) {
+            throw new IllegalArgumentException("No MailAdmin found with the provided id.");
         }
 
-        mailAdminRepo.deleteByEmail(email);
+        mailAdminRepo.deleteById(id);
     }
+
     @Override
     public List<MailAdminDTO> getAllMailAdmins() {
         List<MailAdmin> mailAdmins = mailAdminRepo.findAll();
@@ -71,16 +76,18 @@ public class MailAdminServiceIMPL implements MailAdminService {
 
         for (MailAdmin mailAdmin : mailAdmins) {
             MailAdminDTO dto = new MailAdminDTO();
+
             dto.setName(mailAdmin.getName());
-            dto.setEmail(mailAdmin.getEmail());
             dto.setUserName(mailAdmin.getUserName());
+            dto.setEmail(mailAdmin.getEmail());
+            dto.setContact(mailAdmin.getContact());
+            dto.setPassword(mailAdmin.getPassword());
+            dto.setRole(mailAdmin.getRole());
+            dto.setInsertDate(mailAdmin.getInsertDate());
+            dto.setUpdateDate(mailAdmin.getUpdateDate());
             mailAdminDTOs.add(dto);
         }
 
         return mailAdminDTOs;
-    }
-
-    private void sendNotification(String email, String password) {
-        System.out.println("Notification sent to " + email + " with password: " + password);
     }
 }
