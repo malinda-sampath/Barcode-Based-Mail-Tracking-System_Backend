@@ -1,18 +1,17 @@
-package com.UoR_MTS_Backend.mail_tracking_system.service;
+package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchUserDto;
 import com.UoR_MTS_Backend.mail_tracking_system.model.BranchUser;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.BranchUserRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.service.BranchUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class BranchUserServiceImpl implements BranchUserService{
+public class BranchUserServiceImpl implements BranchUserService {
 
     @Autowired
     private BranchUserRepo branchUserRepo;

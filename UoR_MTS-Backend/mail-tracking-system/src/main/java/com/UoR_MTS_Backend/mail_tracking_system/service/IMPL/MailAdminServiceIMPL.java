@@ -1,8 +1,9 @@
-package com.UoR_MTS_Backend.mail_tracking_system.service;
+package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailAdminDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailAdmin;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailAdminRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.service.MailAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
