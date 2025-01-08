@@ -1,9 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,7 +14,8 @@ public class BranchUser {
 
     @Id
     @Column(name = "branch_user_id")
-    private String branchUserId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int branchUserId;
     @Column(name = "branch_user_name")
     private String branchUserName;
     @Column(name = "branch_user_password")

@@ -11,13 +11,13 @@ public interface BranchUserService {
 
     BranchUserDto branchUserSave(BranchUserDto branchUserDto);
 
-    BranchUserDto branchUserUpdate(String id, BranchUserDto branchUserDto);
+    BranchUserDto branchUserUpdate(int id, BranchUserDto branchUserDto);
 
-    void branchUserDelete(String id);
+    void branchUserDelete(int id);
 
     void allBranchUserDelete();
 
     List<BranchUser> getAllBranchUsers();
 
-    BranchUser getBranchUserById(String branchUserId);
+    BranchUser getBranchUserById(int branchUserId);
 }

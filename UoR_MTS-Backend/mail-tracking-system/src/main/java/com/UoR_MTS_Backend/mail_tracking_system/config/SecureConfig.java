@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.config;
+/*package com.UoR_MTS_Backend.mail_tracking_system.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,3 +29,4 @@ public class SecureConfig {
         return new BCryptPasswordEncoder();
     }
 }
+*/

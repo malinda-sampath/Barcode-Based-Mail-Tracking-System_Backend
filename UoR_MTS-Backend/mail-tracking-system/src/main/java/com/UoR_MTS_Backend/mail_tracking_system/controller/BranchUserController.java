@@ -20,18 +20,18 @@ public class BranchUserController {
 
     @PostMapping("/save")
     public ResponseEntity<String> branchUserSave(@RequestBody BranchUserDto branchUserDto){
-        BranchUserDto savedBranchUserDto = branchUserService.branchUserSave(branchUserDto);
-        return new ResponseEntity<>("Branch User Added Successfully!", HttpStatus.CREATED);
+        String message = String.valueOf(branchUserService.branchUserSave(branchUserDto));
+        return new ResponseEntity<>(message, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<String> branchUserUpdate(@PathVariable String id, @RequestBody BranchUserDto branchUserDto) {
-        BranchUserDto updatedBranchUserDto = branchUserService.branchUserUpdate(id, branchUserDto);
-        return new ResponseEntity<>("Branch User Updated Successfully!", HttpStatus.OK);
+    public ResponseEntity<String> branchUserUpdate(@PathVariable Integer id, @RequestBody BranchUserDto branchUserDto) {
+        String message = String.valueOf(branchUserService.branchUserUpdate(id, branchUserDto));
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> branchUserDelete(@PathVariable String id){
+    public ResponseEntity<String> branchUserDelete(@PathVariable Integer id){
         branchUserService.branchUserDelete(id);
         return new ResponseEntity<>("Branch User Deleted Successfully",HttpStatus.OK);
     }
@@ -52,7 +52,7 @@ public class BranchUserController {
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<BranchUser> getBranchUserById(@PathVariable("id") String branchUserId) {
+    public ResponseEntity<BranchUser> getBranchUserById(@PathVariable("id") Integer branchUserId) {
         try {
             BranchUser branchUser = branchUserService.getBranchUserById(branchUserId);
             return ResponseEntity.ok(branchUser); // Returns 200 with the branch user
