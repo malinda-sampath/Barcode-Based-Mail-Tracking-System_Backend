@@ -1,12 +1,17 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.DuplicateBranchNameException;
+import com.UoR_MTS_Backend.mail_tracking_system.model.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
@@ -17,9 +22,17 @@ public class BranchController {
     private BranchService branchService;
 
     @PostMapping("/save")
-    public String branchSave(@RequestBody BranchDTO branchDTO){
-        String response = String.valueOf(branchService.branchSave(branchDTO));
-        return response;
+    public ResponseEntity<?> branchSave(@RequestBody BranchDTO branchDTO) {
+        try {
+            Branch savedBranch = branchService.branchSave(branchDTO);
+            return ResponseEntity.ok(savedBranch);
+        } catch (DuplicateBranchNameException e) {
+            // Custom exception handling
+            Map<String, String> response = new HashMap<>();
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        }
     }
 
     @GetMapping("/view-all")

@@ -1,6 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.impl;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.DuplicateBranchNameException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchService;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BranchServiceIMPL implements BranchService {
@@ -31,11 +33,15 @@ public class BranchServiceIMPL implements BranchService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> branchSave(BranchDTO branchDTO) {
+    public Branch branchSave(BranchDTO branchDTO) {
         // Validate BranchDTO
-        if (branchDTO.getBranchName() == null || branchDTO.getBranchName().trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Branch name cannot be null or empty.");
+        Optional<Branch> existingBranch = branchRepo.findByBranchName(branchDTO.getBranchName());
+        if (existingBranch.isPresent()) {
+            throw new DuplicateBranchNameException("Branch name '" + branchDTO.getBranchName() + "' already exists.");
         }
+        /*if (branchDTO.getBranchName() == null || branchDTO.getBranchName().trim().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Branch name cannot be null or empty.");
+        }*/
 
         String sanitizedBranchName = branchDTO.getBranchName().toLowerCase().replace(" ", "");
 
@@ -70,7 +76,9 @@ public class BranchServiceIMPL implements BranchService {
                     ")";
             jdbcTemplate.execute(sql);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("Branch and corresponding mail cart table created successfully.");
+            //return ResponseEntity.status(HttpStatus.CREATED).body("Branch and corresponding mail cart table created successfully.");
+            return branch;
+            //throw new DuplicateBranchNameException("Branch name '" + branchDTO.getBranchName() + "' Successfully added.");
         } catch (DataAccessException e) {
             // Rollback transaction if table creation fails
             throw new RuntimeException("Error occurred while creating the table: " + e.getMessage(), e);
