@@ -63,7 +63,10 @@ public class BranchServiceIMPL implements BranchService {
                     "tracking_code INT, " +
                     "received_date DATE, " +
                     "claimed_date DATE, " +
-                    "claimed_person VARCHAR(255)" +
+                    "claimed_person VARCHAR(255), " +
+                    "FOREIGN KEY (branch_code) REFERENCES branches(branch_code) " +
+                    "ON DELETE CASCADE "+
+                    "ON UPDATE CASCADE" +
                     ")";
             jdbcTemplate.execute(sql);
 
