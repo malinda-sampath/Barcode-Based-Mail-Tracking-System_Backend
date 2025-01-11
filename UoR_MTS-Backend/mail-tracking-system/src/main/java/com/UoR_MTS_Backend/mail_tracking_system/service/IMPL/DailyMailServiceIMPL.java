@@ -4,12 +4,14 @@ import com.UoR_MTS_Backend.mail_tracking_system.config.ModelMapperConfig;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.DailyMailDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail.RequestDailyMailDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail.RequestDailyMailViewAllDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailActivity;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailActivityRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.specification.DailyMailSpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.service.DailyMailService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @Service
 public class DailyMailServiceIMPL implements DailyMailService {
 
+
+
     @Autowired
     private ModelMapperConfig modelMapper;
 
@@ -31,22 +35,37 @@ public class DailyMailServiceIMPL implements DailyMailService {
     @Autowired
     private MailActivityRepo mailActivityRepo;
 
-    //Username and user ID should get from user session
+
     private String mailUsername = "";
     private int mailUserId= 0;
 
     @Override
     @Transactional
     public String addDailyMail(DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID) {
-        LocalDateTime now = LocalDateTime.now();
+        if (dailyMailDTO == null) {
+            throw new IllegalArgumentException("DailyMailDTO cannot be null.");
+        }
 
-        // Map the request DTO to the DailyMail entity and save fields
+
+        if (dailyMailDTO.getSenderName() == null || dailyMailDTO.getReceiverName() == null) {
+            throw new IllegalArgumentException("Sender and Receiver names cannot be null.");
+        }
+
+
+        LocalDateTime now = LocalDateTime.now();
         DailyMail dailyMail = modelMapper.modelMapper().map(dailyMailDTO, DailyMail.class);
         dailyMail.setBarcodeId(uniqueID);
         dailyMail.setBarcodeImage(barcodeImage);
         dailyMail.setInsertDateTime(now);
 
-        dailyMailRepo.save(dailyMail);
+        try {
+
+            dailyMailRepo.save(dailyMail);
+        } catch (Exception e) {
+
+            throw new RuntimeException("Error occurred while saving daily mail: " + e.getMessage(), e);
+        }
+
 
         MailActivity log = new MailActivity(
                 mailUserId,
@@ -59,10 +78,17 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 now
         );
 
-        mailActivityRepo.save(log);
+        try {
+            mailActivityRepo.save(log);
+        } catch (Exception e) {
 
-        return dailyMail.getBarcodeId() + " saved with barcode Image!";
+            throw new RuntimeException("Error occurred while saving mail activity log: " + e.getMessage(), e);
+        }
+
+        return dailyMail.getBarcodeId() + " saved with barcode image!";
     }
+
+
 
     @Override
     @Transactional
@@ -72,11 +98,11 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
             LocalDateTime now = LocalDateTime.now();
 
-            // Fetch the existing DailyMail entity
-            DailyMail existingMail = dailyMailRepo.findById(requestDailyMailDTO.getDailyMailId())
-                    .orElseThrow(() -> new RuntimeException("No data found for that id"));
 
-            // Map the request DTO to the DailyMail entity and update fields
+            DailyMail existingMail = dailyMailRepo.findById(requestDailyMailDTO.getDailyMailId())
+                    .orElseThrow(() -> new ResourceNotFoundException("No data found for that id"));
+
+
             DailyMail dailyMail = modelMapper.modelMapper().map(requestDailyMailDTO, DailyMail.class);
             dailyMail.setUpdateDateTime(now);
             dailyMail.setBarcodeId(existingMail.getBarcodeId());
@@ -84,7 +110,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
             dailyMailRepo.save(dailyMail);
 
-            // Add the activity log
+
             MailActivity log = new MailActivity(
                     mailUserId,
                     mailUsername,
@@ -102,48 +128,50 @@ public class DailyMailServiceIMPL implements DailyMailService {
             return "Mail id: "+dailyMail.getDailyMailId()+ " Barcode: "+dailyMail.getBarcodeId()+ " updated successfully";
 
         } else {
-            throw new RuntimeException("No data found for that ID");
+            throw new ResourceNotFoundException("No data found for that ID");
         }
     }
 
     @Override
     @Transactional
     public String deleteDailyMail(int dailyMailId) {
-        if (dailyMailRepo.existsById(dailyMailId)){
 
-            DailyMail existingMail = dailyMailRepo.findById(dailyMailId)
-                    .orElseThrow(() -> new RuntimeException("No data found for that id"));
+        DailyMail existingMail = dailyMailRepo.findById(dailyMailId)
+                .orElseThrow(() -> new ResourceNotFoundException("No data found for that id: " + dailyMailId));
 
-            LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
-            // Get the existing barcode ID
-            String existingBarcodeId = existingMail.getBarcodeId();
 
-            dailyMailRepo.deleteById(dailyMailId);
-            
-            MailActivity log = new MailActivity(
-                    mailUserId,
-                    mailUsername,
-                    "Delete",
-                    existingMail.getBranchName(),
-                    existingMail.getSenderName(),
-                    existingMail.getReceiverName(),
-                    existingBarcodeId,
-                    now
-            );
+        String existingBarcodeId = existingMail.getBarcodeId();
 
-            mailActivityRepo.save(log);
 
-            return "Mail id: "+dailyMailId+ " Barcode: "+existingBarcodeId+" deleted successfully";
+        dailyMailRepo.deleteById(dailyMailId);
 
-        } else {
-            throw new RuntimeException("No data found for that id");
-        }
+
+        MailActivity log = new MailActivity(
+                mailUserId,
+                mailUsername,
+                "Delete",
+                existingMail.getBranchName(),
+                existingMail.getSenderName(),
+                existingMail.getReceiverName(),
+                existingBarcodeId,
+                now
+        );
+        mailActivityRepo.save(log);
+
+        return "Mail id: " + dailyMailId + " Barcode: " + existingBarcodeId + " deleted successfully";
     }
+
 
     @Override
     public List<RequestDailyMailViewAllDTO> getAllDailyMails() {
         List<DailyMail> mailList = dailyMailRepo.findAll();
+
+        if (mailList.isEmpty()) {
+            throw new ResourceNotFoundException("No daily mails found in the database.");
+        }
+
         return mailList.stream()
                 .sorted(Comparator.comparing(DailyMail::getDailyMailId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
@@ -163,11 +191,19 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public List<RequestDailyMailViewAllDTO> getAllDailyMailsByBarcodeId(String barcodeId) {
+
         List<DailyMail> mailList = dailyMailRepo.findAllByBarcodeIdEquals(barcodeId);
+
+
+        if (mailList.isEmpty()) {
+            throw new ResourceNotFoundException("No daily mails found for the given barcode ID: " + barcodeId);
+        }
+
+
         return mailList.stream()
-                .sorted(Comparator.comparing(DailyMail::getDailyMailId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
                         mail.getDailyMailId(),
                         mail.getBranchCode(),
@@ -184,6 +220,8 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 ))
                 .collect(Collectors.toList());
     }
+
+
 
     @Override
     public List<RequestDailyMailViewAllDTO> filterDailyMail(
@@ -193,15 +231,16 @@ public class DailyMailServiceIMPL implements DailyMailService {
             String trackingNumber,
             String branchName) {
 
+
         List<DailyMail> filteredMail = dailyMailRepo.findAll(
                 DailyMailSpecification.filterBy(
-                        senderName,
-                        receiverName,
-                        mailType,
-                        trackingNumber,
-                        branchName
+                        senderName, receiverName, mailType, trackingNumber, branchName
                 )
-            );
+        );
+
+        if (filteredMail == null || filteredMail.isEmpty()) {
+            throw new ResourceNotFoundException("No mail activities found with the provided filters.");
+        }
 
         return filteredMail.stream()
                 .sorted(Comparator.comparing(DailyMail::getDailyMailId))
@@ -221,4 +260,5 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 ))
                 .collect(Collectors.toList());
     }
+
 }
