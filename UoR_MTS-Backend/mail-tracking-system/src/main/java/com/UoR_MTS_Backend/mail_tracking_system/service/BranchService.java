@@ -6,7 +6,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.model.Branch;
 import java.util.List;
 
 public interface BranchService {
-    public Branch branchSave(BranchDTO branchDTO);
+    public String branchSave(BranchDTO branchDTO);
 
     public List<BranchDTO> getAllBranches();
 
@@ -14,5 +14,5 @@ public interface BranchService {
 
     String updateBranchById(int id, BranchDTO branchDTO);
 
-    void deleteBranchById(int id);
+    String deleteBranchById(int id);
 }
