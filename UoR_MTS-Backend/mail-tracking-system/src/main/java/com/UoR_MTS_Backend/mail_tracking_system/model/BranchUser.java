@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,4 +28,11 @@ public class BranchUser {
 
     public BranchUser(String branchUserName, String branchUserPassword, String branchCode) {
     }
+
+    @OneToMany(mappedBy = "branchUser", cascade = CascadeType.ALL)
+    private List<DailyMail> dailyMails;
+
+    @ManyToOne
+    @JoinColumn(name = "mailAdminId")
+    private MailAdmin mailAdmin;
 }

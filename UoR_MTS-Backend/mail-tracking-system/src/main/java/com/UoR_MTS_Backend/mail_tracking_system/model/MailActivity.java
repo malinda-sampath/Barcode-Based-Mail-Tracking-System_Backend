@@ -37,4 +37,12 @@ public class MailActivity {
         this.barcodeId = barcodeId;
         this.activityDateTime = activityDateTime;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "mailAdminId")
+    private MailAdmin mailAdmin;
+
+    @ManyToOne
+    @JoinColumn(name = "dailyMailId")
+    private DailyMail dailyMail;
 }

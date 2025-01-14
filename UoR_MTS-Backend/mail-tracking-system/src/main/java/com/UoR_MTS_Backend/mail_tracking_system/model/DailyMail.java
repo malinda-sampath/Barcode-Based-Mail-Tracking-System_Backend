@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,4 +32,11 @@ public class DailyMail {
     private byte[] barcodeImage;
     private LocalDateTime insertDateTime;
     private LocalDateTime updateDateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "branchUserId")
+    private BranchUser branchUser;
+
+    @OneToMany(mappedBy = "dailyMail", cascade = CascadeType.ALL)
+    private List<MailActivity> mailActivities;
 }
