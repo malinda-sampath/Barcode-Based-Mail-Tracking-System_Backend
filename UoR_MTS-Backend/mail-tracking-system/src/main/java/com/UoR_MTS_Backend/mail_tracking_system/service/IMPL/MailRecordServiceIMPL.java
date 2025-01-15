@@ -44,13 +44,15 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
             mailRecordRepo.saveAll(mailRecord);
             dailyMailRepo.deleteAll();
+            dailyMailRepo.resetAutoIncrement();
+
         }
 
         return "All daily mails successfully transferred to the main mail cart.";
     }
 
-    @Override
-    public Page<MailRecord> searchAndFilterMails(String cartType, String branchName, LocalDateTime date, int page, int size) {
+//    @Override
+//    public Page<MailRecord> searchAndFilterMails(String cartType, String branchName, LocalDateTime date, int page, int size) {
         // Ensure page and size are non-negative
 //        if (page < 0 || size <= 0) {
 //            throw new IllegalArgumentException("Page index must not be negative and size must be greater than zero.");
@@ -71,22 +73,22 @@ public class MailRecordServiceIMPL implements MailRecordService {
 //            //filter by cart type only
 //            return mailRecordRepo.findByCartType(cartType, pageable);
 //        }
-        return null;
-    }
+//        return null;
+//    }
 
-    @Override
-    public MailRecord addMailRecord(MailRecordDTO mailRecordDTO) {
-        MailRecord mailRecord = new MailRecord();
-        mailRecord.setBranchCode(mailRecordDTO.getBranchCode());
-        mailRecord.setBranchName(mailRecordDTO.getBranchName());
-        mailRecord.setMailType(mailRecordDTO.getMailType());
-        mailRecord.setTrackingNumber(mailRecordDTO.getTrackingNumber());
-        mailRecord.setBarcodeId(mailRecordDTO.getBarcodeId());
-        mailRecord.setInsertDateTime(mailRecordDTO.getInsertDateTime());
-        mailRecord.setMailDescription(mailRecordDTO.getMailDescription());
-        mailRecord.setReceiverName(mailRecordDTO.getReceiverName());
-        mailRecord.setSenderName(mailRecordDTO.getSenderName());
-
-        return mailRecordRepo.save(mailRecord);
-    }
+//    @Override
+//    public MailRecord addMailRecord(MailRecordDTO mailRecordDTO) {
+//        MailRecord mailRecord = new MailRecord();
+//        mailRecord.setBranchCode(mailRecordDTO.getBranchCode());
+//        mailRecord.setBranchName(mailRecordDTO.getBranchName());
+//        mailRecord.setMailType(mailRecordDTO.getMailType());
+//        mailRecord.setTrackingNumber(mailRecordDTO.getTrackingNumber());
+//        mailRecord.setBarcodeId(mailRecordDTO.getBarcodeId());
+//        mailRecord.setInsertDateTime(mailRecordDTO.getInsertDateTime());
+//        mailRecord.setMailDescription(mailRecordDTO.getMailDescription());
+//        mailRecord.setReceiverName(mailRecordDTO.getReceiverName());
+//        mailRecord.setSenderName(mailRecordDTO.getSenderName());
+//
+//        return mailRecordRepo.save(mailRecord);
+//    }
 }

@@ -12,7 +12,7 @@ public interface MailRecordService {
 
     public String transferDailyMailsToMainCart();
 
-    public Page<MailRecord> searchAndFilterMails(String cartType, String branchName, LocalDateTime date, int page, int size);
-
-    public MailRecord addMailRecord(MailRecordDTO mailRecordDTO);
+//    public Page<MailRecord> searchAndFilterMails(String cartType, String branchName, LocalDateTime date, int page, int size);
+//
+//    public MailRecord addMailRecord(MailRecordDTO mailRecordDTO);
 }
