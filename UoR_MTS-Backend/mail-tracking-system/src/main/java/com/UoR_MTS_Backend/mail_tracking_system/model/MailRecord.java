@@ -17,15 +17,19 @@ import java.time.LocalDateTime;
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int mailRecordId;
+
         private long branchCode;
         private String branchName;
         private String mailType;
         private String trackingNumber;
         private String barcodeId;
-        private LocalDateTime insertDateTime;
-        private String cartType;// "daily" or "main"
         private String mailDescription;
         private String senderName;
         private String receiverName;
+
+        @Lob
+        private byte[] barcodeImage;
+        private LocalDateTime insertDateTime;
+        private LocalDateTime updateDateTime;
     }
 
