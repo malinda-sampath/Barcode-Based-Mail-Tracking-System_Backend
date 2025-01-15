@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6; color: #374151;">
+<table width="100%" cellspacing="0" cellpadding="0" style="margin: 0; padding: 20px; background-color: #f3f4f6;">
+    <tr>
+        <td align="center">
+            <table width="600px" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 12px; padding: 20px; text-align: left; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <tr>
+                    <td style="text-align: center; background-color: #2563eb; color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                        <h1 style="margin: 0; font-size: 20px;">Verify Your Email Address</h1>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px;">
+                        <p>Hello,</p>
+                        <p>Welcome! To ensure the security of your account, please verify your email address using the verification code below:</p>
+                        <div style="text-align: center; margin: 20px 0; padding: 20px; background-color: #f8fafc; border: 2px dashed #2563eb; border-radius: 8px;">
+                            <p style="font-size: 36px; color: #2563eb; font-weight: bold; margin: 0; letter-spacing: 4px;"><span th:text="${otp}"></span></p>
+                            <p style="color: #ef4444; font-size: 14px; margin-top: 10px;">This code expires in 10 minutes</p>
+                        </div>
+                        <div style="background-color: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; margin: 20px 0; font-size: 14px;">
+                            <strong>🔒 Security Note:</strong> Never share this code with anyone. Our team will never ask for this code.
+                        </div>
+                        <p>If you didn't request this verification code, please ignore this email or <a href="#" style="color: #2563eb; text-decoration: none;">let us know</a>.</p>
+                        <p>Having trouble? Try copying and pasting the code.</p>
+                        <p>Best regards,<br>The Security Team</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px; font-size: 12px; color: #6b7280; text-align: center; border-top: 1px solid #e5e7eb;">
+                        <p>Need help? <a href="mailto:support@example.com" style="color: #2563eb; text-decoration: none;">Contact our support team</a></p>
+                        <p>© 2025 University of Ruhuna. All rights reserved.</p>
+                        <p>
+                            <a href="#" style="color: #2563eb; text-decoration: none;">Privacy Policy</a> •
+                            <a href="#" style="color: #2563eb; text-decoration: none;">Terms of Service</a> •
+                            <a href="#" style="color: #2563eb; text-decoration: none;">Unsubscribe</a>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
