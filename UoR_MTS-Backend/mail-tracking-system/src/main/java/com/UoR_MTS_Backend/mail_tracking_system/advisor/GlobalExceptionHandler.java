@@ -1,5 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.advisor;
 
+import com.UoR_MTS_Backend.mail_tracking_system.exception.MailActivityNotFoundException;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.MailAdminException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.WriterException;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
@@ -44,6 +46,18 @@ public class GlobalExceptionHandler {
         logger.error("Unexpected error occurred", ex);
         return ResponseBuilder.error("Unexpected error occurred: " + ex.getMessage(), null);
     }
+
+    @ExceptionHandler(MailActivityNotFoundException.class)
+    public ResponseEntity<StandardResponse<String>> handleMailActivityNotFoundException(MailActivityNotFoundException ex) {
+        StandardResponse<String> response = new StandardResponse<>(404, "NOT_FOUND"+ ex.getMessage(),null);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MailAdminException.class)
+    public ResponseEntity<StandardResponse<Void>> handleMailAdminException(MailAdminException ex) {
+        return ResponseBuilder.error(ex.getMessage(), null);
+    }
+
 
 
 

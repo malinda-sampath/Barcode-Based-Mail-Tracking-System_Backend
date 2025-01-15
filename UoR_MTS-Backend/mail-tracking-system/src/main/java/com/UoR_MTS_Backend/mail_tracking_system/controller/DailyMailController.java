@@ -26,7 +26,6 @@ public class DailyMailController {
 
     @PostMapping("/add-daily-mail")
     public ResponseEntity<StandardResponse<String>> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) throws WriterException,IOException  {
-
         if (dailyMailDTO == null) {
             throw new IllegalArgumentException("DailyMailDTO cannot be null.");
         }

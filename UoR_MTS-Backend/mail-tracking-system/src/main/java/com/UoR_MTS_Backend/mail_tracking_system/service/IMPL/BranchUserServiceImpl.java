@@ -72,6 +72,7 @@ public class BranchUserServiceImpl implements BranchUserService {
         branchUserRepo.save(existingBranchUser);
 
 
+
         return existingBranchUser.getBranchUserName() + " has been updated Successfully";
     }
 
