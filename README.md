@@ -1,10 +1,12 @@
-# University of Ruhuna - Mail Tracking System
+# **University of Ruhuna - Mail Tracking System**
 
-This project implements a barcode-based mail tracking system to efficiently manage incoming mail within a university administrative unit. The system offers role-based access and functionalities tailored for **Super Admin**, **Mail Admin**, and **Branch Agents**, enhancing accountability and streamlining operations.
+## **Executive Summary**
+
+The University of Ruhuna's Mail Tracking System is designed to streamline the management of incoming mail within university administrative units. By utilizing a barcode-based tracking mechanism, the system enhances mail processing efficiency, accountability, and real-time tracking for stakeholders. The system is tailored for role-based access, enabling Super Admins, Mail Admins, and Branch Agents to seamlessly collaborate while ensuring comprehensive oversight and security. Additionally, the system provides an urgent mail tracing service, delivering timely updates to faculty and students.
 
 ---
 
-## Key Features
+## **Key Features**
 
 ### 1. **Super Admin**
 
@@ -45,19 +47,64 @@ This project implements a barcode-based mail tracking system to efficiently mana
 
 ---
 
-## System Architecture
+## **User Roles and Permissions**
+
+The system implements role-based access control (RBAC) to ensure that users can only access the features necessary for their responsibilities:
+
+- **Super Admin**: Full system control, including user management, oversight, and data management.
+- **Mail Admin**: Responsible for managing mail records, generating barcodes, and overseeing operational workflows.
+- **Branch Agents**: Access to view and claim mail, as well as confirm receipt.
+
+---
+
+## **Security Considerations**
+
+- **Password Hashing**: All user passwords are securely hashed using industry-standard algorithms to ensure the privacy of credentials.
+- **Role-Based Access Control (RBAC)**: Ensures that each user has appropriate access to system features based on their role, preventing unauthorized actions.
+- **Data Encryption**: Sensitive data is transmitted securely using SSL/TLS encryption to protect it during communication.
+
+---
+
+## **System Architecture**
 
 ### **Technologies Used**
 
 - **Backend**: Spring Boot (RESTful APIs for managing mail operations).
-- **Database**: MySQL (normalized schema for efficient storage and retrieval).
-- **Frontend**: React (dynamic UI with real-time tracking updates).
+- **Database**: MySQL hosted on a DigitalOcean droplet (normalized schema for efficient storage and retrieval).
+- **Frontend**: React with Tailwind CSS (dynamic UI with real-time tracking updates).
 - **Version Control**: GitHub (collaborative development).
 - **Project Management**: Trello (task tracking and milestones).
 
 ---
 
-## Deployment and Setup Instructions
+## **Scalability**
+
+The system is designed to handle a growing volume of mail records efficiently. Key measures include:
+
+- **Optimized Database**: The MySQL database is optimized for scaling and can be expanded to accommodate additional campuses or high mail volumes.
+- **Modular Design**: The system architecture allows for future feature additions and the ability to scale for more users or branches.
+
+---
+
+## **Testing**
+
+The system undergoes rigorous testing to ensure reliability:
+
+- **Unit Testing**: JUnit and Mockito are used to test individual components of the backend.
+- **Integration Testing**: Postman is used to validate API interactions between the backend and frontend.
+- **User Acceptance Testing**: Ensures the system meets all user requirements and functions as expected in real-world conditions.
+
+---
+
+## **Future Features**
+
+- **Real-Time Notifications**: Stakeholders could receive push notifications or SMS alerts for urgent mail updates.
+- **Advanced Analytics**: Provide administrators with insights into mail processing trends, including peak mail volume periods, agent performance metrics, and branch efficiency.
+- **Mobile App Integration**: A mobile app could provide real-time access to mail tracking services, allowing users to track and claim mail on the go.
+
+---
+
+## **Deployment and Setup Instructions**
 
 ### **Local Setup**
 
@@ -89,7 +136,9 @@ This project implements a barcode-based mail tracking system to efficiently mana
    npm start
    ```
 
-## Team Members
+---
+
+## **Team Members**
 
 | Name                  | Stack/Role                       |
 | --------------------- | -------------------------------- |
@@ -100,3 +149,5 @@ This project implements a barcode-based mail tracking system to efficiently mana
 | S.S.N. Edirisinghe    | Backend Developer                |
 | K.P.G.L.R. Kossinna   | Frontend Developer               |
 | D.M.G.C. Sandakelum   | Frontend Developer               |
+
+---
