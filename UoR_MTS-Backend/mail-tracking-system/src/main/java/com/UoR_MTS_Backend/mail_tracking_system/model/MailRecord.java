@@ -16,16 +16,20 @@ import java.time.LocalDateTime;
     public class MailRecord {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int mailRecordId;
-        private long branchCode;
+        private int mainMailId;
+
+        private int branchCode;
         private String branchName;
-        private String mailType;
-        private String trackingNumber;
-        private String barcodeId;
-        private LocalDateTime insertDateTime;
-        private String cartType;// "daily" or "main"
-        private String mailDescription;
         private String senderName;
         private String receiverName;
+        private String mailType;
+        private String trackingNumber;
+        private String mailDescription;
+        private String barcodeId;
+
+        @Lob
+        private byte[] barcodeImage;
+        private LocalDateTime insertDateTime;
+        private LocalDateTime updateDateTime;
     }
 
