@@ -18,40 +18,18 @@ public class MailActivityController {
 
     @GetMapping
     public ResponseEntity<StandardResponse<List<MailActivityDTO>>> getAllMailActivity() {
-        try {
-            List<MailActivityDTO> mailActivityDTOList = mailActivityService.getAllMailActivity();
-
-            if (mailActivityDTOList == null || mailActivityDTOList.isEmpty()) {
-                return ResponseBuilder.notFound("No mail activities found.");
-            }
-
-            return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
-        } catch (Exception e) {
-            // Log the error for debugging purposes
-            System.err.println("Error retrieving all mail activities: " + e.getMessage());
-
-            return ResponseBuilder.error("Error retrieving mail activities.", null);
-        }
+        List<MailActivityDTO> mailActivityDTOList = mailActivityService.getAllMailActivity();
+        return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
     }
+
 
 
     @GetMapping("/get-mail-activity-by-barcodeId/{barcodeId}")
     public ResponseEntity<StandardResponse<List<MailActivityDTO>>> getMailActivityByBarcodeId(@PathVariable(value = "barcodeId") String barcodeId) {
-        try {
-            List<MailActivityDTO> mailActivityDTOList = mailActivityService.getAllMailActivityByBarcodeId(barcodeId);
-
-            if (mailActivityDTOList == null || mailActivityDTOList.isEmpty()) {
-                return ResponseBuilder.notFound("No mail activities found for the provided barcode ID.");
-            }
-
-            return ResponseBuilder.success("Mail activities retrieved successfully by barcode ID", mailActivityDTOList);
-        } catch (Exception e) {
-            // Log the error for debugging purposes
-            System.err.println("Error retrieving mail activities by barcode ID: " + e.getMessage());
-
-            return ResponseBuilder.error("Error retrieving mail activities.", null);
-        }
+        List<MailActivityDTO> mailActivityDTOList = mailActivityService.getAllMailActivityByBarcodeId(barcodeId);
+        return ResponseBuilder.success("Mail activities retrieved successfully by barcode ID", mailActivityDTOList);
     }
+
 
 
     @GetMapping("/mail-activity-filter")
@@ -62,20 +40,11 @@ public class MailActivityController {
             @RequestParam(required = false) String senderName,
             @RequestParam(required = false) String receiverName) {
 
-        try {
-            List<MailActivityDTO> mailActivityDTOList = mailActivityService.filterMailActivities(userName, activityType, branchName, senderName, receiverName);
+        List<MailActivityDTO> mailActivityDTOList = mailActivityService.filterMailActivities(
+                userName, activityType, branchName, senderName, receiverName);
 
-            if (mailActivityDTOList == null || mailActivityDTOList.isEmpty()) {
-                return ResponseBuilder.notFound("No mail activities found with the provided filters.");
-            }
-
-            return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
-        } catch (Exception e) {
-            // Log the error for debugging purposes
-            System.err.println("Error retrieving filtered mail activities: " + e.getMessage());
-
-            return ResponseBuilder.error("Error retrieving mail activities.", null);
-        }
+        return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
     }
+
 
 }
