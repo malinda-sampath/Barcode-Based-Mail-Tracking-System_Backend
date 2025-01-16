@@ -33,10 +33,4 @@ public class DailyMail {
     private LocalDateTime insertDateTime;
     private LocalDateTime updateDateTime;
 
-    @ManyToOne
-    @JoinColumn(name = "branchUserId")
-    private BranchUser branchUser;
-
-    @OneToMany(mappedBy = "dailyMail", cascade = CascadeType.ALL)
-    private List<MailActivity> mailActivities;
 }

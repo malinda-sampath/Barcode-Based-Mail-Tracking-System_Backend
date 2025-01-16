@@ -43,10 +43,4 @@ public class MailAdmin {
     @Column(name="Update_date")
     private LocalDateTime updateDate;
 
-    @OneToMany(mappedBy = "mailAdmin", cascade = CascadeType.ALL)
-    private List<MailActivity> mailActivities;
-
-    @OneToMany(mappedBy = "mailAdmin", cascade = CascadeType.ALL)
-    private List<BranchUser> branchUsers;
-
 }
