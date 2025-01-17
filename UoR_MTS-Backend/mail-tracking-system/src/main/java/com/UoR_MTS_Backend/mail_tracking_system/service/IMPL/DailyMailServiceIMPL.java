@@ -46,6 +46,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
         dailyMail.setBarcodeImage(barcodeImage);
         dailyMail.setInsertDateTime(now);
 
+
         dailyMailRepo.save(dailyMail);
 
         MailActivity log = new MailActivity(

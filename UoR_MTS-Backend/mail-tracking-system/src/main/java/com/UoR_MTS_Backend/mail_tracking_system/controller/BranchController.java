@@ -39,7 +39,7 @@ public class BranchController {
                 return ResponseBuilder.notFound("Branches Not Found");
             }
 
-            return ResponseBuilder.success("Branches Retrieve Successfully!", null);
+            return ResponseBuilder.success("Branches Retrieve Successfully!", branches);
 
         }catch(Exception e){
 
@@ -54,7 +54,7 @@ public class BranchController {
             BranchDTO branchDTO = branchService.getBranchById(id);
 
             if (branchDTO != null) {
-                return ResponseBuilder.success("Branch found", null);
+                return ResponseBuilder.success("Branch found", branchDTO);
             } else {
                 return ResponseBuilder.notFound("Branch Not Found");
             }
@@ -69,7 +69,7 @@ public class BranchController {
     public ResponseEntity<StandardResponse<String>> branchUpdate(@PathVariable int id, @RequestBody BranchDTO branchDTO) {
             try {
                 String message = branchService.updateBranchById(id, branchDTO);
-                return ResponseBuilder.success("Branch Saved Successfully!",null);
+                return ResponseBuilder.success(message,null);
             }catch(Exception e){
                 System.err.println("Error updating branch: " + e.getMessage());
                 return ResponseBuilder.error("Error Updating Branch :"+e.getMessage(),null);
@@ -81,7 +81,7 @@ public class BranchController {
     public ResponseEntity <StandardResponse<String>> deleteBranch(@PathVariable int id) {
             try{String message = branchService.deleteBranchById(id); // Call service method to delete the branch
                 if(message!=null){
-                    return ResponseBuilder.success("Branch Delete Successfully!",null);
+                    return ResponseBuilder.success(message,null);
                 }else
                 {
                     return ResponseBuilder.notFound("Branch Not Found With "+id);
