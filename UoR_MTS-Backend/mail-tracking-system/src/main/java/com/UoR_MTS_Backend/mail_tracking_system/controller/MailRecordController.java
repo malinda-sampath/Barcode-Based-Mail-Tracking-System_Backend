@@ -39,7 +39,7 @@ public class MailRecordController {
            @RequestParam(required = false) String mailType,
            @RequestParam(required = false) String trackingNumber,
            @RequestParam(required = false) String branchName,
-           @RequestParam(defaultValue = "1") int page) {
+           @RequestParam(defaultValue = "0") int page) {
        try {
            int pageSize = 10;
            Pageable pageable = PageRequest.of(page, pageSize);
@@ -76,7 +76,7 @@ public class MailRecordController {
     }
     @GetMapping("/all-main-mails")
     public ResponseEntity<?> getAllMailRecords(
-            @RequestParam(defaultValue = "1") int page) { // Default page size
+            @RequestParam(defaultValue = "0") int page) { // Default page size
         try {
             int size = 10;
             Pageable pageable = PageRequest.of(page, size);
