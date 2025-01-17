@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int mailRecordId;
 
-        private long branchCode;
+        private int branchCode;
         private String branchName;
         private String mailType;
         private String trackingNumber;

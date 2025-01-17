@@ -1,25 +1,26 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.config.ModelMapperConfig;
+import com.UoR_MTS_Backend.mail_tracking_system.controller.MailRecordController;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailRecordDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.model.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailRecordRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.repo.specification.MailRecordSpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailRecordService;
-//import org.springdoc.core.converters.models.Pageable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class MailRecordServiceIMPL implements MailRecordService {
+    private static final Logger logger = LoggerFactory.getLogger(MailRecordController.class);
 
     @Autowired
     private MailRecordRepo mailRecordRepo;
@@ -51,44 +52,80 @@ public class MailRecordServiceIMPL implements MailRecordService {
         return "All daily mails successfully transferred to the main mail cart.";
     }
 
-//    @Override
-//    public Page<MailRecord> searchAndFilterMails(String cartType, String branchName, LocalDateTime date, int page, int size) {
-        // Ensure page and size are non-negative
-//        if (page < 0 || size <= 0) {
-//            throw new IllegalArgumentException("Page index must not be negative and size must be greater than zero.");
-//        }
-//
-//        Pageable pageable = PageRequest.of(page,size);
-//
-//        if (branchName != null && date != null) {
-//            //filter by cart type, branch name and date
-//            return mailRecordRepo.findByCartTypeAndBranchNameAndInsertDateTime(cartType, branchName, date, pageable);
-//        } else if (branchName != null) {
-//            //filter by cart type and branch name
-//            return mailRecordRepo.findByCartTypeAndBranchName(cartType, branchName, pageable);
-//        } else if (date != null) {
-//            //filter by cart type and date
-//            return mailRecordRepo.findByCartTypeAndInsertDateTime(cartType, date, pageable);
-//        } else {
-//            //filter by cart type only
-//            return mailRecordRepo.findByCartType(cartType, pageable);
-//        }
-//        return null;
-//    }
 
-//    @Override
-//    public MailRecord addMailRecord(MailRecordDTO mailRecordDTO) {
-//        MailRecord mailRecord = new MailRecord();
-//        mailRecord.setBranchCode(mailRecordDTO.getBranchCode());
-//        mailRecord.setBranchName(mailRecordDTO.getBranchName());
-//        mailRecord.setMailType(mailRecordDTO.getMailType());
-//        mailRecord.setTrackingNumber(mailRecordDTO.getTrackingNumber());
-//        mailRecord.setBarcodeId(mailRecordDTO.getBarcodeId());
-//        mailRecord.setInsertDateTime(mailRecordDTO.getInsertDateTime());
-//        mailRecord.setMailDescription(mailRecordDTO.getMailDescription());
-//        mailRecord.setReceiverName(mailRecordDTO.getReceiverName());
-//        mailRecord.setSenderName(mailRecordDTO.getSenderName());
-//
-//        return mailRecordRepo.save(mailRecord);
-//    }
+    @Override
+    @Transactional
+    public Page<MailRecordDTO> filterMailRecords(
+            String senderName,
+            String receiverName,
+            String mailType,
+            String trackingNumber,
+            String branchName,
+            Pageable pageable) {
+
+        // Filter records using Specification
+            Page<MailRecord> filteredMailRecords = mailRecordRepo.findAll(
+                    MailRecordSpecification.filterBy(
+                            senderName, receiverName, mailType, trackingNumber, branchName
+                    ),pageable);
+
+
+
+            // Map to DTO and return
+            return filteredMailRecords.map(mail -> {
+
+                    MailRecordDTO dto = new MailRecordDTO();
+                    dto.setMailRecordId(mail.getMailRecordId());
+                    dto.setSenderName(mail.getSenderName());
+                    dto.setReceiverName(mail.getReceiverName());
+                    dto.setMailType(mail.getMailType());
+                    dto.setTrackingNumber(mail.getTrackingNumber());
+                    dto.setBranchName(mail.getBranchName());
+                    dto.setInsertDateTime(mail.getInsertDateTime());
+                    dto.setUpdateDateTime(mail.getUpdateDateTime());
+                    return dto;
+
+            });
+
+}
+@Override
+    public MailRecord searchMailByBarcodeId(String barcodeId) {
+        try {
+            // Fetch the mail record by barcodeId
+            MailRecord mailRecord = mailRecordRepo.findByBarcodeId(barcodeId);
+
+            // If no record found, return null or handle accordingly
+            if (mailRecord == null) {
+                logger.warn("Mail record with barcodeId {} not found.", barcodeId);
+                return null;  // You can also throw an exception or handle differently
+            }
+
+            return mailRecord;  // Return the found mail record
+
+        } catch (Exception e) {
+            logger.error("Error occurred while searching for mail by barcodeId: {}", barcodeId, e);
+            throw new RuntimeException("Error occurred while searching by barcodeId", e);  // Or throw custom exception
+        }
+    }
+
+    @Override
+    public Page<MailRecord> getAllMailRecords(Pageable pageable) {
+        Page<MailRecord> mailPage = mailRecordRepo.findAll(pageable);
+
+        return mailPage.map(mail -> new MailRecord(
+                mail.getMailRecordId(),
+                mail.getBranchCode(),
+                mail.getBranchName(),
+                mail.getSenderName(),
+                mail.getReceiverName(),
+                mail.getMailType(),
+                mail.getTrackingNumber(),
+                mail.getMailDescription(),
+                mail.getBarcodeId(),
+                mail.getBarcodeImage(),
+                mail.getInsertDateTime(),
+                mail.getUpdateDateTime()
+        ));
+    }
+
 }
