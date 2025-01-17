@@ -3,10 +3,9 @@ package com.UoR_MTS_Backend.mail_tracking_system.controller;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchUserDto;
 import com.UoR_MTS_Backend.mail_tracking_system.model.BranchUser;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchUserService;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

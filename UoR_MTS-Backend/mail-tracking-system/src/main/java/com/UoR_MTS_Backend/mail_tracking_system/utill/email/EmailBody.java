@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.utill;
+package com.UoR_MTS_Backend.mail_tracking_system.utill.email;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

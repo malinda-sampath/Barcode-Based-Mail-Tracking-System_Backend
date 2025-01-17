@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.utill.generator;
+package com.UoR_MTS_Backend.mail_tracking_system.utill.barcode;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;

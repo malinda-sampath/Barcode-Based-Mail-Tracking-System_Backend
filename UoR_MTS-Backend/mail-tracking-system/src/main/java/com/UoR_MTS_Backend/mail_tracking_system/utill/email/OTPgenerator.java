@@ -1,6 +1,5 @@
-package com.UoR_MTS_Backend.mail_tracking_system.utill;
+package com.UoR_MTS_Backend.mail_tracking_system.utill.email;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
