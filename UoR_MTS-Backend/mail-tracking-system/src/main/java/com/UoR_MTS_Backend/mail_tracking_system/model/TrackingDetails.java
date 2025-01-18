@@ -23,4 +23,17 @@ public class TrackingDetails {
 
     @Column(nullable = false)
     private LocalDateTime insertedAt;
+
+    @Column(name = "mail_type",nullable = false)
+    private String mailType;
+
+    @Column(name = "mail_tracking_number",nullable = false)
+    private int mailTrackingNumber;
+
+    public TrackingDetails(String email, LocalDateTime insertedAt, String mailType, int mailTrackingNumber) {
+        this.email = email;
+        this.insertedAt = insertedAt;
+        this.mailType = mailType;
+        this.mailTrackingNumber = mailTrackingNumber;
+    }
 }
