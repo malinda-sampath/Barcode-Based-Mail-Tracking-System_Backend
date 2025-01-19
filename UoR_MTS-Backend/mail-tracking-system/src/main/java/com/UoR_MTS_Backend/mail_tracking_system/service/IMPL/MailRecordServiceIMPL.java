@@ -97,10 +97,9 @@ public class MailRecordServiceIMPL implements MailRecordService {
             // If no record found, return null or handle accordingly
             if (mailRecord == null) {
                 logger.warn("Mail record with barcodeId {} not found.", barcodeId);
-                return null;  // You can also throw an exception or handle differently
             }
 
-            return mailRecord;  // Return the found mail record
+            return  mailRecord;  // Return the found mail record
 
         } catch (Exception e) {
             logger.error("Error occurred while searching for mail by barcodeId: {}", barcodeId, e);
