@@ -35,7 +35,7 @@ public class MailAdminServiceIMPL implements MailAdminService {
             throw new MailAdminException("Invalid email format.");
         }
 
-        
+
         MailAdmin mailAdmin = new MailAdmin();
         mailAdmin.setName(mailAdminDTO.getName());
         mailAdmin.setEmail(mailAdminDTO.getEmail());
