@@ -18,9 +18,16 @@ public class TrackingDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column()
     private String email;
 
-    @Column(nullable = false)
+    @Column
     private LocalDateTime insertedAt;
+
+    @Column(name = "mail_type")
+    private String mailType;
+
+    @Column(name = "mail_tracking_number")
+    private int mailTrackingNumber;
+
 }

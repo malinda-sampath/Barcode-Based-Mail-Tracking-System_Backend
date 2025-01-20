@@ -1,5 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
+import com.UoR_MTS_Backend.mail_tracking_system.dto.EmailVerificationResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.model.TrackingDetails;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.TrackingDetailsRepository;
 import com.UoR_MTS_Backend.mail_tracking_system.service.EmailVerificationService;
@@ -22,7 +23,7 @@ public class EmailVerificationServiceIMPL implements EmailVerificationService {
     private final TrackingDetailsRepository trackingDetailsRepository;
 
     @Override
-    public String verifyEmail(String email) {
+    public EmailVerificationResponseDTO verifyEmail(String email) {
         String generatedOTP = otpGenerator.OTP();
 
         try{
@@ -33,23 +34,16 @@ public class EmailVerificationServiceIMPL implements EmailVerificationService {
             String subject = "Confidential: OTP for Email Verification";
 
             emailBody.sendEmailWithHtmlContent(subject, email, htmlContent);
-            //This OTP should be sent to the frontend as data to be used for verification
-            //hash the OTP and send it to the frontend
-            return generatedOTP;
+
+            EmailVerificationResponseDTO emailVerificationResponseDTO = new EmailVerificationResponseDTO(
+                    email,
+                    generatedOTP
+            );
+
+            return emailVerificationResponseDTO;
+
         } catch (Exception e) {
             throw new RuntimeException("Error sending OTP to the provided email", e);
-        }
-    }
-
-    @Override
-    public void saveEmail(String email) {
-        try {
-            TrackingDetails trackingDetails = new TrackingDetails();
-            trackingDetails.setEmail(email);
-            trackingDetails.setInsertedAt(LocalDateTime.now());
-            trackingDetailsRepository.save(trackingDetails);
-        } catch (Exception e) {
-            throw new RuntimeException("Internal server error");
         }
     }
 }
