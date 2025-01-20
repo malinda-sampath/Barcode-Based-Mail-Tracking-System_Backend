@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.service.impl;
+package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.model.Branch;

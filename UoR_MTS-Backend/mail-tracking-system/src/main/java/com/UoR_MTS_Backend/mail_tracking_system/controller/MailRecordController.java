@@ -30,12 +30,9 @@ public class MailRecordController {
     public ResponseEntity<StandardResponse<String>>  transferDailyMailsToMainCart() {
         try {
             String message = mailRecordService.transferDailyMailsToMainCart();
-            return ResponseBuilder.success("Mail Record Save Successfully!",null);
+            return ResponseBuilder.success(message,null);
         }catch(Exception e){
-
-            System.err.println("Error saving Mail Record: " + e.getMessage());
-            return ResponseBuilder.error("Error Saving Mail Record",null);
-
+            return ResponseBuilder.error("Error Saving Mail Record:" + e.getMessage(),null);
         }
     }
 
@@ -58,12 +55,9 @@ public class MailRecordController {
            }
 
            // Return successful response
-           return ResponseBuilder.success("Mail activities retrieved successfully", filteredRecords);
+           return ResponseBuilder.success(null, filteredRecords);
        } catch (Exception e) {
-           // Log the error for debugging
-           System.err.println("Error retrieving mail activities by filter: " + e.getMessage());
-
-           return ResponseBuilder.error("Error retrieving mail activities.", null);
+           return ResponseBuilder.error("Error retrieving mail activities:"+e.getMessage(), null);
        }
 
    }
@@ -77,12 +71,9 @@ public class MailRecordController {
                 return ResponseBuilder.notFound("Mail with barcode ID " + barcodeId + " not found.");
             }
 
-            // You can customize the message like this
-            String customMessage = "Mail record found successfully with barcode ID " + barcodeId;
-            return ResponseBuilder.success(customMessage, mailRecord);
+            return ResponseBuilder.success(null, mailRecord);
         } catch (Exception e) {
-            logger.error("Error occurred while searching for mail by barcode ID: " + barcodeId, e);
-            return ResponseBuilder.error("Error occurred while searching by barcode ID.", null);
+            return ResponseBuilder.error("Error occurred while searching by barcode ID:"+e.getMessage(), null);
         }
     }
 
@@ -102,14 +93,13 @@ public class MailRecordController {
             }
 
             // Return successful response
-            return ResponseBuilder.success("Mail records retrieved successfully.", mailRecords);
+            return ResponseBuilder.success(null, mailRecords);
         } catch (Exception e) {
             // Log the exception and return error response
-            System.err.println("Error retrieving mail records: " + e.getMessage());
-            return ResponseBuilder.error("Error retrieving mail records.", null);
+            return ResponseBuilder.error("Error retrieving mail records:"+e.getMessage(), null);
         }
     }
-    }
+}
 
 
 
