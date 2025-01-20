@@ -1,5 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 
+import com.UoR_MTS_Backend.mail_tracking_system.dto.EmailVerificationResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.service.EmailVerificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,29 +17,11 @@ public class EmailVerificationController {
     private final EmailVerificationService emailVerificationService;
 
     @PostMapping("/verify/{email}")
-    public String verifyEmail(
+    public EmailVerificationResponseDTO verifyEmail(
             @PathVariable String email
     ) {
-        try {
-            String otp = emailVerificationService.verifyEmail(email);
-            return "OTP sent successfully.";
-            // otp should send to the frontend as data to be used for verification(manuri)
-            // return ResponseEntity.ok("OTP sent successfully.", otp);
-        } catch (Exception e) {
-            return "Failed to send OTP. Please try again later.";
-        }
+
+            //message should be "OTP sent successfully"
+            return emailVerificationService.verifyEmail(email);
     }
-
-    @PostMapping("/save/{email}")
-    public void saveEmail(
-            @PathVariable String email
-    ) {
-        try {
-            emailVerificationService.saveEmail(email);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Internal server error");
-        }
-    }
-
 }

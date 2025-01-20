@@ -1,7 +1,8 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service;
 
-public interface EmailVerificationService {
-    public String verifyEmail(String email);
+import com.UoR_MTS_Backend.mail_tracking_system.dto.EmailVerificationResponseDTO;
 
-    public void saveEmail(String email);
+public interface EmailVerificationService {
+   EmailVerificationResponseDTO verifyEmail(String email);
+
 }

@@ -1,6 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dto.request.TrackingDetailsRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dto.TrackingDetailsDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.service.TrackingDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,8 +16,9 @@ public class TrackingDetailsController {
     private TrackingDetailsService trackingDetailsService;
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveTrackingDetails(@RequestBody TrackingDetailsRequestDTO trackingDetailsRequestDTO){
-        String message = String.valueOf(trackingDetailsService.saveTrackingDetails(trackingDetailsRequestDTO));
-        return new ResponseEntity<String>(message,HttpStatus.CREATED);
+    public String saveTrackingDetails(@RequestBody TrackingDetailsDTO trackingDetailsDTO){
+        String message = trackingDetailsService.saveTrackingDetails(trackingDetailsDTO);
+
+        return message;
     }
 }

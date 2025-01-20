@@ -4,15 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TrackingDetailsDTO {
 
+public class EmailVerificationResponseDTO {
     private String email;
-    private LocalDateTime insertedAt;
-    private String mailType;
-    private int mailTrackingNumber;
+    private String otp;
 }
