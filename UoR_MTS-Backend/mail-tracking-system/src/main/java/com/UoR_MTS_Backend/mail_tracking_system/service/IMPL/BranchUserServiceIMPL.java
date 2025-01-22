@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class BranchUserServiceImpl implements BranchUserService {
+public class BranchUserServiceIMPL implements BranchUserService {
 
     @Autowired
     private BranchUserRepo branchUserRepo;

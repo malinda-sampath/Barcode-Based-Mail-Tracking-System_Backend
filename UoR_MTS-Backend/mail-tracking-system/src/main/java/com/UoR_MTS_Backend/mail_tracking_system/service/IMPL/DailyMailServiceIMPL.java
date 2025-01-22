@@ -24,8 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class DailyMailServiceIMPL implements DailyMailService {
 
-
-
     @Autowired
     private ModelMapperConfig modelMapper;
 
@@ -35,7 +33,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
     @Autowired
     private MailActivityRepo mailActivityRepo;
 
-
+    //Username and user ID should get from user session
     private String mailUsername = "";
     private int mailUserId= 0;
 
@@ -53,6 +51,8 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
 
         LocalDateTime now = LocalDateTime.now();
+
+        // Map the request DTO to the DailyMail entity and save fields
         DailyMail dailyMail = modelMapper.modelMapper().map(dailyMailDTO, DailyMail.class);
         dailyMail.setBarcodeId(uniqueID);
         dailyMail.setBarcodeImage(barcodeImage);
@@ -88,8 +88,6 @@ public class DailyMailServiceIMPL implements DailyMailService {
         return dailyMail.getBarcodeId() + " saved with barcode image!";
     }
 
-
-
     @Override
     @Transactional
     public String updateDailyMail(RequestDailyMailDTO requestDailyMailDTO, byte[] barcodeImage, String uniqueID) {
@@ -98,11 +96,11 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
             LocalDateTime now = LocalDateTime.now();
 
-
+            // Fetch the existing DailyMail entity
             DailyMail existingMail = dailyMailRepo.findById(requestDailyMailDTO.getDailyMailId())
                     .orElseThrow(() -> new ResourceNotFoundException("No data found for that id"));
 
-
+            // Map the request DTO to the DailyMail entity and update fields
             DailyMail dailyMail = modelMapper.modelMapper().map(requestDailyMailDTO, DailyMail.class);
             dailyMail.setUpdateDateTime(now);
             dailyMail.setBarcodeId(existingMail.getBarcodeId());
@@ -110,7 +108,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
             dailyMailRepo.save(dailyMail);
 
-
+            // Add the activity log
             MailActivity log = new MailActivity(
                     mailUserId,
                     mailUsername,
@@ -135,6 +133,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
     @Override
     @Transactional
     public String deleteDailyMail(int dailyMailId) {
+        if (dailyMailRepo.existsById(dailyMailId)){
 
         DailyMail existingMail = dailyMailRepo.findById(dailyMailId)
                 .orElseThrow(() -> new ResourceNotFoundException("No data found for that id: " + dailyMailId));
@@ -160,9 +159,12 @@ public class DailyMailServiceIMPL implements DailyMailService {
         );
         mailActivityRepo.save(log);
 
-        return "Mail id: " + dailyMailId + " Barcode: " + existingBarcodeId + " deleted successfully";
-    }
+            return "Mail id: "+dailyMailId+ " Barcode: "+existingBarcodeId+" deleted successfully";
 
+        } else {
+            throw new RuntimeException("No data found for that id");
+        }
+    }
 
     @Override
     public List<RequestDailyMailViewAllDTO> getAllDailyMails() {
@@ -191,10 +193,8 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<RequestDailyMailViewAllDTO> getAllDailyMailsByBarcodeId(String barcodeId) {
-
         List<DailyMail> mailList = dailyMailRepo.findAllByBarcodeIdEquals(barcodeId);
 
 
@@ -204,6 +204,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
 
         return mailList.stream()
+                .sorted(Comparator.comparing(DailyMail::getDailyMailId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
                         mail.getDailyMailId(),
                         mail.getBranchCode(),
@@ -221,8 +222,6 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
     public List<RequestDailyMailViewAllDTO> filterDailyMail(
             String senderName,
@@ -231,10 +230,13 @@ public class DailyMailServiceIMPL implements DailyMailService {
             String trackingNumber,
             String branchName) {
 
-
         List<DailyMail> filteredMail = dailyMailRepo.findAll(
                 DailyMailSpecification.filterBy(
-                        senderName, receiverName, mailType, trackingNumber, branchName
+                        senderName,
+                        receiverName,
+                        mailType,
+                        trackingNumber,
+                        branchName
                 )
         );
 
@@ -260,5 +262,4 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 ))
                 .collect(Collectors.toList());
     }
-
 }
