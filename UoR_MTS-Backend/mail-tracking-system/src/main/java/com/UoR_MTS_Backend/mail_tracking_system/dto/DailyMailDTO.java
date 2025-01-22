@@ -20,3 +20,5 @@ public class DailyMailDTO {
     private LocalDateTime insertDateTime;
     private LocalDateTime updateDateTime;
 }
+
+

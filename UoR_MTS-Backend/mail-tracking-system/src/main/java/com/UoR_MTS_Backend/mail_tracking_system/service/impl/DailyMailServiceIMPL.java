@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
+package com.UoR_MTS_Backend.mail_tracking_system.service.impl;
 
 import com.UoR_MTS_Backend.mail_tracking_system.config.ModelMapperConfig;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.DailyMailDTO;
@@ -11,7 +11,6 @@ import com.UoR_MTS_Backend.mail_tracking_system.repo.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailActivityRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.specification.DailyMailSpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.service.DailyMailService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +56,12 @@ public class DailyMailServiceIMPL implements DailyMailService {
         dailyMail.setBarcodeId(uniqueID);
         dailyMail.setBarcodeImage(barcodeImage);
         dailyMail.setInsertDateTime(now);
+        String branchName = dailyMailDTO.getBranchName().toLowerCase().replace(" ", "");
 
         try {
-
             dailyMailRepo.save(dailyMail);
+            String addToBranchCart = "INSERT INTO "+branchName+"_mailcart ";
         } catch (Exception e) {
-
             throw new RuntimeException("Error occurred while saving daily mail: " + e.getMessage(), e);
         }
 

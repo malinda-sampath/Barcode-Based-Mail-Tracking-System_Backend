@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
+package com.UoR_MTS_Backend.mail_tracking_system.service.impl;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchUserDto;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.UserNotFoundException;

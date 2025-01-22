@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
+package com.UoR_MTS_Backend.mail_tracking_system.service.impl;
 
 import com.UoR_MTS_Backend.mail_tracking_system.config.ModelMapperConfig;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailActivityDTO;
@@ -9,7 +9,6 @@ import com.UoR_MTS_Backend.mail_tracking_system.service.MailActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
