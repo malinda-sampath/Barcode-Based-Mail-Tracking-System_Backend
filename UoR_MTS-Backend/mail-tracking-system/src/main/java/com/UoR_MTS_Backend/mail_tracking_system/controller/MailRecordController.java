@@ -59,7 +59,6 @@ public class MailRecordController {
        } catch (Exception e) {
            return ResponseBuilder.error("Error retrieving mail activities:"+e.getMessage(), null);
        }
-
    }
 
     @GetMapping("/searchByBarcode/{barcodeId}")

@@ -23,13 +23,11 @@ public class EmailVerificationController {
     public ResponseEntity<StandardResponse<EmailVerificationResponseDTO>>  verifyEmail(@PathVariable String email) {
             try{
             //message should be "OTP sent successfully"
-                EmailVerificationResponseDTO Message = emailVerificationService.verifyEmail(email);
-                return ResponseBuilder.success("OTP Send Successfully",null);
+                EmailVerificationResponseDTO emailResponse = emailVerificationService.verifyEmail(email);
+                return ResponseBuilder.success("OTP Send Successfully!",emailResponse);
             }catch(Exception e){
                 System.err.println("Error OTP Send : " + e.getMessage());
-                return ResponseBuilder.error("Error Occure When OTP Send",null);
+                return ResponseBuilder.error("Error Occur When OTP Send",null);
             }
-
-
     }
 }

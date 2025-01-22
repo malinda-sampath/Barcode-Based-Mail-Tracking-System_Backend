@@ -26,11 +26,7 @@ public class TrackingDetailsController {
 
         }catch(Exception e){
             System.err.println("Error Activate Mail Tracking Service : " + e.getMessage());
-           return ResponseBuilder.error("Error Occure When Activate Mail Tracking Service!"+e.getMessage(),null) ;
-
-
+           return ResponseBuilder.error("Error Occur When Activate Mail Tracking Service!"+e.getMessage(),null) ;
         }
-
-
     }
 }
