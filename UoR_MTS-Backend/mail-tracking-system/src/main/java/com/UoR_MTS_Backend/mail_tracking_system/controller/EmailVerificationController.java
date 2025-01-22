@@ -26,6 +26,7 @@ public class EmailVerificationController {
                 EmailVerificationResponseDTO Message = emailVerificationService.verifyEmail(email);
                 return ResponseBuilder.success("OTP Send Successfully",null);
             }catch(Exception e){
+                System.err.println("Error OTP Send : " + e.getMessage());
                 return ResponseBuilder.error("Error Occure When OTP Send",null);
             }
 
