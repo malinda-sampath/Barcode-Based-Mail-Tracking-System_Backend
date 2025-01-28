@@ -1,6 +1,9 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchAlreadyExistsException;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchNotFoundException;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchService;
@@ -26,13 +29,11 @@ public class BranchServiceIMPL implements BranchService {
     @Transactional
     public String branchSave(BranchDTO branchDTO) {
         // Validate BranchDTO
-        String sanitizedBranchName = branchDTO.getBranchName()
-                .toLowerCase()
-                .replaceAll("[^a-z0-9_]", "_");
+        String sanitizedBranchName = branchDTO.getBranchName().toLowerCase().replaceAll("[^a-z0-9_]", "_");
 
         Branch existingBranch = branchRepo.findByBranchNameIgnoreCase(branchDTO.getBranchName());
         if (existingBranch != null) {
-            throw new RuntimeException("Branch name '" + branchDTO.getBranchName() + "' already exists.");
+            throw new BranchAlreadyExistsException("Branch name '" + branchDTO.getBranchName() + "' already exists.");
         }
 
         // Map DTO to Entity
@@ -81,7 +82,7 @@ public class BranchServiceIMPL implements BranchService {
 
     @Override
     public List<BranchDTO> getAllBranches() {
-        return branchRepo.findAll()
+        List<BranchDTO> branches = branchRepo.findAll()
                 .stream()
                 .map(branch -> new BranchDTO(
                         branch.getBranchCode(),
@@ -90,7 +91,14 @@ public class BranchServiceIMPL implements BranchService {
                         branch.getUpdateDate()
                 ))
                 .toList();
+
+        if (branches.isEmpty()) {
+            throw new BranchNotFoundException("No branches found in the system.");
+        }
+
+        return branches;
     }
+
 
     @Override
     public BranchDTO getBranchById(int id) {
@@ -100,14 +108,15 @@ public class BranchServiceIMPL implements BranchService {
                         branch.getBranchName(),
                         branch.getInsertDate(),
                         branch.getInsertDate()))
-                .orElse(null);
+                .orElseThrow(() -> new ResourceNotFoundException("Branch not found for id: " + id));
     }
+
 
     @Override
     @Transactional
     public String updateBranchById(int id, BranchDTO branchDTO) {
         Branch existingBranch = branchRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Branch not found with ID: " + id));
+                .orElseThrow(() -> new BranchNotFoundException("Branch not found with ID: " + id));
 
         String oldSanitizedBranchName = existingBranch.getBranchName()
                 .toLowerCase()
@@ -139,10 +148,11 @@ public class BranchServiceIMPL implements BranchService {
         return "Branch " + existingBranch.getBranchName() + " updated successfully.";
     }
 
+
     @Override
     public String deleteBranchById(int id) {
         if (!branchRepo.existsById(id)) {
-            throw new RuntimeException("Branch not found with ID: " + id);
+            throw new BranchNotFoundException("Branch not found with ID: " + id);
         }
 
         // Delete the branch
@@ -151,6 +161,7 @@ public class BranchServiceIMPL implements BranchService {
                     branchRepo.deleteById(id);
                     return "Branch " + branch.getBranchName() + " deleted successfully.";
                 })
-                .orElseThrow(() -> new RuntimeException("Branch not found with ID: " + id));
+                .orElseThrow(() -> new BranchNotFoundException("Branch not found with ID: " + id));
     }
+
 }

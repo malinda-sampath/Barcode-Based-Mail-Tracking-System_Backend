@@ -14,5 +14,5 @@ public class TrackingDetailsDTO {
     private String email;
     private LocalDateTime insertedAt;
     private String mailType;
-    private int mailTrackingNumber;
+    private Integer mailTrackingNumber;
 }

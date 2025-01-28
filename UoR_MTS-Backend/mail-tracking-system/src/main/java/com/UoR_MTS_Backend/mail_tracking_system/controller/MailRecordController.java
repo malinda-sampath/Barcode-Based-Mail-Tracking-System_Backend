@@ -1,6 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailRecordDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.NoMailActivitiesFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailRecordService;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
@@ -27,77 +28,65 @@ public class MailRecordController {
     private MailRecordService mailRecordService;
 
     @PostMapping("/transfer")
-    public ResponseEntity<StandardResponse<String>>  transferDailyMailsToMainCart() {
-        try {
-            String message = mailRecordService.transferDailyMailsToMainCart();
-            return ResponseBuilder.success(message,null);
-        }catch(Exception e){
-            return ResponseBuilder.error("Error Saving Mail Record:" + e.getMessage(),null);
-        }
+    public ResponseEntity<StandardResponse<String>> transferDailyMailsToMainCart() {
+        // Call the service method directly
+        String message = mailRecordService.transferDailyMailsToMainCart();
+        return ResponseBuilder.success(message, null);
     }
 
-   @GetMapping("/filter/{page}")
-   public ResponseEntity<StandardResponse<Page<MailRecordDTO>>> filterMailRecords(
-           @RequestParam(required = false) String senderName,
-           @RequestParam(required = false) String receiverName,
-           @RequestParam(required = false) String mailType,
-           @RequestParam(required = false) String trackingNumber,
-           @RequestParam(required = false) String branchName,
-           @RequestParam(defaultValue = "0") int page) {
-       try {
-           int pageSize = 10;
-           Pageable pageable = PageRequest.of(page, pageSize);
-           // Call the service method
-           Page<MailRecordDTO> filteredRecords = mailRecordService.filterMailRecords(
-                   senderName, receiverName, mailType, trackingNumber, branchName, pageable);
-           if(filteredRecords ==null || filteredRecords.isEmpty() ){
-               return ResponseBuilder.notFound("No mail activities found with the provided filters.");
-           }
 
-           // Return successful response
-           return ResponseBuilder.success(null, filteredRecords);
-       } catch (Exception e) {
-           return ResponseBuilder.error("Error retrieving mail activities:"+e.getMessage(), null);
-       }
-   }
+    @GetMapping("/filter/{page}")
+    public ResponseEntity<StandardResponse<Page<MailRecordDTO>>> filterMailRecords(
+            @RequestParam(required = false) String senderName,
+            @RequestParam(required = false) String receiverName,
+            @RequestParam(required = false) String mailType,
+            @RequestParam(required = false) String trackingNumber,
+            @RequestParam(required = false) String branchName,
+            @PathVariable int page) {
+
+        int pageSize = 10;
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        // Call the service method to get filtered records
+        Page<MailRecordDTO> filteredRecords = mailRecordService.filterMailRecords(
+                senderName, receiverName, mailType, trackingNumber, branchName, pageable);
+
+        if (filteredRecords.isEmpty()) {
+            throw new NoMailActivitiesFoundException("No mail activities found with the provided filters.");
+        }
+
+        // Return successful response if records are found
+        return ResponseBuilder.success("Mail records retrieved successfully.", filteredRecords);
+    }
+
 
     @GetMapping("/searchByBarcode/{barcodeId}")
     public ResponseEntity<StandardResponse<MailRecord>> searchMailByBarcodeId(@PathVariable String barcodeId) {
-        try {
-            MailRecord mailRecord = mailRecordService.searchMailByBarcodeId(barcodeId);
+        // Call the service method to search mail by barcode ID
+        MailRecord mailRecord = mailRecordService.searchMailByBarcodeId(barcodeId);
 
-            if (mailRecord == null) {
-                return ResponseBuilder.notFound("Mail with barcode ID " + barcodeId + " not found.");
-            }
-
-            return ResponseBuilder.success(null, mailRecord);
-        } catch (Exception e) {
-            return ResponseBuilder.error("Error occurred while searching by barcode ID:"+e.getMessage(), null);
-        }
+        // Return the found mail record
+        return ResponseBuilder.success("Mail record found successfully.", mailRecord);
     }
+
 
     @GetMapping("/all-main-mails")
-    public ResponseEntity<?> getAllMailRecords(
-            @RequestParam(defaultValue = "0") int page) { // Default page size
-        try {
-            int size = 10;
-            Pageable pageable = PageRequest.of(page, size);
+    public ResponseEntity<?> getAllMailRecords(@RequestParam(defaultValue = "0") int page) {
+        int size = 10;
+        Pageable pageable = PageRequest.of(page, size);
 
-            // Call the service method to fetch mail records
-            Page<MailRecord> mailRecords = mailRecordService.getAllMailRecords(pageable);
+        // Call the service method to fetch mail records
+        Page<MailRecord> mailRecords = mailRecordService.getAllMailRecords(pageable);
 
-            // Check if the result is empty
-            if (mailRecords.isEmpty()) {
-                return ResponseBuilder.notFound("No mail records found.");
-            }
-
-            // Return successful response
-            return ResponseBuilder.success(null, mailRecords);
-        } catch (Exception e) {
-            // Log the exception and return error response
-            return ResponseBuilder.error("Error retrieving mail records:"+e.getMessage(), null);
+        // Check if the result is empty
+        if (mailRecords.isEmpty()) {
+            return ResponseBuilder.notFound("No mail records found.");
         }
+
+        // Return successful response
+        return ResponseBuilder.success(null, mailRecords);
     }
+
 }
 
 

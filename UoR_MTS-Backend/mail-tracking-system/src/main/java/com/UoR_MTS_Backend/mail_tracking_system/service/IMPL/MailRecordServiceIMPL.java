@@ -3,6 +3,9 @@ package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 import com.UoR_MTS_Backend.mail_tracking_system.config.ModelMapperConfig;
 import com.UoR_MTS_Backend.mail_tracking_system.controller.MailRecordController;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailRecordDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.MailRecordNotFoundException;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.NoDailyMailsFoundException;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.NoMailActivitiesFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.DailyMailRepo;
@@ -36,7 +39,8 @@ public class MailRecordServiceIMPL implements MailRecordService {
         List<DailyMail> dailyMails = dailyMailRepo.findAll();
 
         if (dailyMails.isEmpty()) {
-            return "No daily mails to transfer.";
+            // Throw the custom exception when no daily mails are found
+            throw new NoDailyMailsFoundException("No daily mails to transfer.");
         } else {
 
             List<MailRecord> mailRecord = dailyMails.stream()
@@ -46,11 +50,11 @@ public class MailRecordServiceIMPL implements MailRecordService {
             mailRecordRepo.saveAll(mailRecord);
             dailyMailRepo.deleteAll();
             dailyMailRepo.resetAutoIncrement();
-
         }
 
         return "All daily mails successfully transferred to the main mail cart.";
     }
+
 
 
     @Override
@@ -64,48 +68,47 @@ public class MailRecordServiceIMPL implements MailRecordService {
             Pageable pageable) {
 
         // Filter records using Specification
-            Page<MailRecord> filteredMailRecords = mailRecordRepo.findAll(
-                    MailRecordSpecification.filterBy(
-                            senderName, receiverName, mailType, trackingNumber, branchName
-                    ),pageable);
+        Page<MailRecord> filteredMailRecords = mailRecordRepo.findAll(
+                MailRecordSpecification.filterBy(
+                        senderName, receiverName, mailType, trackingNumber, branchName
+                ), pageable);
 
-
-
-            // Map to DTO and return
-            return filteredMailRecords.map(mail -> {
-
-                    MailRecordDTO dto = new MailRecordDTO();
-                    dto.setMailRecordId(mail.getMailRecordId());
-                    dto.setSenderName(mail.getSenderName());
-                    dto.setReceiverName(mail.getReceiverName());
-                    dto.setMailType(mail.getMailType());
-                    dto.setTrackingNumber(mail.getTrackingNumber());
-                    dto.setBranchName(mail.getBranchName());
-                    dto.setInsertDateTime(mail.getInsertDateTime());
-                    dto.setUpdateDateTime(mail.getUpdateDateTime());
-                    return dto;
-
-            });
-
-}
-@Override
-    public MailRecord searchMailByBarcodeId(String barcodeId) {
-        try {
-            // Fetch the mail record by barcodeId
-            MailRecord mailRecord = mailRecordRepo.findByBarcodeId(barcodeId);
-
-            // If no record found, return null or handle accordingly
-            if (mailRecord == null) {
-                logger.warn("Mail record with barcodeId {} not found.", barcodeId);
-            }
-
-            return  mailRecord;  // Return the found mail record
-
-        } catch (Exception e) {
-            logger.error("Error occurred while searching for mail by barcodeId: {}", barcodeId, e);
-            throw new RuntimeException("Error occurred while searching by barcodeId", e);  // Or throw custom exception
+        // Throw an exception if no records are found
+        if (filteredMailRecords.isEmpty()) {
+            throw new NoMailActivitiesFoundException("No mail activities found with the provided filters.");
         }
+
+        // Map to DTO and return
+        return filteredMailRecords.map(mail -> {
+            MailRecordDTO dto = new MailRecordDTO();
+            dto.setMailRecordId(mail.getMailRecordId());
+            dto.setSenderName(mail.getSenderName());
+            dto.setReceiverName(mail.getReceiverName());
+            dto.setMailType(mail.getMailType());
+            dto.setTrackingNumber(mail.getTrackingNumber());
+            dto.setBranchName(mail.getBranchName());
+            dto.setInsertDateTime(mail.getInsertDateTime());
+            dto.setUpdateDateTime(mail.getUpdateDateTime());
+            return dto;
+        });
     }
+
+
+
+    @Override
+    public MailRecord searchMailByBarcodeId(String barcodeId) {
+        // Fetch the mail record by barcodeId
+        MailRecord mailRecord = mailRecordRepo.findByBarcodeId(barcodeId);
+
+        // If no record found, throw custom exception
+        if (mailRecord == null) {
+            logger.warn("Mail record with barcodeId {} not found.", barcodeId);
+            throw new MailRecordNotFoundException("Mail with barcode ID " + barcodeId + " not found.");
+        }
+
+        return mailRecord; // Return the found mail record
+    }
+
 
     @Override
     public Page<MailRecord> getAllMailRecords(Pageable pageable) {
@@ -126,5 +129,6 @@ public class MailRecordServiceIMPL implements MailRecordService {
                 mail.getUpdateDateTime()
         ));
     }
+
 
 }

@@ -18,15 +18,10 @@ public class TrackingDetailsController {
     private TrackingDetailsService trackingDetailsService;
 
     @PostMapping("/save")
-    public ResponseEntity <StandardResponse<String>> saveTrackingDetails(@RequestBody TrackingDetailsDTO trackingDetailsDTO){
+    public ResponseEntity<StandardResponse<String>> saveTrackingDetails(@RequestBody TrackingDetailsDTO trackingDetailsDTO) {
 
-        try {
-            String message = trackingDetailsService.saveTrackingDetails(trackingDetailsDTO);
-            return ResponseBuilder.success(message,null);
-
-        }catch(Exception e){
-            System.err.println("Error Activate Mail Tracking Service : " + e.getMessage());
-           return ResponseBuilder.error("Error Occur When Activate Mail Tracking Service!"+e.getMessage(),null) ;
-        }
+        String message = trackingDetailsService.saveTrackingDetails(trackingDetailsDTO);
+        return ResponseBuilder.success(message, null);
     }
+
 }

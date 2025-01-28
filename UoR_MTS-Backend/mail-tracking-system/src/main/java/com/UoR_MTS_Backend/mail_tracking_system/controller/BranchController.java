@@ -20,79 +20,37 @@ public class BranchController {
 
     @PostMapping("/save")
     public ResponseEntity<StandardResponse<String>> branchSave(@RequestBody BranchDTO branchDTO) {
-            try{
                 String message = branchService.branchSave(branchDTO);
                 return ResponseBuilder.success(message, null);
-            } catch (Exception e) {
-                System.err.println("Error saving branch: " + e.getMessage());
-                return ResponseBuilder.error("Error saving branch.", null);
-            }
-
     }
 
     @GetMapping
-    public ResponseEntity< StandardResponse <List<BranchDTO>>>getAllBranches() {
-        try {
-            List<BranchDTO> branches = branchService.getAllBranches();
-
-            if (branches.isEmpty()) {
-                return ResponseBuilder.notFound("Branches Not Found");
-            }
-
-            return ResponseBuilder.success("Branches Retrieve Successfully!", branches);
-
-        }catch(Exception e){
-
-            System.err.println("Error retrieving branches: " + e.getMessage());
-            return  ResponseBuilder.error("Error Retrieving Branches!"+e.getMessage(),null);
-        }
+    public ResponseEntity<StandardResponse<List<BranchDTO>>> getAllBranches() {
+        List<BranchDTO> branches = branchService.getAllBranches();
+        return ResponseBuilder.success("Branches Retrieved Successfully!", branches);
     }
+
+
 
     @GetMapping("/view/{id}")
     public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable int id) {
-        try {
-            BranchDTO branchDTO = branchService.getBranchById(id);
-
-            if (branchDTO != null) {
-                return ResponseBuilder.success("Branch found", branchDTO);
-            } else {
-                return ResponseBuilder.notFound("Branch Not Found");
-            }
-        }catch (Exception e){
-            System.err.println("Error retrieving branch: " + e.getMessage());
-            return ResponseBuilder.error("Branch Retrieved Error :"+e.getMessage(),null);
-        }
+        BranchDTO branchDTO = branchService.getBranchById(id);
+        return ResponseBuilder.success("Branch found", branchDTO);
     }
+
 
 
     @PutMapping("/update/{id}")
     public ResponseEntity<StandardResponse<String>> branchUpdate(@PathVariable int id, @RequestBody BranchDTO branchDTO) {
-            try {
-                String message = branchService.updateBranchById(id, branchDTO);
-                return ResponseBuilder.success(message,null);
-            }catch(Exception e){
-                System.err.println("Error updating branch: " + e.getMessage());
-                return ResponseBuilder.error("Error Updating Branch :"+e.getMessage(),null);
-            }
-
+        String message = branchService.updateBranchById(id, branchDTO);
+        return ResponseBuilder.success(message, null);
     }
+
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity <StandardResponse<String>> deleteBranch(@PathVariable int id) {
-            try{String message = branchService.deleteBranchById(id); // Call service method to delete the branch
-                if(message!=null){
-                    return ResponseBuilder.success(message,null);
-                }else
-                {
-                    return ResponseBuilder.notFound("Branch Not Found With "+id);
-                }
-
-            } catch (Exception e) {
-
-                System.err.println("Error deleting branch: " + e.getMessage());
-                    return ResponseBuilder.error("Branch Deleting Error :"+e.getMessage() ,null );
-
-
-            }
+    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable int id) {
+        String message = branchService.deleteBranchById(id);
+        return ResponseBuilder.success(message, null);
     }
+
 }
