@@ -44,11 +44,8 @@ public class BranchServiceIMPL implements BranchService {
         try {
             // Save branch to the database
             branchRepo.save(branch);
-
             String sql = getString(sanitizedBranchName);
-
             jdbcTemplate.execute(sql);
-
             return "Branch saved successfully.";
 
         } catch (DataAccessException e) {
@@ -61,7 +58,7 @@ public class BranchServiceIMPL implements BranchService {
 
         // Create branch-specific mail cart table
         return "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
-                "barcode INT AUTO_INCREMENT PRIMARY KEY, " +
+                "barcode VARCHAR(225) PRIMARY KEY, " +
                 "branch_code INT NOT NULL, " +
                 "sender VARCHAR(255), " +
                 "receiver VARCHAR(255), " +
@@ -77,7 +74,6 @@ public class BranchServiceIMPL implements BranchService {
                 "ON UPDATE CASCADE" +
                 ")";
     }
-
 
     @Override
     public List<BranchDTO> getAllBranches() {

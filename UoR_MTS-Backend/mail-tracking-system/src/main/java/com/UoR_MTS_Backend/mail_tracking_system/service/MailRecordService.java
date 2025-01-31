@@ -6,15 +6,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface MailRecordService {
 
     public String transferDailyMailsToMainCart();
 
-
     MailRecord searchMailByBarcodeId(String barcodeId);
+
+    String transferMailToBranchCart(String barcodeId);
 
     Page<MailRecordDTO> filterMailRecords(String senderName, String receiverName, String mailType, String trackingNumber, String branchName, Pageable pageable);
 
     Page<MailRecord> getAllMailRecords(Pageable pageable);
+
+    List<MailRecordDTO> getMailsByBranch(String branch);
+
+    void updateMailRecordList(String barcodeId);
 }

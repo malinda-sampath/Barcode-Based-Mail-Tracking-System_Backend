@@ -21,6 +21,10 @@ public class MailRecordDTO {
     private LocalDateTime insertDateTime;
     private LocalDateTime updateDateTime;
 
-
+    public MailRecordDTO(String receiverName,String barcodeId,String mailDescription) {
+        this.receiverName = receiverName;
+        this.barcodeId = barcodeId;
+        this.mailDescription = mailDescription;
+    }
 
 }

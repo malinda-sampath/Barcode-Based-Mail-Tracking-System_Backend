@@ -1,5 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.repo;
 
+import com.UoR_MTS_Backend.mail_tracking_system.dto.MailRecordDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 //import org.springdoc.core.converters.models.Pageable;
 import jakarta.persistence.Entity;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 import java.net.ContentHandler;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 @EnableJpaRepositories
@@ -27,5 +29,10 @@ public interface MailRecordRepo extends JpaRepository<MailRecord, Long>, JpaSpec
     @Transactional
     @Query(value = "ALTER TABLE mail_record AUTO_INCREMENT = 1", nativeQuery = true)
     public void resetAutoIncrement();
+
+
+    List<MailRecord> findByBranchName(String branchName);
+
+    void deleteMailRecordByBarcodeId(String barcodeId);
 }
 
