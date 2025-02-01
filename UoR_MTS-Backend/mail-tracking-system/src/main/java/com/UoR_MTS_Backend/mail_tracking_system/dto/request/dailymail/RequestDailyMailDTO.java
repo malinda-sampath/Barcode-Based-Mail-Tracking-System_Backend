@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class RequestDailyMailDTO {
-    private int dailyMailId;
-    private int branchCode;
+    private String branchCode;
     private String branchName;
     private String senderName;
     private String receiverName;

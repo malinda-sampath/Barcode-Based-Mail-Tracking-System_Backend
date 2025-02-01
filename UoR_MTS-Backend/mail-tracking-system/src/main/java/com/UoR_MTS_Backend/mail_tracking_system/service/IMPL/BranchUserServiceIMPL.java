@@ -1,12 +1,10 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchUserDto;
+import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.UserNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.BranchUser;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.BranchUserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchUserService;
-import lombok.extern.flogger.Flogger;
-import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -20,7 +18,7 @@ public class BranchUserServiceIMPL implements BranchUserService {
     private BranchUserRepo branchUserRepo;
 
     @Override
-    public String branchUserSave(BranchUserDto branchUserDto) {
+    public String branchUserSave(BranchUserDTO branchUserDto) {
 
         if (branchUserDto == null) {
             throw new IllegalArgumentException("Branch user data cannot be null.");
@@ -60,7 +58,7 @@ public class BranchUserServiceIMPL implements BranchUserService {
 
 
     @Override
-    public String branchUserUpdate(int id, BranchUserDto branchUserDto) {
+    public String branchUserUpdate(int id, BranchUserDTO branchUserDto) {
 try {
     BranchUser existingBranchUser = branchUserRepo.findById(id)
             .orElseThrow(() -> new UserNotFoundException("Branch user not found with ID: " + id));

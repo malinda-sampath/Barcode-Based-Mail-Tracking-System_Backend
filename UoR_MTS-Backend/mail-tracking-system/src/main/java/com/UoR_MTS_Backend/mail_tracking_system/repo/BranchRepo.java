@@ -11,4 +11,6 @@ import java.util.Optional;
 @EnableJpaRepositories
 public interface BranchRepo extends JpaRepository<Branch,Integer> {
     Branch findByBranchNameIgnoreCase(String branchName);
+
+    Branch findByBranchCode(String branchCode);
 }

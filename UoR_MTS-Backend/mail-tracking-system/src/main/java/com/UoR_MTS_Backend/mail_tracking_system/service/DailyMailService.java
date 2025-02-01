@@ -9,7 +9,7 @@ import java.util.List;
 public interface DailyMailService {
     public String addDailyMail(DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID);
 
-    public String updateDailyMail(RequestDailyMailDTO requestDailyMailDTO, byte[] barcodeImage, String uniqueID);
+    public String updateDailyMail(int id,DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID);
 
     public String deleteDailyMail(int dailyMailId);
 

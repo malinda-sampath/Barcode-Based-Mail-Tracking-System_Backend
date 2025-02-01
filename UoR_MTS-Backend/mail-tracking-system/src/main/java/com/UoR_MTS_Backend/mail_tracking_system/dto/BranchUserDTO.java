@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 
-public class BranchUserDto {
+public class BranchUserDTO {
     private String branchUserName;
     private String branchUserPassword;
     private String branchCode;

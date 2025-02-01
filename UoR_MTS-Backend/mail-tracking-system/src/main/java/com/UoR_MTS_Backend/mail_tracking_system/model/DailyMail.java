@@ -13,13 +13,12 @@ import java.util.List;
 @Data
 
 @Entity
-@Table(name = "daily_mail")
+@Table(name = "daily_mails")
 public class DailyMail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int dailyMailId;
-
-    private int branchCode;
+    private int id;
+    private String branchCode;
     private String branchName;
     private String senderName;
     private String receiverName;

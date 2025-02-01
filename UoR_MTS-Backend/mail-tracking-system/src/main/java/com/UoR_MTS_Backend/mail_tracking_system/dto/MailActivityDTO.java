@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class MailActivityDTO {
-    private int activityLogId;
+    private int id;
     private int userId;
     private String userName;
     private String activity;

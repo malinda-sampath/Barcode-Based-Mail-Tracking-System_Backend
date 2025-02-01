@@ -12,12 +12,11 @@ import java.time.LocalDateTime;
 @Data
 
 @Entity
-@Table(name = "activity_log")
+@Table(name = "activity_logs")
 public class MailActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int activityLogId;
-
+    private int id;
     private int userId;
     private String userName;
     private String activityType;

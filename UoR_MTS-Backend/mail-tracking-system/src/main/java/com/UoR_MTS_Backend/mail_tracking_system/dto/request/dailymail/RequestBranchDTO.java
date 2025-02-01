@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.dto;
+package com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 
-public class BranchDTO {
-    private int id;
+public class RequestBranchDTO {
     private String branchName;
     private String branchCode;
     private LocalDateTime insertDate;

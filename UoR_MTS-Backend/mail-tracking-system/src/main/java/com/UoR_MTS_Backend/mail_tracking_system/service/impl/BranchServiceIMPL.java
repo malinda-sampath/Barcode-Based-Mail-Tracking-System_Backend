@@ -1,13 +1,16 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail.RequestBranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchAlreadyExistsException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityManager;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -15,68 +18,51 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
+@AllArgsConstructor
 public class BranchServiceIMPL implements BranchService {
 
-    @Autowired
-    private BranchRepo branchRepo;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final BranchRepo branchRepo;
+    private final JdbcTemplate jdbcTemplate;
+    private final ModelMapper modelMapper;
 
     @Override
     @Transactional
-    public String branchSave(BranchDTO branchDTO) {
-        // Validate BranchDTO
-        String sanitizedBranchName = branchDTO.getBranchName().toLowerCase().replaceAll("[^a-z0-9_]", "_");
+    public String branchSave(RequestBranchDTO requestBranchDTO) {
+        String sanitizedBranchName = requestBranchDTO.getBranchName().toLowerCase().replaceAll("[^a-z0-9_]", "_");
+        Branch existingBranchName = branchRepo.findByBranchNameIgnoreCase(requestBranchDTO.getBranchName());
+        Branch existingBranchCode = branchRepo.findByBranchCode(requestBranchDTO.getBranchCode());
 
-        Branch existingBranch = branchRepo.findByBranchNameIgnoreCase(branchDTO.getBranchName());
-        if (existingBranch != null) {
-            throw new BranchAlreadyExistsException("Branch name '" + branchDTO.getBranchName() + "' already exists.");
+        if (existingBranchName != null) {
+            throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
         }
 
-        // Map DTO to Entity
-        Branch branch = new Branch();
-        branch.setBranchCode(branchDTO.getBranchCode());
-        branch.setBranchName(branchDTO.getBranchName());
-        branch.setInsertDate(LocalDateTime.now());
+        if (existingBranchCode != null) {
+            throw new BranchAlreadyExistsException("Branch code '" + requestBranchDTO.getBranchCode() + "' already exists.");
+        }
 
         try {
+            // First, create the table (DDL statement)
+            createMailCartTable(sanitizedBranchName);
+
+            // Map DTO to Entity
+            Branch branch = modelMapper.map(requestBranchDTO, Branch.class);
+
             // Save branch to the database
             branchRepo.save(branch);
 
-            String sql = getString(sanitizedBranchName);
-
-            jdbcTemplate.execute(sql);
-
             return "Branch saved successfully.";
 
-        } catch (DataAccessException e) {
-            throw new RuntimeException("An error occurred while saving the branch: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("An error occurred while processing the branch: " + e.getMessage(), e);
         }
     }
 
-    private static String getString(String sanitizedBranchName) {
-        String tableName = sanitizedBranchName + "_mailcart";
-
-        // Create branch-specific mail cart table
-        return "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
-                "barcode INT AUTO_INCREMENT PRIMARY KEY, " +
-                "branch_code INT NOT NULL, " +
-                "sender VARCHAR(255), " +
-                "receiver VARCHAR(255), " +
-                "description VARCHAR(255), " +
-                "mail_type VARCHAR(50), " +
-                "postal_code INT, " +
-                "tracking_code INT, " +
-                "received_date DATE, " +
-                "claimed_date DATE, " +
-                "claimed_person VARCHAR(255), " +
-                "FOREIGN KEY (branch_code) REFERENCES branches(branch_code) " +
-                "ON DELETE CASCADE " +
-                "ON UPDATE CASCADE" +
-                ")";
+    @Transactional
+    public void createMailCartTable(String sanitizedBranchName) {
+        jdbcTemplate.execute(getString(sanitizedBranchName));
     }
 
 
@@ -84,18 +70,12 @@ public class BranchServiceIMPL implements BranchService {
     public List<BranchDTO> getAllBranches() {
         List<BranchDTO> branches = branchRepo.findAll()
                 .stream()
-                .map(branch -> new BranchDTO(
-                        branch.getBranchCode(),
-                        branch.getBranchName(),
-                        branch.getInsertDate(),
-                        branch.getUpdateDate()
-                ))
+                .map(branch -> modelMapper.map(branch, BranchDTO.class))
                 .toList();
 
         if (branches.isEmpty()) {
             throw new BranchNotFoundException("No branches found in the system.");
         }
-
         return branches;
     }
 
@@ -103,20 +83,24 @@ public class BranchServiceIMPL implements BranchService {
     @Override
     public BranchDTO getBranchById(int id) {
         return branchRepo.findById(id)
-                .map(branch -> new BranchDTO(
-                        branch.getBranchCode(),
-                        branch.getBranchName(),
-                        branch.getInsertDate(),
-                        branch.getInsertDate()))
+                .map(branch -> modelMapper.map(branch, BranchDTO.class))
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found for id: " + id));
     }
 
 
     @Override
     @Transactional
-    public String updateBranchById(int id, BranchDTO branchDTO) {
+    public String updateBranchById(int id, RequestBranchDTO requestBranchDTO) {
         Branch existingBranch = branchRepo.findById(id)
-                .orElseThrow(() -> new BranchNotFoundException("Branch not found with ID: " + id));
+                .orElseThrow(() -> new BranchNotFoundException("Branch not found!"));
+
+        if (Objects.equals(existingBranch.getBranchName(), requestBranchDTO.getBranchName())) {
+            throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
+        }
+
+        if (Objects.equals(existingBranch.getBranchCode(), requestBranchDTO.getBranchCode())) {
+            throw new BranchAlreadyExistsException("Branch code '" + requestBranchDTO.getBranchCode() + "' already exists.");
+        }
 
         String oldSanitizedBranchName = existingBranch.getBranchName()
                 .toLowerCase()
@@ -125,10 +109,10 @@ public class BranchServiceIMPL implements BranchService {
         String newSanitizedBranchName = null;
 
         // Update fields if provided
-        if (branchDTO.getBranchName() != null) {
-            existingBranch.setBranchName(branchDTO.getBranchName());
+        if (requestBranchDTO.getBranchName() != null) {
+            existingBranch.setBranchName(requestBranchDTO.getBranchName());
             existingBranch.setUpdateDate(LocalDateTime.now());
-            newSanitizedBranchName = branchDTO.getBranchName()
+            newSanitizedBranchName = requestBranchDTO.getBranchName()
                     .toLowerCase()
                     .replaceAll("[^a-z0-9_]", "_");
         }
@@ -144,7 +128,6 @@ public class BranchServiceIMPL implements BranchService {
 
         // Save the updated branch
         branchRepo.save(existingBranch);
-
         return "Branch " + existingBranch.getBranchName() + " updated successfully.";
     }
 
@@ -164,4 +147,27 @@ public class BranchServiceIMPL implements BranchService {
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found with ID: " + id));
     }
 
+    // Create branch-specific mail cart table
+    private static String getString(String sanitizedBranchName) {
+        String tableName = sanitizedBranchName + "_mailcart";
+
+        // Create branch-specific mail cart table
+        return "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "barcode INT ," +
+                "branch_code VARCHAR(255) NOT NULL, " +
+                "sender VARCHAR(255), " +
+                "receiver VARCHAR(255), " +
+                "description VARCHAR(255), " +
+                "mail_type VARCHAR(50), " +
+                "postal_code INT, " +
+                "tracking_code INT, " +
+                "received_date DATE, " +
+                "claimed_date DATE, " +
+                "claimed_person VARCHAR(255), " +
+                "FOREIGN KEY (branch_code) REFERENCES branches(branch_code) " +
+                "ON DELETE CASCADE " +
+                "ON UPDATE CASCADE" +
+                ")";
+    }
 }

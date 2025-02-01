@@ -5,18 +5,17 @@ import com.UoR_MTS_Backend.mail_tracking_system.exception.MailTrackingException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.TrackingDetails;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.TrackingDetailsRepository;
 import com.UoR_MTS_Backend.mail_tracking_system.service.TrackingDetailsService;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class TrackingDetailsServiceIMPL implements TrackingDetailsService {
 
-    @Autowired
-    private TrackingDetailsRepository trackingDetailsRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private final TrackingDetailsRepository trackingDetailsRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public String saveTrackingDetails(TrackingDetailsDTO trackingDetailsDTO) {
@@ -42,6 +41,4 @@ public class TrackingDetailsServiceIMPL implements TrackingDetailsService {
             throw new RuntimeException("Error occurred while saving tracking details: " + e.getMessage());
         }
     }
-
-
 }

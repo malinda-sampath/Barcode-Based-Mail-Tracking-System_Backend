@@ -15,9 +15,12 @@ import java.util.List;
 public class BranchUser {
 
     @Id
-    @Column(name = "branch_user_id")
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int branchUserId;
+    private int id;
+
+    @Column(name="branch_user_id")
+    private String branchUserId;
 
     @Column(name = "branch_user_name")
     private String branchUserName;

@@ -8,6 +8,8 @@ import com.UoR_MTS_Backend.mail_tracking_system.model.MailActivity;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailActivityRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.specification.MailActivitySpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailActivityService;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class MailActivityServiceIMPL implements MailActivityService {
 
-    @Autowired
-    private MailActivityRepo mailActivityRepo;
-
-    @Autowired
-    private ModelMapperConfig modelMapper;
+    private final MailActivityRepo mailActivityRepo;
 
     @Override
     public List<MailActivityDTO> getAllMailActivity() {
@@ -37,9 +36,9 @@ public class MailActivityServiceIMPL implements MailActivityService {
 
 
         return mailActivityList.stream()
-                .sorted(Comparator.comparing(MailActivity::getActivityLogId))
+                .sorted(Comparator.comparing(MailActivity::getId))
                 .map(mailActivity -> new MailActivityDTO(
-                        mailActivity.getActivityLogId(),
+                        mailActivity.getId(),
                         mailActivity.getUserId(),
                         mailActivity.getUserName(),
                         mailActivity.getActivityType(),
@@ -62,9 +61,9 @@ public class MailActivityServiceIMPL implements MailActivityService {
         }
 
         return mailActivityList.stream()
-                .sorted(Comparator.comparing(MailActivity::getActivityLogId))
+                .sorted(Comparator.comparing(MailActivity::getId))
                 .map(mailActivity -> new MailActivityDTO(
-                        mailActivity.getActivityLogId(),
+                        mailActivity.getId(),
                         mailActivity.getUserId(),
                         mailActivity.getUserName(),
                         mailActivity.getActivityType(),
@@ -86,7 +85,7 @@ public class MailActivityServiceIMPL implements MailActivityService {
                         (branchName == null || mailActivity.getBranchName().equalsIgnoreCase(branchName)) &&
                         (senderName == null || mailActivity.getSenderName().equalsIgnoreCase(senderName)) &&
                         (receiverName == null || mailActivity.getReceiverName().equalsIgnoreCase(receiverName)))
-                .sorted(Comparator.comparing(MailActivity::getActivityLogId))
+                .sorted(Comparator.comparing(MailActivity::getId))
                 .collect(Collectors.toList());
 
         if (mailActivityList.isEmpty()) {
@@ -95,7 +94,7 @@ public class MailActivityServiceIMPL implements MailActivityService {
 
         return mailActivityList.stream()
                 .map(mailActivity -> new MailActivityDTO(
-                        mailActivity.getActivityLogId(),
+                        mailActivity.getId(),
                         mailActivity.getUserId(),
                         mailActivity.getUserName(),
                         mailActivity.getActivityType(),

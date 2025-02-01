@@ -6,26 +6,21 @@ import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailRecordService;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.server.ResponseStatusException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @RestController
 @RequestMapping("/api/mailRecord")
+@AllArgsConstructor
 public class MailRecordController {
-    private static final Logger logger = LoggerFactory.getLogger(MailRecordController.class);
 
-    @Autowired
-    private MailRecordService mailRecordService;
+    private final MailRecordService mailRecordService;
 
     @PostMapping("/transfer")
     public ResponseEntity<StandardResponse<String>> transferDailyMailsToMainCart() {
@@ -60,7 +55,7 @@ public class MailRecordController {
     }
 
 
-    @GetMapping("/searchByBarcode/{barcodeId}")
+    @GetMapping("/search/{barcodeId}")
     public ResponseEntity<StandardResponse<MailRecord>> searchMailByBarcodeId(@PathVariable String barcodeId) {
         // Call the service method to search mail by barcode ID
         MailRecord mailRecord = mailRecordService.searchMailByBarcodeId(barcodeId);
@@ -70,7 +65,7 @@ public class MailRecordController {
     }
 
 
-    @GetMapping("/all-main-mails")
+    @GetMapping
     public ResponseEntity<?> getAllMailRecords(@RequestParam(defaultValue = "0") int page) {
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);

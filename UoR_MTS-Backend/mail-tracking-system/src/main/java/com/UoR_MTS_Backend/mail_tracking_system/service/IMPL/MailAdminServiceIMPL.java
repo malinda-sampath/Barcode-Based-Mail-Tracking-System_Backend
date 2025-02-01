@@ -7,6 +7,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.model.MailAdmin;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailAdminRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailAdminService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class MailAdminServiceIMPL implements MailAdminService {
 
-    @Autowired
-    private MailAdminRepo mailAdminRepo;
+    private final MailAdminRepo mailAdminRepo;
 
     @Override
     public String saveMailAdmin(MailAdminDTO mailAdminDTO) {

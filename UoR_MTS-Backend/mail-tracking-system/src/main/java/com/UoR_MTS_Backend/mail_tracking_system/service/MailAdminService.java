@@ -13,6 +13,5 @@ public interface MailAdminService {
     String deleteMailAdmin(long id);
 
     List<MailAdminDTO> getAllMailAdmins();
-
 }
 

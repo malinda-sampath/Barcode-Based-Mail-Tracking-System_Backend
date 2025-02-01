@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class DailyMailDTO {
-    private int branchCode;
+    private String branchCode;
     private String branchName;
     private String senderName;
     private String receiverName;

@@ -1,9 +1,11 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
+import com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail.RequestBranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.BranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +15,14 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("api/branch")
+@AllArgsConstructor
 public class BranchController {
 
-    @Autowired
-    private BranchService branchService;
+    private final BranchService branchService;
 
     @PostMapping("/save")
-    public ResponseEntity<StandardResponse<String>> branchSave(@RequestBody BranchDTO branchDTO) {
-                String message = branchService.branchSave(branchDTO);
+    public ResponseEntity<StandardResponse<String>> branchSave(@RequestBody RequestBranchDTO requestBranchDTO) {
+                String message = branchService.branchSave(requestBranchDTO);
                 return ResponseBuilder.success(message, null);
     }
 
@@ -32,25 +34,21 @@ public class BranchController {
 
 
 
-    @GetMapping("/view/{id}")
-    public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable int id) {
+    @GetMapping("/get/{id}")
+    public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable(value = "id") int id) {
         BranchDTO branchDTO = branchService.getBranchById(id);
-        return ResponseBuilder.success("Branch found", branchDTO);
+        return ResponseBuilder.success(null, branchDTO);
     }
 
-
-
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse<String>> branchUpdate(@PathVariable int id, @RequestBody BranchDTO branchDTO) {
-        String message = branchService.updateBranchById(id, branchDTO);
+    public ResponseEntity<StandardResponse<String>> branchUpdate(@PathVariable(value = "id")int id, @RequestBody RequestBranchDTO requestBranchDTO) {
+        String message = branchService.updateBranchById(id, requestBranchDTO);
         return ResponseBuilder.success(message, null);
     }
 
-
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable int id) {
+    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable() int id) {
         String message = branchService.deleteBranchById(id);
         return ResponseBuilder.success(message, null);
     }
-
 }

@@ -12,6 +12,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.repo.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailRecordRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.specification.MailRecordSpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailRecordService;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
@@ -22,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class MailRecordServiceIMPL implements MailRecordService {
-    private static final Logger logger = LoggerFactory.getLogger(MailRecordController.class);
 
-    @Autowired
-    private MailRecordRepo mailRecordRepo;
-    @Autowired
-    private DailyMailRepo dailyMailRepo;
-    @Autowired
-    private ModelMapperConfig modelMapperConfig;
+    private final MailRecordRepo mailRecordRepo;
+    private final DailyMailRepo dailyMailRepo;
+    private final ModelMapperConfig modelMapperConfig;
 
     @Override
     @Transactional
@@ -81,7 +79,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
         // Map to DTO and return
         return filteredMailRecords.map(mail -> {
             MailRecordDTO dto = new MailRecordDTO();
-            dto.setMailRecordId(mail.getMailRecordId());
+            dto.setId(mail.getId());
             dto.setSenderName(mail.getSenderName());
             dto.setReceiverName(mail.getReceiverName());
             dto.setMailType(mail.getMailType());
@@ -102,7 +100,6 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
         // If no record found, throw custom exception
         if (mailRecord == null) {
-            logger.warn("Mail record with barcodeId {} not found.", barcodeId);
             throw new MailRecordNotFoundException("Mail with barcode ID " + barcodeId + " not found.");
         }
 
@@ -115,7 +112,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
         Page<MailRecord> mailPage = mailRecordRepo.findAll(pageable);
 
         return mailPage.map(mail -> new MailRecord(
-                mail.getMailRecordId(),
+                mail.getId(),
                 mail.getBranchCode(),
                 mail.getBranchName(),
                 mail.getSenderName(),

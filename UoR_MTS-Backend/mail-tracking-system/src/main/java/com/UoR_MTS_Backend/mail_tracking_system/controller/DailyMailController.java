@@ -1,4 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
+
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.DailyMailDTO;
@@ -19,13 +21,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/daily-mail")
 @CrossOrigin
+@AllArgsConstructor
 public class DailyMailController {
 
-    @Autowired
-    private DailyMailService dailyMailService;
+    private final DailyMailService dailyMailService;
 
-    @PostMapping("/add-daily-mail")
-    public ResponseEntity<StandardResponse<String>> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) throws WriterException,IOException  {
+    @PostMapping("/save")
+    public ResponseEntity<StandardResponse<String>> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) throws WriterException, IOException {
         if (dailyMailDTO == null) {
             throw new IllegalArgumentException("DailyMailDTO cannot be null.");
         }
@@ -36,27 +38,19 @@ public class DailyMailController {
 
         String message = dailyMailService.addDailyMail(dailyMailDTO, barcodeImage, uniqueID);
 
-
         return ResponseBuilder.success(message, null);
     }
 
-
-
-    @PutMapping("/update-daily-mail")
-    public ResponseEntity<StandardResponse<String>> updateDailyMail(@RequestBody RequestDailyMailDTO requestDailyMailDTO)throws WriterException,IOException {
-
+    @PutMapping("/update/{id}")
+    public ResponseEntity<StandardResponse<String>> updateDailyMail(@PathVariable int id,@RequestBody DailyMailDTO dailyMailDTO) throws WriterException, IOException {
         String uniqueID = BarcodeIDGenerator.generateUniqueId();
-
         byte[] barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
-
-
-        String message = dailyMailService.updateDailyMail(requestDailyMailDTO, barcodeImage, uniqueID);
-
+        String message = dailyMailService.updateDailyMail(id,dailyMailDTO, barcodeImage, uniqueID);
         return ResponseBuilder.success(message, null);
     }
 
 
-    @DeleteMapping(path = "/delete-daily-mail/{id}")
+    @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<StandardResponse<String>> deleteDailyMail(@PathVariable(value = "id") int dailyMailId) {
         String message = dailyMailService.deleteDailyMail(dailyMailId);
 
@@ -68,8 +62,7 @@ public class DailyMailController {
     }
 
 
-
-    @GetMapping("/get-all-daily-mails")
+    @GetMapping
     public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getAllDailyMails() {
 
         List<RequestDailyMailViewAllDTO> dailyMails = dailyMailService.getAllDailyMails();
@@ -83,10 +76,7 @@ public class DailyMailController {
     }
 
 
-
-
-
-    @GetMapping("/get-daily-mails-by-barcodeId/{barcodeId}")
+    @GetMapping("/get/{barcodeId}")
     public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getAllDailyMailsByBarcodeId(@PathVariable String barcodeId) {
 
         List<RequestDailyMailViewAllDTO> allMailActivityByBarcodeId = dailyMailService.getAllDailyMailsByBarcodeId(barcodeId);
@@ -100,9 +90,7 @@ public class DailyMailController {
     }
 
 
-
-
-    @GetMapping("/daily-mail-filter")
+    @GetMapping("/filter")
     public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getMailActivityByFilter(
             @RequestParam(required = false) String senderName,
             @RequestParam(required = false) String receiverName,
@@ -115,10 +103,8 @@ public class DailyMailController {
                 senderName, receiverName, mailType, trackingNumber, branchName
         );
 
-
         return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
     }
-
 
 
 }
