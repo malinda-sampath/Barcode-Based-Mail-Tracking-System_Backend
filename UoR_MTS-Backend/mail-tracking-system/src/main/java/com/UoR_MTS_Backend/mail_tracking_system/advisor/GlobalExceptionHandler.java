@@ -1,17 +1,15 @@
 package com.UoR_MTS_Backend.mail_tracking_system.advisor;
 
-import com.UoR_MTS_Backend.mail_tracking_system.exception.MailActivityNotFoundException;
-import com.UoR_MTS_Backend.mail_tracking_system.exception.MailAdminException;
-import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
-import com.UoR_MTS_Backend.mail_tracking_system.exception.WriterException;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.*;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -59,6 +57,29 @@ public class GlobalExceptionHandler {
     }
 
 
+
+    @ExceptionHandler(BranchAlreadyExistsException.class)
+    public ResponseEntity<Object> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex, WebRequest request) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(NoDailyMailsFoundException.class)
+    public ResponseEntity<StandardResponse<String>> handleNoDailyMailsFound(NoDailyMailsFoundException e) {
+        // Use ResponseBuilder for consistent structure
+        return ResponseBuilder.notFound(e.getMessage());
+    }
+
+    @ExceptionHandler(NoMailActivitiesFoundException.class)
+    public ResponseEntity<StandardResponse<String>> handleNoMailActivitiesFound(NoMailActivitiesFoundException e) {
+        // Use ResponseBuilder for consistent structure
+        return ResponseBuilder.notFound(e.getMessage());
+    }
+
+    @ExceptionHandler(BranchNotFoundException.class)
+    public ResponseEntity<StandardResponse<String>> handleBranchNotFound(NoDailyMailsFoundException e) {
+        // Use ResponseBuilder for consistent structure
+        return ResponseBuilder.notFound(e.getMessage());
+    }
 
 
 }

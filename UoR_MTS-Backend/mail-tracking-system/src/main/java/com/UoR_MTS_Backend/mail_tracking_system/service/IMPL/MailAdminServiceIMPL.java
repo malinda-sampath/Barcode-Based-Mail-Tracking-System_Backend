@@ -35,7 +35,7 @@ public class MailAdminServiceIMPL implements MailAdminService {
             throw new MailAdminException("Invalid email format.");
         }
 
-        // Create a new MailAdmin entity
+
         MailAdmin mailAdmin = new MailAdmin();
         mailAdmin.setName(mailAdminDTO.getName());
         mailAdmin.setEmail(mailAdminDTO.getEmail());
@@ -45,10 +45,19 @@ public class MailAdminServiceIMPL implements MailAdminService {
         mailAdmin.setContact(mailAdminDTO.getContact());
         mailAdmin.setInsertDate(LocalDateTime.now());
 
-        mailAdminRepo.save(mailAdmin);
 
-        // Return a success message
-        return "Mail admin saved successfully.";
+
+
+
+
+        try {
+            mailAdminRepo.save(mailAdmin);
+
+            return "Mail admin saved successfully.";
+        }catch(Exception e){
+
+            throw new RuntimeException("Error Save Mail Admin"+e.getMessage());
+        }
     }
 
 
@@ -79,9 +88,18 @@ public class MailAdminServiceIMPL implements MailAdminService {
         mailAdmin.setUpdateDate(LocalDateTime.now());
 
 
-        mailAdminRepo.save(mailAdmin);
 
-        return "Mail admin updated successfully.";
+
+        try {
+            mailAdminRepo.save(mailAdmin);
+
+            return "Mail admin updated successfully.";
+
+
+        }catch(Exception e){
+
+            throw new RuntimeException("Error Update Mail Admin"+e.getMessage());
+        }
     }
 
 
@@ -92,10 +110,22 @@ public class MailAdminServiceIMPL implements MailAdminService {
             throw new UserNotFoundException("No MailAdmin found with the provided id.");
         }
 
-        mailAdminRepo.deleteById(id);
 
 
-        return "Mail admin deleted successfully.";
+        try {
+            mailAdminRepo.deleteById(id);
+
+
+            return "Mail admin deleted successfully.";
+
+
+        }catch(Exception e){
+
+            throw new RuntimeException("Error Deleting Mail Admin"+e.getMessage());
+        }
+
+
+
     }
 
 

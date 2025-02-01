@@ -5,6 +5,8 @@ import com.UoR_MTS_Backend.mail_tracking_system.exception.UserNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.model.BranchUser;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.BranchUserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.service.BranchUserService;
+import lombok.extern.flogger.Flogger;
+import org.modelmapper.internal.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class BranchUserServiceImpl implements BranchUserService {
+public class BranchUserServiceIMPL implements BranchUserService {
 
     @Autowired
     private BranchUserRepo branchUserRepo;
@@ -45,7 +47,12 @@ public class BranchUserServiceImpl implements BranchUserService {
         );
 
 
-        branchUserRepo.save(branchUser);
+        try {
+            branchUserRepo.save(branchUser);
+        }catch (Exception e){
+
+            throw  new RuntimeException("Error Occured Saving Branch"+e.getMessage(),e);
+        }
 
 
         return branchUserDto.getBranchUserName() + " has been saved successfully";
@@ -54,26 +61,40 @@ public class BranchUserServiceImpl implements BranchUserService {
 
     @Override
     public String branchUserUpdate(int id, BranchUserDto branchUserDto) {
-
-        BranchUser existingBranchUser = branchUserRepo.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Branch user not found with ID: " + id));
-
-
-        if (branchUserDto.getBranchUserName() != null) {
-            existingBranchUser.setBranchUserName(branchUserDto.getBranchUserName());
-        }
-        if (branchUserDto.getBranchUserPassword() != null) {
-            existingBranchUser.setBranchUserPassword(branchUserDto.getBranchUserPassword());
-        }
-        if (branchUserDto.getBranchCode() != null) {
-            existingBranchUser.setBranchCode(branchUserDto.getBranchCode());
-        }
-
-        branchUserRepo.save(existingBranchUser);
+try {
+    BranchUser existingBranchUser = branchUserRepo.findById(id)
+            .orElseThrow(() -> new UserNotFoundException("Branch user not found with ID: " + id));
 
 
+    if (branchUserDto == null) {
+        throw new IllegalArgumentException("BranchUser Fields can not be Null");
+    }
+    if (branchUserDto.getBranchUserName() != null) {
+        existingBranchUser.setBranchUserName(branchUserDto.getBranchUserName());
+    }
+    if (branchUserDto.getBranchUserPassword() != null) {
+        existingBranchUser.setBranchUserPassword(branchUserDto.getBranchUserPassword());
+    }
+    if (branchUserDto.getBranchCode() != null) {
+        existingBranchUser.setBranchCode(branchUserDto.getBranchCode());
+    }
 
-        return existingBranchUser.getBranchUserName() + " has been updated Successfully";
+    branchUserRepo.save(existingBranchUser);
+    return existingBranchUser.getBranchUserName() + " has been updated Successfully";
+
+
+    }catch(UserNotFoundException ex)
+    {
+
+        throw ex;
+
+    }catch(Exception e){
+        throw new RuntimeException("Error Occure Updating User !");
+    }
+
+
+
+
     }
 
 
@@ -82,14 +103,25 @@ public class BranchUserServiceImpl implements BranchUserService {
         if (!branchUserRepo.existsById(id) ){
             throw new UserNotFoundException("Branch user not found with ID: " + id);
         }
-        branchUserRepo.deleteById(id);
 
-        return "Branch User Deleted Successfully";
+        try {
+            branchUserRepo.deleteById(id);
+
+            return "Branch User Deleted Successfully";
+        }catch(Exception e){
+
+            throw new RuntimeException("Error Deleting BranchUser"+e.getMessage());
+        }
     }
 
     @Override
     public List<BranchUser> getAllBranchUsers() {
-        return branchUserRepo.findAll();
+        List<BranchUser> branchUsers =  branchUserRepo.findAll();
+        if(branchUsers.isEmpty()){
+            throw new UserNotFoundException("No Branches Found In The Database");
+        }
+
+        return  branchUsers;
     }
 
     @Override

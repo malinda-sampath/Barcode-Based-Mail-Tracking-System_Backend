@@ -1,10 +1,9 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailAdminDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.model.MailAdmin;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailAdminService;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

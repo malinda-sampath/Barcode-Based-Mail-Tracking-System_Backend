@@ -1,16 +1,16 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controller;
 import org.springframework.http.ResponseEntity;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.DailyMailDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail.RequestDailyMailDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dto.request.dailymail.RequestDailyMailViewAllDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.service.DailyMailService;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.generator.BarcodeIDGenerator;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.generator.BarcodeImageGenerator;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.barcode.BarcodeIDGenerator;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.barcode.BarcodeImageGenerator;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.StandardResponse;
+import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
 
 
 import java.io.IOException;
