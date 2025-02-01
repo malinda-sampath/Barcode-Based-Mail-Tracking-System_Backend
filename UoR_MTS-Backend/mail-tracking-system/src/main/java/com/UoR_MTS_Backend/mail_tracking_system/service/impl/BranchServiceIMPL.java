@@ -62,7 +62,7 @@ public class BranchServiceIMPL implements BranchService {
 
         // Create branch-specific mail cart table
         return "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
-                "barcode INT AUTO_INCREMENT PRIMARY KEY, " +
+                "barcode VARCHAR(50) PRIMARY KEY, " +
                 "branch_code INT NOT NULL, " +
                 "sender VARCHAR(255), " +
                 "receiver VARCHAR(255), " +
