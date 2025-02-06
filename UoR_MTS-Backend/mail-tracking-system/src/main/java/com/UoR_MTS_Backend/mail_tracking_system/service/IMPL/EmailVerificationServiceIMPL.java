@@ -1,6 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service.IMPL;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dto.EmailVerificationResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dto.response.EmailVerificationResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.service.EmailVerificationService;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.email.EmailBody;
 import com.UoR_MTS_Backend.mail_tracking_system.utill.email.OTPgenerator;
