@@ -1,8 +1,8 @@
 package com.UoR_MTS_Backend.mail_tracking_system.advisor;
 
 import com.UoR_MTS_Backend.mail_tracking_system.exception.*;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.response.ResponseBuilder;
-import com.UoR_MTS_Backend.mail_tracking_system.utill.response.StandardResponse;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -36,8 +36,6 @@ public class GlobalExceptionHandler {
         );
     }
 
-
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<StandardResponse<String>> handleGlobalException(Exception ex) {
         // Log the exception with stack trace
@@ -51,12 +49,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MailAdminException.class)
-    public ResponseEntity<StandardResponse<Void>> handleMailAdminException(MailAdminException ex) {
+    @ExceptionHandler(MailHandlerException.class)
+    public ResponseEntity<StandardResponse<Void>> handleMailHandlerException(MailHandlerException ex) {
         return ResponseBuilder.error(ex.getMessage(), null);
     }
-
-
 
     @ExceptionHandler(BranchAlreadyExistsException.class)
     public ResponseEntity<Object> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex, WebRequest request) {
