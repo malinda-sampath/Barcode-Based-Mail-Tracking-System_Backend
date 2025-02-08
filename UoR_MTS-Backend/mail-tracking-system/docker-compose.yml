@@ -1,0 +1,26 @@
+#version: '3.8'
+#services:
+#  mysql_db:
+#    image: mysql:8
+#    container_name: mysql_db
+#    restart: always
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_DATABASE: uor_mts
+#    ports:
+#      - "3307:3306"
+#
+#  backend:
+#    build: .
+#    container_name: mail-tracking-backend
+#    restart: always
+#    depends_on:
+#      - mysql_db
+#    environment:
+#      DB_URL: "jdbc:mysql://mysql_db:3306/uor_mts?createDatabaseIfNotExist=true"
+#      DB_USERNAME: "root"
+#      DB_PASSWORD: "root"
+#      JWT_SECRET: "b52aa87ef75d6672e3f281d69c2952b13c08063949e3b43224f245b3d3d177aa"
+#      JWT_EXPIRATION: "3600000"
+#    ports:
+#      - "8081:8081"
