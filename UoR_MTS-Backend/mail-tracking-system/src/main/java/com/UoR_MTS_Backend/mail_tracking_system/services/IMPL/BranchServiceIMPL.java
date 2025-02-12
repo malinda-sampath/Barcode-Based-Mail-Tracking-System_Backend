@@ -1,7 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.dailymail.RequestBranchDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.RequestBranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchAlreadyExistsException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;

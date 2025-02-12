@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
     @Entity
     @Table(name = "mail_record")
-    public class MailBucket {
+    public class MailRecord {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id;

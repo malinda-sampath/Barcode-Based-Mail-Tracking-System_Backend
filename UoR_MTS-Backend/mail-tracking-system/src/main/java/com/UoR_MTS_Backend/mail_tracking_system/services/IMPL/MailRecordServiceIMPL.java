@@ -1,12 +1,12 @@
 package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.configs.ModelMapperConfig;
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailBucketDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailRecordDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.MailRecordNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoDailyMailsFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoMailActivitiesFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.DailyMail;
-import com.UoR_MTS_Backend.mail_tracking_system.entities.MailBucket;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.MailRecordRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.specification.MailRecordSpecification;
@@ -37,11 +37,11 @@ public class MailRecordServiceIMPL implements MailRecordService {
             throw new NoDailyMailsFoundException("No daily mails to transfer.");
         } else {
 
-            List<MailBucket> mailBucket = dailyMails.stream()
-                    .map(dailyMail -> modelMapperConfig.modelMapper().map(dailyMail, MailBucket.class))
+            List<MailRecord> mailRecord = dailyMails.stream()
+                    .map(dailyMail -> modelMapperConfig.modelMapper().map(dailyMail, MailRecord.class))
                     .toList();
 
-            mailRecordRepo.saveAll(mailBucket);
+            mailRecordRepo.saveAll(mailRecord);
             dailyMailRepo.deleteAll();
             dailyMailRepo.resetAutoIncrement();
         }
@@ -53,7 +53,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
     @Override
     @Transactional
-    public Page<MailBucketDTO> filterMailRecords(
+    public Page<MailRecordDTO> filterMailRecords(
             String senderName,
             String receiverName,
             String mailType,
@@ -62,7 +62,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
             Pageable pageable) {
 
         // Filter records using Specification
-        Page<MailBucket> filteredMailRecords = mailRecordRepo.findAll(
+        Page<MailRecord> filteredMailRecords = mailRecordRepo.findAll(
                 MailRecordSpecification.filterBy(
                         senderName, receiverName, mailType, trackingNumber, branchName
                 ), pageable);
@@ -74,7 +74,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
         // Map to DTO and return
         return filteredMailRecords.map(mail -> {
-            MailBucketDTO dto = new MailBucketDTO();
+            MailRecordDTO dto = new MailRecordDTO();
             dto.setId(mail.getId());
             dto.setSenderName(mail.getSenderName());
             dto.setReceiverName(mail.getReceiverName());
@@ -90,24 +90,24 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
 
     @Override
-    public MailBucket searchMailByBarcodeId(String barcodeId) {
+    public MailRecord searchMailByBarcodeId(String barcodeId) {
         // Fetch the mail record by barcodeId
-        MailBucket mailBucket = mailRecordRepo.findByBarcodeId(barcodeId);
+        MailRecord mailRecord = mailRecordRepo.findByBarcodeId(barcodeId);
 
         // If no record found, throw custom exception
-        if (mailBucket == null) {
+        if (mailRecord == null) {
             throw new MailRecordNotFoundException("Mail with barcode ID " + barcodeId + " not found.");
         }
 
-        return mailBucket; // Return the found mail record
+        return mailRecord; // Return the found mail record
     }
 
 
     @Override
-    public Page<MailBucket> getAllMailRecords(Pageable pageable) {
-        Page<MailBucket> mailPage = mailRecordRepo.findAll(pageable);
+    public Page<MailRecord> getAllMailRecords(Pageable pageable) {
+        Page<MailRecord> mailPage = mailRecordRepo.findAll(pageable);
 
-        return mailPage.map(mail -> new MailBucket(
+        return mailPage.map(mail -> new MailRecord(
                 mail.getId(),
                 mail.getBranchCode(),
                 mail.getBranchName(),

@@ -3,20 +3,24 @@ package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 import com.UoR_MTS_Backend.mail_tracking_system.configs.ModelMapperConfig;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.DailyMailDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.dailymail.RequestDailyMailViewAllDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailActivity;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.MailActivityRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.specification.DailyMailSpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.services.DailyMailService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,22 +30,19 @@ public class DailyMailServiceIMPL implements DailyMailService {
     private final ModelMapperConfig modelMapper;
     private final DailyMailRepo dailyMailRepo;
     private final MailActivityRepo mailActivityRepo;
+    private final UserRepo userRepo;
     //Username and user ID should get from user session
-    private final String mailUsername = "";
-    private final int mailUserId= 0;
 
     @Override
     @Transactional
-    public String addDailyMail(DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID) {
+    public String addDailyMail(DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID, Authentication authentication) {
         if (dailyMailDTO == null) {
             throw new IllegalArgumentException("DailyMailDTO cannot be null.");
         }
 
-
         if (dailyMailDTO.getSenderName() == null || dailyMailDTO.getReceiverName() == null) {
             throw new IllegalArgumentException("Sender and Receiver names cannot be null.");
         }
-
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -59,16 +60,18 @@ public class DailyMailServiceIMPL implements DailyMailService {
             throw new RuntimeException("Error occurred while saving daily mail: " + e.getMessage(), e);
         }
 
+        User user = userRepo.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("No user found with the provided username."));
+
 
         MailActivity log = new MailActivity(
-                mailUserId,
-                mailUsername,
                 "Insert",
                 dailyMail.getBranchName(),
                 dailyMail.getSenderName(),
                 dailyMail.getReceiverName(),
                 dailyMail.getBarcodeId(),
-                now
+                now,
+                user
         );
 
         try {
@@ -102,15 +105,14 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
             // Add the activity log
             MailActivity log = new MailActivity(
-                    mailUserId,
-                    mailUsername,
                     "Update",
                     existingMail.getBranchName(),
                     existingMail.getSenderName(),
                     existingMail.getReceiverName(),
                     //Shows the Existing Barcode ID then
                     existingMail.getBarcodeId(),
-                    now
+                    now,
+                    null
             );
 
             mailActivityRepo.save(log);
@@ -140,14 +142,13 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
 
         MailActivity log = new MailActivity(
-                mailUserId,
-                mailUsername,
                 "Delete",
                 existingMail.getBranchName(),
                 existingMail.getSenderName(),
                 existingMail.getReceiverName(),
                 existingBarcodeId,
-                now
+                now,
+                null
         );
         mailActivityRepo.save(log);
 

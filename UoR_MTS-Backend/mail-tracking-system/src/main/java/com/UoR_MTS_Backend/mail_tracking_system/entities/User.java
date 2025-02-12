@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,9 +23,8 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private Integer id;
+    private String id;
 
     @Column(nullable = false)
     private String fullName;
@@ -82,5 +82,13 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @PrePersist
+    public void generateId() {
+        if (this.id == null) {
+            int randomNum = new Random().nextInt(900) + 100; // Generates a number between 100-999
+            this.id = "USER-" + randomNum;
+        }
     }
 }

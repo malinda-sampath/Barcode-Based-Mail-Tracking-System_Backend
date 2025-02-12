@@ -1,8 +1,8 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailBucketDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailRecordDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoMailActivitiesFoundException;
-import com.UoR_MTS_Backend.mail_tracking_system.entities.MailBucket;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/mailRecord")
 @AllArgsConstructor
-public class MailBucketController {
+public class MailRecordController {
 
     private final MailRecordService mailRecordService;
 
@@ -31,7 +31,7 @@ public class MailBucketController {
 
 
     @GetMapping("/filter/{page}")
-    public ResponseEntity<StandardResponse<Page<MailBucketDTO>>> filterMailRecords(
+    public ResponseEntity<StandardResponse<Page<MailRecordDTO>>> filterMailRecords(
             @RequestParam(required = false) String senderName,
             @RequestParam(required = false) String receiverName,
             @RequestParam(required = false) String mailType,
@@ -43,7 +43,7 @@ public class MailBucketController {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // Call the service method to get filtered records
-        Page<MailBucketDTO> filteredRecords = mailRecordService.filterMailRecords(
+        Page<MailRecordDTO> filteredRecords = mailRecordService.filterMailRecords(
                 senderName, receiverName, mailType, trackingNumber, branchName, pageable);
 
         if (filteredRecords.isEmpty()) {
@@ -56,12 +56,12 @@ public class MailBucketController {
 
 
     @GetMapping("/search/{barcodeId}")
-    public ResponseEntity<StandardResponse<MailBucket>> searchMailByBarcodeId(@PathVariable String barcodeId) {
+    public ResponseEntity<StandardResponse<MailRecord>> searchMailByBarcodeId(@PathVariable String barcodeId) {
         // Call the service method to search mail by barcode ID
-        MailBucket mailBucket = mailRecordService.searchMailByBarcodeId(barcodeId);
+        MailRecord mailRecord = mailRecordService.searchMailByBarcodeId(barcodeId);
 
         // Return the found mail record
-        return ResponseBuilder.success("Mail record found successfully.", mailBucket);
+        return ResponseBuilder.success("Mail record found successfully.", mailRecord);
     }
 
 
@@ -71,7 +71,7 @@ public class MailBucketController {
         Pageable pageable = PageRequest.of(page, size);
 
         // Call the service method to fetch mail records
-        Page<MailBucket> mailRecords = mailRecordService.getAllMailRecords(pageable);
+        Page<MailRecord> mailRecords = mailRecordService.getAllMailRecords(pageable);
 
         // Check if the result is empty
         if (mailRecords.isEmpty()) {
