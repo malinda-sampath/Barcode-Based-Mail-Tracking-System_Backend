@@ -1,6 +1,8 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.DailyMailDTO;
@@ -9,6 +11,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.services.DailyMailService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.barcode.BarcodeIDGenerator;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.barcode.BarcodeImageGenerator;
 import com.google.zxing.WriterException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
 
@@ -25,16 +28,19 @@ public class DailyMailController {
     private final DailyMailService dailyMailService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasAnyRole('MAIL_HANDLER', 'SUPER_ADMIN')")
     public ResponseEntity<StandardResponse<String>> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) throws WriterException, IOException {
         if (dailyMailDTO == null) {
             throw new IllegalArgumentException("DailyMailDTO cannot be null.");
         }
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         String uniqueID = BarcodeIDGenerator.generateUniqueId();
         byte[] barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
 
 
-        String message = dailyMailService.addDailyMail(dailyMailDTO, barcodeImage, uniqueID);
+        String message = dailyMailService.addDailyMail(dailyMailDTO, barcodeImage, uniqueID,authentication);
 
         return ResponseBuilder.success(message, null);
     }

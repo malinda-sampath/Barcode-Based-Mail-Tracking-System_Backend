@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.Random;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +18,7 @@ import java.util.Date;
 @Table(name = "roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private String id;
 
     @Column(unique = true, nullable = false)
     @Enumerated(EnumType.STRING)
@@ -34,4 +34,12 @@ public class Role {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Date updatedAt;
+
+    @PrePersist
+    public void generateId() {
+        if (this.id == null) {
+            int randomNum = new Random().nextInt(90) + 10; // Generates a number between 100-999
+            this.id = "ROLE-" + randomNum;
+        }
+    }
 }

@@ -7,6 +7,8 @@ import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.services.JWTService;
 import com.UoR_MTS_Backend.mail_tracking_system.services.UserService;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +26,7 @@ public class UserController {
     private final JWTService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> userLogin(@RequestBody LoginUserDTO loginUserDTO){
+    public ResponseEntity<StandardResponse<LoginResponseDTO>> userLogin(@RequestBody LoginUserDTO loginUserDTO){
         User authenticateUser = userService.loginUser(loginUserDTO);
 
         String jwtToken = jwtService.generateToken(authenticateUser);
@@ -34,32 +36,30 @@ public class UserController {
                 jwtService.getExpirationTime()
         );
 
-        return ResponseEntity.ok(loginResponse);
+        return ResponseBuilder.success("Welcome back! You have successfully logged in.",loginResponse);
     }
 
     @PostMapping("/register-mail-handler")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<String> registerMailHandler(@RequestBody RegisterUserDTO registerUserDTO){
+    public ResponseEntity<StandardResponse<String>> registerMailHandler(@RequestBody RegisterUserDTO registerUserDTO){
         String message = userService.createUser(registerUserDTO, RoleEnum.MAIL_HANDLER);
 
-        return ResponseEntity.ok(message);
+        return ResponseBuilder.success(message,null);
     }
 
     @PostMapping("/register-branch-manager")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<String> registerBranchManager(@RequestBody RegisterUserDTO registerUserDTO){
+    public ResponseEntity<StandardResponse<String>> registerBranchManager(@RequestBody RegisterUserDTO registerUserDTO){
         String message = userService.createUser(registerUserDTO, RoleEnum.BRANCH_MANAGER);
 
-        return ResponseEntity.ok(message);
+        return ResponseBuilder.success(message,null);
     }
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<User> authenticateHandler(){
+    public ResponseEntity<StandardResponse<User>> authenticateHandler(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         User currentUser = (User) authentication.getPrincipal();
-
-        return ResponseEntity.ok(currentUser);
+        return ResponseBuilder.success("Hello, "+currentUser.getFullName() + "! Here is your profile summary.",currentUser);
     }
 }

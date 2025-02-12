@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,8 +18,6 @@ public class MailActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int userId;
-    private String userName;
     private String activityType;
     private String branchName;
     private String senderName;
@@ -26,15 +25,17 @@ public class MailActivity {
     private String barcodeId;
     private LocalDateTime activityDateTime;
 
-    public MailActivity(int userId, String userName,String activityType ,String branchName,String senderName,String receiverName,String barcodeId, LocalDateTime activityDateTime) {
-        this.userId = userId;
-        this.userName = userName;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
+
+    public MailActivity(String activityType ,String branchName,String senderName,String receiverName,String barcodeId, LocalDateTime activityDateTime, User user) {
         this.activityType = activityType;
         this.branchName = branchName;
         this.senderName = senderName;
         this.receiverName = receiverName;
         this.barcodeId = barcodeId;
         this.activityDateTime = activityDateTime;
+        this.user = user;
     }
-
 }

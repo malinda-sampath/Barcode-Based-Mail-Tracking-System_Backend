@@ -23,8 +23,6 @@ public class MailActivityController {
         return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
     }
 
-
-
     @GetMapping("/get/{barcodeId}")
     public ResponseEntity<StandardResponse<List<MailActivityDTO>>> getMailActivityByBarcodeId(@PathVariable(value = "barcodeId") String barcodeId) {
         List<MailActivityDTO> mailActivityDTOList = mailActivityService.getAllMailActivityByBarcodeId(barcodeId);
@@ -46,6 +44,4 @@ public class MailActivityController {
 
         return ResponseBuilder.success("Mail activities retrieved successfully", mailActivityDTOList);
     }
-
-
 }

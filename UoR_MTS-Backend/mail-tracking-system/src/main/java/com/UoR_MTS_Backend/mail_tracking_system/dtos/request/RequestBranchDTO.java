@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.dtos.request.dailymail;
+package com.UoR_MTS_Backend.mail_tracking_system.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

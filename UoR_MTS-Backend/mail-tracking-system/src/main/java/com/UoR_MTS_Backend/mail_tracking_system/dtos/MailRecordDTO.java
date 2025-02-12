@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class MailBucketDTO {
+public class MailRecordDTO {
     private int id;
     private String branchCode;
     private String branchName;

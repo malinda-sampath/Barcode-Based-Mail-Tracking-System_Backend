@@ -7,6 +7,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.entities.MailActivity;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.MailActivityRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailActivityService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class MailActivityServiceIMPL implements MailActivityService {
 
     private final MailActivityRepo mailActivityRepo;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<MailActivityDTO> getAllMailActivity() {
@@ -29,21 +31,10 @@ public class MailActivityServiceIMPL implements MailActivityService {
             throw new ResourceNotFoundException("No mail activities found.");
         }
 
-
         return mailActivityList.stream()
-                .sorted(Comparator.comparing(MailActivity::getId))
-                .map(mailActivity -> new MailActivityDTO(
-                        mailActivity.getId(),
-                        mailActivity.getUserId(),
-                        mailActivity.getUserName(),
-                        mailActivity.getActivityType(),
-                        mailActivity.getBranchName(),
-                        mailActivity.getSenderName(),
-                        mailActivity.getReceiverName(),
-                        mailActivity.getBarcodeId(),
-                        mailActivity.getActivityDateTime()
-                ))
+                .map(mailActivity-> modelMapper.map(mailActivity, MailActivityDTO.class))
                 .collect(Collectors.toList());
+
     }
 
 
@@ -57,17 +48,7 @@ public class MailActivityServiceIMPL implements MailActivityService {
 
         return mailActivityList.stream()
                 .sorted(Comparator.comparing(MailActivity::getId))
-                .map(mailActivity -> new MailActivityDTO(
-                        mailActivity.getId(),
-                        mailActivity.getUserId(),
-                        mailActivity.getUserName(),
-                        mailActivity.getActivityType(),
-                        mailActivity.getBranchName(),
-                        mailActivity.getSenderName(),
-                        mailActivity.getReceiverName(),
-                        mailActivity.getBarcodeId(),
-                        mailActivity.getActivityDateTime()
-                ))
+                .map(mailActivity -> modelMapper.map(mailActivity, MailActivityDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -75,7 +56,7 @@ public class MailActivityServiceIMPL implements MailActivityService {
     @Override
     public List<MailActivityDTO> filterMailActivities(String userName, String activityType, String branchName, String senderName, String receiverName) {
         List<MailActivity> mailActivityList = mailActivityRepo.findAll().stream()
-                .filter(mailActivity -> (userName == null || mailActivity.getUserName().equalsIgnoreCase(userName)) &&
+                .filter(mailActivity -> (userName == null || mailActivity.getUser().getUsername().equalsIgnoreCase(userName)) &&
                         (activityType == null || mailActivity.getActivityType().equalsIgnoreCase(activityType)) &&
                         (branchName == null || mailActivity.getBranchName().equalsIgnoreCase(branchName)) &&
                         (senderName == null || mailActivity.getSenderName().equalsIgnoreCase(senderName)) &&
@@ -88,16 +69,7 @@ public class MailActivityServiceIMPL implements MailActivityService {
         }
 
         return mailActivityList.stream()
-                .map(mailActivity -> new MailActivityDTO(
-                        mailActivity.getId(),
-                        mailActivity.getUserId(),
-                        mailActivity.getUserName(),
-                        mailActivity.getActivityType(),
-                        mailActivity.getBranchName(),
-                        mailActivity.getSenderName(),
-                        mailActivity.getReceiverName(),
-                        mailActivity.getBarcodeId(),
-                        mailActivity.getActivityDateTime()))
+                .map(mailActivity -> modelMapper.map(mailActivity, MailActivityDTO.class))
                 .collect(Collectors.toList());
     }
 

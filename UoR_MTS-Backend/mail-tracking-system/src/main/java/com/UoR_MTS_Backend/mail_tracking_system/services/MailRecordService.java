@@ -1,7 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.services;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailBucketDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.entities.MailBucket;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailRecordDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,9 +12,9 @@ public interface MailRecordService {
     public String transferDailyMailsToMainCart();
 
 
-    MailBucket searchMailByBarcodeId(String barcodeId);
+    MailRecord searchMailByBarcodeId(String barcodeId);
 
-    Page<MailBucketDTO> filterMailRecords(String senderName, String receiverName, String mailType, String trackingNumber, String branchName, Pageable pageable);
+    Page<MailRecordDTO> filterMailRecords(String senderName, String receiverName, String mailType, String trackingNumber, String branchName, Pageable pageable);
 
-    Page<MailBucket> getAllMailRecords(Pageable pageable);
+    Page<MailRecord> getAllMailRecords(Pageable pageable);
 }
