@@ -11,6 +11,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.MailRecordRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repo.specification.MailRecordSpecification;
+import com.UoR_MTS_Backend.mail_tracking_system.service.BranchMailService;
 import com.UoR_MTS_Backend.mail_tracking_system.service.MailRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ public class MailRecordServiceIMPL implements MailRecordService {
     private DailyMailRepo dailyMailRepo;
     @Autowired
     private ModelMapperConfig modelMapperConfig;
+    @Autowired
+    private BranchMailService branchMailService;
 
     @Override
     @Transactional
@@ -43,11 +46,13 @@ public class MailRecordServiceIMPL implements MailRecordService {
             throw new NoDailyMailsFoundException("No daily mails to transfer.");
         } else {
 
-            List<MailRecord> mailRecord = dailyMails.stream()
+            List<MailRecord> mailRecords = dailyMails.stream()
                     .map(dailyMail -> modelMapperConfig.modelMapper().map(dailyMail, MailRecord.class))
                     .toList();
-
-            mailRecordRepo.saveAll(mailRecord);
+            mailRecordRepo.saveAll(mailRecords);
+            for (MailRecord mailRecord : mailRecords) {
+                branchMailService.transferMailToBranchCart(mailRecord.getBarcodeId());
+            }
             dailyMailRepo.deleteAll();
             dailyMailRepo.resetAutoIncrement();
         }
@@ -129,6 +134,4 @@ public class MailRecordServiceIMPL implements MailRecordService {
                 mail.getUpdateDateTime()
         ));
     }
-
-
 }

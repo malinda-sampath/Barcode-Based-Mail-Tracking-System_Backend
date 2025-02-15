@@ -1,6 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.service;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dto.MailRecordDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.model.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.model.MailRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

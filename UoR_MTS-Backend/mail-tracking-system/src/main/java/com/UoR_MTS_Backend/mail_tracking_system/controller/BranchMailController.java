@@ -27,18 +27,22 @@ public class BranchMailController {
     @Autowired
     private MailRecordService mailRecordService;
 
-    @PostMapping("/transfer/{barcodeId}")
-    public ResponseEntity<String> transferMailToBranchCart(@PathVariable("barcodeId") String barcodeId/*, @RequestBody MailRecordDTO mailRecordDTO*/) {
-        MailRecord mailRecord = mailRecordService.searchMailByBarcodeId(barcodeId);
+    @PostMapping("/transfer-to-branch-cart")
+    public ResponseEntity<String> transferMailToBranchCart(@RequestBody List<String> barcodeIds/*, @RequestBody MailRecordDTO mailRecordDTO*/) {
 
-        // Validate that the mail belongs to the selected branch
+        for(String barcodeId : barcodeIds) {
+            MailRecord mailRecord = mailRecordService.searchMailByBarcodeId(barcodeId);
+
+            // Validate that the mail belongs to the selected branch
         /*if (!mailRecord.getBranchName().equals(mailRecordDTO.getBranchName()))
             return ResponseEntity.badRequest().body("Mail does not belong to the selected branch.");
         else {*/
             String addToBranchMailcart = branchMailService.transferMailToBranchCart(barcodeId);
             mailRecord.setUpdateDateTime(LocalDateTime.now());
             branchMailService.updateMailRecordList(barcodeId);
-            return ResponseEntity.ok("Mail transferred successfully."+addToBranchMailcart);
+            return ResponseEntity.ok("Mail transferred successfully." + addToBranchMailcart);
+        }
+        return ResponseEntity.ok("Mail transferred successfully.");
         //}
     }
 

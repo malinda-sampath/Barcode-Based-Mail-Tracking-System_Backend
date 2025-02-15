@@ -30,42 +30,42 @@ public class BranchMailServiceIMPL implements BranchMailService {
     @Transactional
     public String transferMailToBranchCart(String barcodeId) {
         try {
-            // Fetch the mail record by barcodeId
-            MailRecord mailRecord = branchMailRepo.findByBarcodeId(barcodeId);
+                // Fetch the mail record by barcodeId
+                MailRecord mailRecord = branchMailRepo.findByBarcodeId(barcodeId);
 
-            // If no record found, handle accordingly
-            if (mailRecord == null) {
-                logger.warn("Mail record with barcodeId {} not found.", barcodeId);
-                return "Mail record not found.";
-            }
+                // If no record found, handle accordingly
+                if (mailRecord == null) {
+                    logger.warn("Mail record with barcodeId {} not found.", barcodeId);
+                    return "Mail record not found.";
+                }
 
-            // Sanitize the branch name
-            String sanitizedBranchName = mailRecord.getBranchName()
-                    .toLowerCase()
-                    .replaceAll("[^a-z0-9_]", "_");
-            String tableName = sanitizedBranchName + "_mailcart";
+                // Sanitize the branch name
+                String sanitizedBranchName = mailRecord.getBranchName()
+                        .toLowerCase()
+                        .replaceAll("[^a-z0-9_]", "_");
+                String tableName = sanitizedBranchName + "_mailcart";
 
-            // Parameterized query
-            String query = "INSERT INTO " + tableName + " " +
-                    "(barcode, branch_code, sender, receiver, description, mail_type, postal_code, tracking_code, received_date, claimed_date, claimed_person) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // Parameterized query
+                String query = "INSERT INTO " + tableName + " " +
+                        "(barcode, branch_code, sender, receiver, description, mail_type, postal_code, tracking_code, received_date, claimed_date, claimed_person) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-            // Execute the query with prepared statement
-            jdbcTemplate.update(query,
-                    mailRecord.getBarcodeId(),
-                    mailRecord.getBranchCode(),
-                    mailRecord.getSenderName(),
-                    mailRecord.getReceiverName(),
-                    mailRecord.getMailDescription(),
-                    mailRecord.getMailType(),
-                    null,
-                    mailRecord.getTrackingNumber(),
-                    mailRecord.getInsertDateTime(),
-                    mailRecord.getUpdateDateTime(),
-                    null // For claimed_person
-            );
+                // Execute the query with prepared statement
+                jdbcTemplate.update(query,
+                        mailRecord.getBarcodeId(),
+                        mailRecord.getBranchCode(),
+                        mailRecord.getSenderName(),
+                        mailRecord.getReceiverName(),
+                        mailRecord.getMailDescription(),
+                        mailRecord.getMailType(),
+                        null,
+                        mailRecord.getTrackingNumber(),
+                        mailRecord.getInsertDateTime(),
+                        mailRecord.getUpdateDateTime(),
+                        null // For claimed_person
+                );
 
-            return "Data saved to " + tableName + " successfully.";
+            return "Data saved to Table successfully.";
         } catch (Exception e) {
             logger.error("Error occurred while transferring mail by barcodeId: {}", barcodeId, e);
             throw new RuntimeException("Error occurred while transferring mail", e);  // Or throw a custom exception
