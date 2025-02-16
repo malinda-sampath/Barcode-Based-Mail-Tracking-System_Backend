@@ -26,7 +26,7 @@ public class UserController {
     private final JWTService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<StandardResponse<LoginResponseDTO>> userLogin(@RequestBody LoginUserDTO loginUserDTO){
+    public ResponseEntity<StandardResponse<LoginResponseDTO>> loginUser(@RequestBody LoginUserDTO loginUserDTO){
         User authenticateUser = userService.loginUser(loginUserDTO);
 
         String jwtToken = jwtService.generateToken(authenticateUser);
