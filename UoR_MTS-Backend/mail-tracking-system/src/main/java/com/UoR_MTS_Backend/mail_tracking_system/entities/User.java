@@ -91,4 +91,8 @@ public class User implements UserDetails {
             this.id = "USER-" + randomNum;
         }
     }
+
+    public Role getRole() {
+        return role;
+    }
 }
