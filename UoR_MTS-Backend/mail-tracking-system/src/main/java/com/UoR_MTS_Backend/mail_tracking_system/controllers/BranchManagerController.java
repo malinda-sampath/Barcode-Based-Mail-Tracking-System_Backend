@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("api/branch-manager")
+@RequestMapping("/api/branch-manager")
 @AllArgsConstructor
 public class BranchManagerController {
 
