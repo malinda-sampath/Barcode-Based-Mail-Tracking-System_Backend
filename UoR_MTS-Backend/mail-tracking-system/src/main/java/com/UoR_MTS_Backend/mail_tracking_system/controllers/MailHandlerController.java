@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/mail-Handler")
 @AllArgsConstructor
-@PreAuthorize("hasAnyRole('MAIL_HANDLER')")
 public class MailHandlerController {
 
     private final MailHandlerService mailHandlerService;

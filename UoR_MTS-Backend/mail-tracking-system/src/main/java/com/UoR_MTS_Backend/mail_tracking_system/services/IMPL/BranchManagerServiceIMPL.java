@@ -36,7 +36,7 @@ public class BranchManagerServiceIMPL implements BranchManagerService {
         }
 
 
-
+        try {
 
         BranchManager branchManager = new BranchManager(
                 branchManagerDto.getBranchManagerName(),
@@ -45,7 +45,7 @@ public class BranchManagerServiceIMPL implements BranchManagerService {
         );
 
 
-        try {
+
             branchManagerRepo.save(branchManager);
         }catch (Exception e){
 
