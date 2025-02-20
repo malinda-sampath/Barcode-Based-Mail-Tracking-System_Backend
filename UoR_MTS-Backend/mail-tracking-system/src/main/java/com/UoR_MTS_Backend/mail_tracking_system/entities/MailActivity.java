@@ -13,13 +13,13 @@ import java.util.List;
 @Data
 
 @Entity
-@Table(name = "activity_logs")
+@Table(name = "user_activity_logs")
 public class MailActivity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String activityType;
-    private String branchName;
+    private String branchCode;
     private String senderName;
     private String receiverName;
     private String barcodeId;
@@ -29,9 +29,9 @@ public class MailActivity {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    public MailActivity(String activityType ,String branchName,String senderName,String receiverName,String barcodeId, LocalDateTime activityDateTime, User user) {
+    public MailActivity(String activityType ,String branchCode,String senderName,String receiverName,String barcodeId, LocalDateTime activityDateTime, User user) {
         this.activityType = activityType;
-        this.branchName = branchName;
+        this.branchCode = branchCode;
         this.senderName = senderName;
         this.receiverName = receiverName;
         this.barcodeId = barcodeId;

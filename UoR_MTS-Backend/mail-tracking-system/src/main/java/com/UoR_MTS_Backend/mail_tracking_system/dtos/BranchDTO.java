@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 @Data
 
 public class BranchDTO {
-    private int id;
-    private String branchName;
     private String branchCode;
+    private String branchName;
+    private String description;
     private LocalDateTime insertDate;
     private LocalDateTime updateDate;
 }

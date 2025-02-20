@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.configs;
+package com.UoR_MTS_Backend.mail_tracking_system.configs.security;
 
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import lombok.AllArgsConstructor;

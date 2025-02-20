@@ -8,6 +8,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundExcept
 import com.UoR_MTS_Backend.mail_tracking_system.entities.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.BranchService;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.tableID.IDGenerator;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,20 +26,24 @@ public class BranchServiceIMPL implements BranchService {
     private final BranchRepo branchRepo;
     private final JdbcTemplate jdbcTemplate;
     private final ModelMapper modelMapper;
+    private final IDGenerator idGenerator;
 
     @Override
     @Transactional
     public String branchSave(RequestBranchDTO requestBranchDTO) {
         String sanitizedBranchName = requestBranchDTO.getBranchName().toLowerCase().replaceAll("[^a-z0-9_]", "_");
         Branch existingBranchName = branchRepo.findByBranchNameIgnoreCase(requestBranchDTO.getBranchName());
-        Branch existingBranchCode = branchRepo.findByBranchCode(requestBranchDTO.getBranchCode());
+
+        Branch existingBranch;
+        String branchCode;
+        do {
+            branchCode = idGenerator.generateID("BR", 3);
+            existingBranch = branchRepo.findByBranchCode(branchCode);
+        } while (existingBranch != null);
+
 
         if (existingBranchName != null) {
             throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
-        }
-
-        if (existingBranchCode != null) {
-            throw new BranchAlreadyExistsException("Branch code '" + requestBranchDTO.getBranchCode() + "' already exists.");
         }
 
         try {
@@ -47,6 +52,7 @@ public class BranchServiceIMPL implements BranchService {
 
             // Map DTO to Entity
             Branch branch = modelMapper.map(requestBranchDTO, Branch.class);
+            branch.setInsertDate(LocalDateTime.now());
 
             // Save branch to the database
             branchRepo.save(branch);
@@ -63,7 +69,6 @@ public class BranchServiceIMPL implements BranchService {
         jdbcTemplate.execute(getString(sanitizedBranchName));
     }
 
-
     @Override
     public List<BranchDTO> getAllBranches() {
         List<BranchDTO> branches = branchRepo.findAll()
@@ -77,9 +82,8 @@ public class BranchServiceIMPL implements BranchService {
         return branches;
     }
 
-
     @Override
-    public BranchDTO getBranchById(int id) {
+    public BranchDTO getBranchById(String id) {
         return branchRepo.findById(id)
                 .map(branch -> modelMapper.map(branch, BranchDTO.class))
                 .orElseThrow(() -> new ResourceNotFoundException("Branch not found for id: " + id));
@@ -88,16 +92,12 @@ public class BranchServiceIMPL implements BranchService {
 
     @Override
     @Transactional
-    public String updateBranchById(int id, RequestBranchDTO requestBranchDTO) {
+    public String updateBranchById(String id, RequestBranchDTO requestBranchDTO) {
         Branch existingBranch = branchRepo.findById(id)
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found!"));
 
         if (Objects.equals(existingBranch.getBranchName(), requestBranchDTO.getBranchName())) {
             throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
-        }
-
-        if (Objects.equals(existingBranch.getBranchCode(), requestBranchDTO.getBranchCode())) {
-            throw new BranchAlreadyExistsException("Branch code '" + requestBranchDTO.getBranchCode() + "' already exists.");
         }
 
         String oldSanitizedBranchName = existingBranch.getBranchName()
@@ -109,6 +109,7 @@ public class BranchServiceIMPL implements BranchService {
         // Update fields if provided
         if (requestBranchDTO.getBranchName() != null) {
             existingBranch.setBranchName(requestBranchDTO.getBranchName());
+            existingBranch.setDescription(requestBranchDTO.getDescription());
             existingBranch.setUpdateDate(LocalDateTime.now());
             newSanitizedBranchName = requestBranchDTO.getBranchName()
                     .toLowerCase()
@@ -131,7 +132,7 @@ public class BranchServiceIMPL implements BranchService {
 
 
     @Override
-    public String deleteBranchById(int id) {
+    public String deleteBranchById(String id) {
         if (!branchRepo.existsById(id)) {
             throw new BranchNotFoundException("Branch not found with ID: " + id);
         }

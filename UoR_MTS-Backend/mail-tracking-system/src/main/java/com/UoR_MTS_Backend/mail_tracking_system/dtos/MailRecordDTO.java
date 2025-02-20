@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class MailRecordDTO {
     private int id;
     private String branchCode;
-    private String branchName;
     private String senderName;
     private String receiverName;
     private String mailType;

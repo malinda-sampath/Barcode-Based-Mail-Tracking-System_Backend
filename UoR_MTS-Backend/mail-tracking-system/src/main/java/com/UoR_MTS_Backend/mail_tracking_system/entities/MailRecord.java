@@ -18,8 +18,10 @@ import java.time.LocalDateTime;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id;
 
-        private String branchCode;
-        private String branchName;
+        @ManyToOne
+        @JoinColumn(name = "branch_code", referencedColumnName = "branch_code", nullable = false)
+        private Branch branch;
+
         private String mailType;
         private String trackingNumber;
         private String barcodeId;

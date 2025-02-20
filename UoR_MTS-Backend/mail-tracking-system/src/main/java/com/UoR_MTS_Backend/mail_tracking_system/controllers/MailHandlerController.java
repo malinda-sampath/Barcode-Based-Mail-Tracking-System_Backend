@@ -5,6 +5,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.services.MailHandlerService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/mail-Handler")
 @AllArgsConstructor
+@PreAuthorize("hasAnyRole('MAIL_HANDLER')")
 public class MailHandlerController {
 
     private final MailHandlerService mailHandlerService;

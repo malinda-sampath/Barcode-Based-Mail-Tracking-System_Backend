@@ -31,11 +31,14 @@ public class DailyMailServiceIMPL implements DailyMailService {
     private final DailyMailRepo dailyMailRepo;
     private final MailActivityRepo mailActivityRepo;
     private final UserRepo userRepo;
+    private static String userName ;
+    private static String userId;
     //Username and user ID should get from user session
 
     @Override
     @Transactional
     public String addDailyMail(DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID, Authentication authentication) {
+
         if (dailyMailDTO == null) {
             throw new IllegalArgumentException("DailyMailDTO cannot be null.");
         }
@@ -66,7 +69,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
         MailActivity log = new MailActivity(
                 "Insert",
-                dailyMail.getBranchName(),
+                dailyMail.getBranch().getBranchCode(),
                 dailyMail.getSenderName(),
                 dailyMail.getReceiverName(),
                 dailyMail.getBarcodeId(),
@@ -106,7 +109,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
             // Add the activity log
             MailActivity log = new MailActivity(
                     "Update",
-                    existingMail.getBranchName(),
+                    existingMail.getBranch().getBranchCode(),
                     existingMail.getSenderName(),
                     existingMail.getReceiverName(),
                     //Shows the Existing Barcode ID then
@@ -143,7 +146,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
         MailActivity log = new MailActivity(
                 "Delete",
-                existingMail.getBranchName(),
+                existingMail.getBranch().getBranchCode(),
                 existingMail.getSenderName(),
                 existingMail.getReceiverName(),
                 existingBarcodeId,
@@ -171,8 +174,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 .sorted(Comparator.comparing(DailyMail::getId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
                         mail.getId(),
-                        mail.getBranchCode(),
-                        mail.getBranchName(),
+                        mail.getBranch().getBranchCode(),
                         mail.getSenderName(),
                         mail.getReceiverName(),
                         mail.getMailType(),
@@ -200,8 +202,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 .sorted(Comparator.comparing(DailyMail::getId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
                         mail.getId(),
-                        mail.getBranchCode(),
-                        mail.getBranchName(),
+                        mail.getBranch().getBranchCode(),
                         mail.getSenderName(),
                         mail.getReceiverName(),
                         mail.getMailType(),
@@ -241,8 +242,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 .sorted(Comparator.comparing(DailyMail::getId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
                         mail.getId(),
-                        mail.getBranchCode(),
-                        mail.getBranchName(),
+                        mail.getBranch().getBranchCode(),
                         mail.getSenderName(),
                         mail.getReceiverName(),
                         mail.getMailType(),

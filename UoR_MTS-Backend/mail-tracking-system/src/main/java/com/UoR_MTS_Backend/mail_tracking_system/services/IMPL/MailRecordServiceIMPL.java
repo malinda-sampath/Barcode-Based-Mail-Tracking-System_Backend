@@ -80,7 +80,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
             dto.setReceiverName(mail.getReceiverName());
             dto.setMailType(mail.getMailType());
             dto.setTrackingNumber(mail.getTrackingNumber());
-            dto.setBranchName(mail.getBranchName());
+            dto.setBranchCode(mail.getBranch().getBranchCode());
             dto.setInsertDateTime(mail.getInsertDateTime());
             dto.setUpdateDateTime(mail.getUpdateDateTime());
             return dto;
@@ -109,8 +109,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
         return mailPage.map(mail -> new MailRecord(
                 mail.getId(),
-                mail.getBranchCode(),
-                mail.getBranchName(),
+                mail.getBranch(),
                 mail.getSenderName(),
                 mail.getReceiverName(),
                 mail.getMailType(),

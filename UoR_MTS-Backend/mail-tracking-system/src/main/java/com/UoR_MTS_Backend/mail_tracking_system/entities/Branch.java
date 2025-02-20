@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,18 +16,26 @@ import java.time.LocalDateTime;
 @Table(name = "branches")
 public class Branch {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "branch_name", nullable = false, length = 100, unique = true)
-    private String branchName;
-
-    @Column(name = "branch_code", nullable = false, length = 10, unique = true)
+    @Column(name = "branch_code")
     private String branchCode;
 
-    @Column(name = "insert_date", nullable = false, updatable = false)
+    @Column(name = "branch_name")
+    private String branchName;
+
+    @Column(name = "insert_date")
     private LocalDateTime insertDate;
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;
+
+    @Column(name = "description", length = 500)
+    private String description;
+
+    @PrePersist
+    public void generateId() {
+        if (this.branchCode == null) {
+            int randomNum = new Random().nextInt(9000) + 1000; // Generates a number between 100-999
+            this.branchCode = "BR-" + randomNum;
+        }
+    }
 }

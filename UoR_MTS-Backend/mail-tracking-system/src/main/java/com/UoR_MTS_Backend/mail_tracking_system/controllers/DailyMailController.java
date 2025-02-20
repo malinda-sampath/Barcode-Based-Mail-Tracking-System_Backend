@@ -23,12 +23,12 @@ import java.util.List;
 @RequestMapping("/api/daily-mail")
 @CrossOrigin
 @AllArgsConstructor
+@PreAuthorize("hasAnyRole('MAIL_HANDLER', 'SUPER_ADMIN')")
 public class DailyMailController {
 
     private final DailyMailService dailyMailService;
 
     @PostMapping("/save")
-    @PreAuthorize("hasAnyRole('MAIL_HANDLER', 'SUPER_ADMIN')")
     public ResponseEntity<StandardResponse<String>> addDailyMail(@RequestBody DailyMailDTO dailyMailDTO) throws WriterException, IOException {
         if (dailyMailDTO == null) {
             throw new IllegalArgumentException("DailyMailDTO cannot be null.");
