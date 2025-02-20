@@ -17,8 +17,7 @@ public class DailyMail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String branchCode;
-    private String branchName;
+
     private String senderName;
     private String receiverName;
     private String mailType;
@@ -31,4 +30,7 @@ public class DailyMail {
     private LocalDateTime insertDateTime;
     private LocalDateTime updateDateTime;
 
+    @ManyToOne
+    @JoinColumn(name = "branch_code", referencedColumnName = "branch_code", nullable = false)
+    private Branch branch;
 }

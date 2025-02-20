@@ -54,11 +54,11 @@ public class MailActivityServiceIMPL implements MailActivityService {
 
 
     @Override
-    public List<MailActivityDTO> filterMailActivities(String userName, String activityType, String branchName, String senderName, String receiverName) {
+    public List<MailActivityDTO> filterMailActivities(String userName, String activityType, String branchCode, String senderName, String receiverName) {
         List<MailActivity> mailActivityList = mailActivityRepo.findAll().stream()
                 .filter(mailActivity -> (userName == null || mailActivity.getUser().getUsername().equalsIgnoreCase(userName)) &&
                         (activityType == null || mailActivity.getActivityType().equalsIgnoreCase(activityType)) &&
-                        (branchName == null || mailActivity.getBranchName().equalsIgnoreCase(branchName)) &&
+                        (branchCode == null || mailActivity.getBranchCode().equalsIgnoreCase(branchCode)) &&
                         (senderName == null || mailActivity.getSenderName().equalsIgnoreCase(senderName)) &&
                         (receiverName == null || mailActivity.getReceiverName().equalsIgnoreCase(receiverName)))
                 .sorted(Comparator.comparing(MailActivity::getId))

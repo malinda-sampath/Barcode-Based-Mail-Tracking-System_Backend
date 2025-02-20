@@ -16,7 +16,7 @@ public class MailActivityDTO {
     private int userId;
     private String userName;
     private String activity;
-    private String branchName;
+    private String branchCode;
     private String senderName;
     private String receiverName;
     private String barcodeId;

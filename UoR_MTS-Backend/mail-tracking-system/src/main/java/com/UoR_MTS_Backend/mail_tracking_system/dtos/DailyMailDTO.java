@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Data
 public class DailyMailDTO {
     private String branchCode;
-    private String branchName;
     private String senderName;
     private String receiverName;
     private String mailType;

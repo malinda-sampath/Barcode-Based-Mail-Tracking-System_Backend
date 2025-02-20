@@ -7,6 +7,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.services.BranchService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,14 +16,15 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("api/branch")
 @AllArgsConstructor
+@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class BranchController {
 
     private final BranchService branchService;
 
     @PostMapping("/save")
     public ResponseEntity<StandardResponse<String>> branchSave(@RequestBody RequestBranchDTO requestBranchDTO) {
-                String message = branchService.branchSave(requestBranchDTO);
-                return ResponseBuilder.success(message, null);
+        String message = branchService.branchSave(requestBranchDTO);
+        return ResponseBuilder.success(message, null);
     }
 
     @GetMapping
@@ -31,22 +33,20 @@ public class BranchController {
         return ResponseBuilder.success("Branches Retrieved Successfully!", branches);
     }
 
-
-
     @GetMapping("/get/{id}")
-    public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable(value = "id") int id) {
+    public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable(value = "id") String id) {
         BranchDTO branchDTO = branchService.getBranchById(id);
         return ResponseBuilder.success(null, branchDTO);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse<String>> branchUpdate(@PathVariable(value = "id")int id, @RequestBody RequestBranchDTO requestBranchDTO) {
+    public ResponseEntity<StandardResponse<String>> branchUpdate(@PathVariable(value = "id")String id, @RequestBody RequestBranchDTO requestBranchDTO) {
         String message = branchService.updateBranchById(id, requestBranchDTO);
         return ResponseBuilder.success(message, null);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable() int id) {
+    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable() String id) {
         String message = branchService.deleteBranchById(id);
         return ResponseBuilder.success(message, null);
     }

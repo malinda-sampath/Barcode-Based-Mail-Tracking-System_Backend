@@ -10,10 +10,9 @@ public interface BranchService {
 
     public List<BranchDTO> getAllBranches();
 
-    BranchDTO getBranchById(int id);
+    BranchDTO getBranchById(String id);
 
+    String updateBranchById(String id, RequestBranchDTO requestBranchDTO);
 
-    String updateBranchById(int id, RequestBranchDTO requestBranchDTO);
-
-    String deleteBranchById(int id);
+    String deleteBranchById(String id);
 }
