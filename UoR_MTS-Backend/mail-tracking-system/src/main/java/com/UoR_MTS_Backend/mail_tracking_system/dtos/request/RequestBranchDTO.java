@@ -12,5 +12,5 @@ import java.time.LocalDateTime;
 
 public class RequestBranchDTO {
     private String branchName;
-    private String description;
+    private String branchDescription;
 }

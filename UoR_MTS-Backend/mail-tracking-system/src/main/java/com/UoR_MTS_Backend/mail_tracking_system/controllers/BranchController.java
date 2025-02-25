@@ -16,18 +16,19 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("api/branch")
 @AllArgsConstructor
-@PreAuthorize("hasRole('SUPER_ADMIN')")
 public class BranchController {
 
     private final BranchService branchService;
 
     @PostMapping("/save")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<StandardResponse<String>> branchSave(@RequestBody RequestBranchDTO requestBranchDTO) {
         String message = branchService.branchSave(requestBranchDTO);
         return ResponseBuilder.success(message, null);
     }
 
-    @GetMapping
+    @GetMapping("/get-all")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     public ResponseEntity<StandardResponse<List<BranchDTO>>> getAllBranches() {
         List<BranchDTO> branches = branchService.getAllBranches();
         return ResponseBuilder.success("Branches Retrieved Successfully!", branches);

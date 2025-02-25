@@ -5,9 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @EnableJpaRepositories
 public interface BranchRepo extends JpaRepository<Branch,String> {
-    Branch findByBranchNameIgnoreCase(String branchName);
+    Optional<Branch> findAllByBranchName(String branchName);
     Branch findByBranchCode(String branchCode);
 }
