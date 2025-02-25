@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -31,38 +32,42 @@ public class BranchServiceIMPL implements BranchService {
     @Override
     @Transactional
     public String branchSave(RequestBranchDTO requestBranchDTO) {
-        String sanitizedBranchName = requestBranchDTO.getBranchName().toLowerCase().replaceAll("[^a-z0-9_]", "_");
-        Branch existingBranchName = branchRepo.findByBranchNameIgnoreCase(requestBranchDTO.getBranchName());
+        String sanitizedBranchName = requestBranchDTO.getBranchName()
+                .toLowerCase()
+                .replaceAll("[^a-z0-9_]", "_");
 
-        Branch existingBranch;
-        String branchCode;
-        do {
-            branchCode = idGenerator.generateID("BR", 3);
-            existingBranch = branchRepo.findByBranchCode(branchCode);
-        } while (existingBranch != null);
+        // Check if branch already exists (Avoid NPE)
+        Optional<Branch> existingBranchOpt = branchRepo.findAllByBranchName(requestBranchDTO.getBranchName());
 
-
-        if (existingBranchName != null) {
+        if (existingBranchOpt.isPresent()) {
             throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
         }
 
-        try {
-            // First, create the table (DDL statement)
-            createMailCartTable(sanitizedBranchName);
+        // Generate unique branch code
+        String branchCode;
+        do {
+            branchCode = idGenerator.generateID("BR", 4  );
+        } while (branchRepo.findByBranchCode(branchCode) != null); // No need to reassign `existingBranch`
 
+        try {
             // Map DTO to Entity
             Branch branch = modelMapper.map(requestBranchDTO, Branch.class);
             branch.setInsertDate(LocalDateTime.now());
+            branch.setBranchCode(branchCode); // Ensure branchCode is set
 
-            // Save branch to the database
-            branchRepo.save(branch);
+            // Save branch first
+            Branch savedBranch = branchRepo.save(branch);
+
+            // Now create the table (Only if saving was successful)
+            createMailCartTable(sanitizedBranchName);
 
             return "Branch saved successfully.";
 
         } catch (Exception e) {
-            throw new RuntimeException("An error occurred while processing the branch: " + e.getMessage(), e);
+            throw new RuntimeException("Error while processing the branch: " + e.getMessage(), e);
         }
     }
+
 
     @Transactional
     public void createMailCartTable(String sanitizedBranchName) {
@@ -109,7 +114,7 @@ public class BranchServiceIMPL implements BranchService {
         // Update fields if provided
         if (requestBranchDTO.getBranchName() != null) {
             existingBranch.setBranchName(requestBranchDTO.getBranchName());
-            existingBranch.setDescription(requestBranchDTO.getDescription());
+            existingBranch.setDescription(requestBranchDTO.getBranchDescription());
             existingBranch.setUpdateDate(LocalDateTime.now());
             newSanitizedBranchName = requestBranchDTO.getBranchName()
                     .toLowerCase()

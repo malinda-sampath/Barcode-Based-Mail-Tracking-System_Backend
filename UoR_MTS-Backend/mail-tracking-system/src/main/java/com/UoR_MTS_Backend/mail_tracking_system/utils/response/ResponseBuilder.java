@@ -20,5 +20,7 @@ public class ResponseBuilder {
         return ResponseEntity.status(400).body(new StandardResponse<>(400, message, data));
     }
 
-
+    public static <T> ResponseEntity<StandardResponse<T>> conflict(String message, T data) {
+        return ResponseEntity.status(409).body(new StandardResponse<>(409, message, data));
+    }
 }

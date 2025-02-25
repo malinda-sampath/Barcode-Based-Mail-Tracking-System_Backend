@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class BranchDTO {
     private String branchCode;
     private String branchName;
-    private String description;
+    private String branchDescription;
     private LocalDateTime insertDate;
     private LocalDateTime updateDate;
 }

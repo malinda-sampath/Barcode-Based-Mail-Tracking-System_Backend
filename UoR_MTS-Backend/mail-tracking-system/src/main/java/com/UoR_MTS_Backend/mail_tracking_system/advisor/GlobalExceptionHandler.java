@@ -56,7 +56,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BranchAlreadyExistsException.class)
     public ResponseEntity<Object> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        StandardResponse<String> response = new StandardResponse<>(409, "CONFLICT"+ ex.getMessage(),null);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(NoDailyMailsFoundException.class)

@@ -28,7 +28,7 @@ public class Branch {
     @Column(name = "update_date")
     private LocalDateTime updateDate;
 
-    @Column(name = "description", length = 500)
+    @Column(name = "branchDescription", length = 500)
     private String description;
 
     @PrePersist
