@@ -1,5 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
+import com.UoR_MTS_Backend.mail_tracking_system.controllers.WebSocketController;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.RequestBranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchAlreadyExistsException;
@@ -27,6 +28,7 @@ public class BranchServiceIMPL implements BranchService {
     private final BranchRepo branchRepo;
     private final JdbcTemplate jdbcTemplate;
     private final ModelMapper modelMapper;
+    private final WebSocketController webSocketController;
     private final IDGenerator idGenerator;
 
     @Override
@@ -57,6 +59,8 @@ public class BranchServiceIMPL implements BranchService {
 
             // Save branch first
             Branch savedBranch = branchRepo.save(branch);
+            BranchDTO branchDTO = modelMapper.map(savedBranch, BranchDTO.class);
+            webSocketController.sendBranchUpdate(branchDTO);
 
             // Now create the table (Only if saving was successful)
             createMailCartTable(sanitizedBranchName);
@@ -131,7 +135,10 @@ public class BranchServiceIMPL implements BranchService {
         }
 
         // Save the updated branch
-        branchRepo.save(existingBranch);
+        Branch branch = branchRepo.save(existingBranch);
+        BranchDTO branchDTO = modelMapper.map(branch, BranchDTO.class);
+        webSocketController.sendBranchUpdate(branchDTO);
+
         return "Branch " + existingBranch.getBranchName() + " updated successfully.";
     }
 
@@ -146,6 +153,7 @@ public class BranchServiceIMPL implements BranchService {
         return branchRepo.findById(id)
                 .map(branch -> {
                     branchRepo.deleteById(id);
+                    webSocketController.sendBranchUpdate(null);
                     return "Branch " + branch.getBranchName() + " deleted successfully.";
                 })
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found with ID: " + id));
