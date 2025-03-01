@@ -14,5 +14,5 @@ public interface BranchService {
 
     String updateBranchById(String id, RequestBranchDTO requestBranchDTO);
 
-    String deleteBranchById(String id);
+    String deleteBranchByBranchCode(String branchCode);
 }

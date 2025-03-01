@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface BranchRepo extends JpaRepository<Branch,String> {
     Optional<Branch> findAllByBranchName(String branchName);
     Branch findByBranchCode(String branchCode);
+    Optional<Branch> deleteBranchByBranchCode(String branchCode);
 }
