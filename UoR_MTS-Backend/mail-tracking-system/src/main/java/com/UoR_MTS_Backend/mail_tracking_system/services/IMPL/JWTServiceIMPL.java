@@ -80,6 +80,15 @@ public class JWTServiceIMPL implements JWTService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
+    public boolean isTokenValid(String token){
+        try {
+            String username = extractUsername(token);
+            return (username != null && !isTokenExpired(token));
+        } catch (Exception e) {
+            return false; // ❌ Invalid token
+        }
+    }
+
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

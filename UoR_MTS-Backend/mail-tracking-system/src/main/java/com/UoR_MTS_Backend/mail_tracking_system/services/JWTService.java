@@ -7,6 +7,8 @@ public interface JWTService {
 
     public boolean isTokenValid(String token, UserDetails userDetails);
 
+    public boolean isTokenValid(String token);
+
     public String generateToken(UserDetails userDetails);
 
     public long getExpirationTime();
