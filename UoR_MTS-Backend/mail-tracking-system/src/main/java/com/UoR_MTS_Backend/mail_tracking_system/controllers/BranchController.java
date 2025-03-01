@@ -34,8 +34,8 @@ public class BranchController {
         return ResponseBuilder.success("Branches Retrieved Successfully!", branches);
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable(value = "id") String id) {
+    @GetMapping("/get/{branchCode}")
+    public ResponseEntity<StandardResponse<BranchDTO>> getBranchById(@PathVariable(value = "branchCode") String id) {
         BranchDTO branchDTO = branchService.getBranchById(id);
         return ResponseBuilder.success(null, branchDTO);
     }
@@ -46,9 +46,10 @@ public class BranchController {
         return ResponseBuilder.success(message, null);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable() String id) {
-        String message = branchService.deleteBranchById(id);
+    @DeleteMapping("/delete/{branchCode}")
+    public ResponseEntity<StandardResponse<String>> deleteBranch(@PathVariable() String branchCode) {
+        System.out.println("Branch Code: " + branchCode);
+        String message = branchService.deleteBranchByBranchCode(branchCode);
         return ResponseBuilder.success(message, null);
     }
 }

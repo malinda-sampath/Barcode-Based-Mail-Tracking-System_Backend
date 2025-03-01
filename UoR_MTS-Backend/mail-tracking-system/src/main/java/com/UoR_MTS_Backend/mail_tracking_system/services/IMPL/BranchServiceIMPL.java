@@ -144,19 +144,20 @@ public class BranchServiceIMPL implements BranchService {
 
 
     @Override
-    public String deleteBranchById(String id) {
-        if (!branchRepo.existsById(id)) {
-            throw new BranchNotFoundException("Branch not found with ID: " + id);
+    @Transactional
+    public String deleteBranchByBranchCode(String branchCode) {
+        Branch existingBranch = branchRepo.findByBranchCode(branchCode);
+        if (existingBranch==null) {
+            throw new BranchNotFoundException("Branch not found with ID: " + branchCode);
+        } else {
+            try {
+                branchRepo.deleteBranchByBranchCode(branchCode);
+                webSocketController.sendBranchUpdate("DELETED:" + branchCode);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while deleting the branch: " + e.getMessage(), e);
+            }
         }
-
-        // Delete the branch
-        return branchRepo.findById(id)
-                .map(branch -> {
-                    branchRepo.deleteById(id);
-                    webSocketController.sendBranchUpdate(null);
-                    return "Branch " + branch.getBranchName() + " deleted successfully.";
-                })
-                .orElseThrow(() -> new BranchNotFoundException("Branch not found with ID: " + id));
+        return "Branch deleted successfully.";
     }
 
     // Create branch-specific mail cart table
