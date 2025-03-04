@@ -20,7 +20,7 @@ public class WebSocketController {
 //        return branchDTO;
 //    }
 
-    public void sendBranchUpdate(Object branchDTO) {
-        messagingTemplate.convertAndSend("/topic/branch-updates", branchDTO);
+    public void sendBranchUpdate(Object WCBranchUpdate) {
+        messagingTemplate.convertAndSend("/topic/branch-updates", WCBranchUpdate);
     }
 }

@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.configs;
+package com.UoR_MTS_Backend.mail_tracking_system.configs.WebSocket;
 
 import com.UoR_MTS_Backend.mail_tracking_system.services.JWTService;
 import lombok.AllArgsConstructor;
