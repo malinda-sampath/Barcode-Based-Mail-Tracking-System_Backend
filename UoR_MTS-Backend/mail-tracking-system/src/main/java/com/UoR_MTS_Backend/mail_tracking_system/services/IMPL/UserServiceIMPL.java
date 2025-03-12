@@ -2,7 +2,6 @@ package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.LoginUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.LoginResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.Role;

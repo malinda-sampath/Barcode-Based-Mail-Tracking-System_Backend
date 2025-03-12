@@ -33,8 +33,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((requests)->requests
                         .requestMatchers(
                                 "/api/email-verification/**",
-                                "/api/mail-Handler/**",
-                                "/api/branch-manager/**",
                                 "/api/user/**",
                                 "/api/password/**",
                                 "/swagger-ui/**",

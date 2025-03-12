@@ -1,7 +1,8 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchManagerDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.entities.BranchManager;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.BranchUserRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.BranchUserResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.services.BranchManagerService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
@@ -19,33 +20,27 @@ public class BranchManagerController {
 
     private final BranchManagerService branchManagerService;
 
-    @PostMapping("/save")
-    public ResponseEntity<StandardResponse<String>> branchManagerSave(@RequestBody BranchManagerDTO branchManagerDto) {
-        String message = branchManagerService.branchManagerSave(branchManagerDto);
-        return ResponseBuilder.success(message, null);
-    }
-
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse<String>> branchManagerUpdate(@PathVariable Integer id, @RequestBody BranchManagerDTO branchManagerDto) {
-        String message = branchManagerService.branchManagerUpdate(id, branchManagerDto);
+    public ResponseEntity<StandardResponse<String>> branchManagerUpdate(@PathVariable String id, @RequestBody BranchUserRequestDTO branchUserRequestDTO) {
+        String message = branchManagerService.branchManagerUpdate(id,branchUserRequestDTO);
         return ResponseBuilder.success(message, null);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<StandardResponse<String>> branchManagerDelete(@PathVariable Integer id) {
+    public ResponseEntity<StandardResponse<String>> branchManagerDelete(@PathVariable String id) {
         String message = branchManagerService.branchManagerDelete(id);
         return ResponseBuilder.success(message, null);
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<StandardResponse<List<BranchManager>>> getAllBranchManagers() {
-        List<BranchManager> branchManagers = branchManagerService.getAllBranchManagers();
+    public ResponseEntity<StandardResponse<List<BranchUserResponseDTO>>> getAllBranchManagers() {
+        List<BranchUserResponseDTO> branchManagers = branchManagerService.getAllBranchManagers();
         return ResponseBuilder.success("Branch managers retrieved successfully.", branchManagers);
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<StandardResponse<BranchManager>> getBranchManagerById(@PathVariable("id") Integer branchManagerId) {
-        BranchManager branchManager = branchManagerService.getBranchManagerById(branchManagerId);
+    public ResponseEntity<StandardResponse<User>> getBranchManagerById(@PathVariable("id") String id) {
+        User branchManager = branchManagerService.getBranchManagerById(id);
         return ResponseBuilder.success("Branch manager retrieved successfully.", branchManager);
     }
 }

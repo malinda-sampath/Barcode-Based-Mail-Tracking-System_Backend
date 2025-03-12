@@ -3,6 +3,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 import com.UoR_MTS_Backend.mail_tracking_system.controllers.WebSocketController;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.RequestBranchDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.websocketResponse.WCBranchUpdateDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchAlreadyExistsException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
@@ -60,7 +61,10 @@ public class BranchServiceIMPL implements BranchService {
             // Save branch first
             Branch savedBranch = branchRepo.save(branch);
             BranchDTO branchDTO = modelMapper.map(savedBranch, BranchDTO.class);
-            webSocketController.sendBranchUpdate(branchDTO);
+
+            // Send branch update to WebSocket
+            WCBranchUpdateDTO wcBranchUpdateDTO = new WCBranchUpdateDTO("save", branchDTO);
+            webSocketController.sendBranchUpdate(wcBranchUpdateDTO);
 
             // Now create the table (Only if saving was successful)
             createMailCartTable(sanitizedBranchName);
@@ -151,8 +155,12 @@ public class BranchServiceIMPL implements BranchService {
             throw new BranchNotFoundException("Branch not found with ID: " + branchCode);
         } else {
             try {
-                branchRepo.deleteBranchByBranchCode(branchCode);
-                webSocketController.sendBranchUpdate("DELETED:" + branchCode);
+               branchRepo.deleteBranchByBranchCode(branchCode);
+
+                // Send branch update to WebSocket
+                BranchDTO branchDTO = modelMapper.map(existingBranch, BranchDTO.class);
+                WCBranchUpdateDTO wcBranchUpdateDTO = new WCBranchUpdateDTO("delete", branchDTO);
+                webSocketController.sendBranchUpdate(wcBranchUpdateDTO);
             } catch (Exception e) {
                 throw new RuntimeException("Error while deleting the branch: " + e.getMessage(), e);
             }

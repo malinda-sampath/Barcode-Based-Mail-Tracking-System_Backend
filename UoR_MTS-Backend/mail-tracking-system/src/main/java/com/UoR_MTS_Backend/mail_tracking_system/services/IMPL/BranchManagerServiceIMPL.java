@@ -1,126 +1,69 @@
 package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchManagerDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.entities.BranchManager;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.BranchUserRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.BranchUserResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.UserNotFoundException;
-import com.UoR_MTS_Backend.mail_tracking_system.repositories.BranchManagerRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.BranchManagerService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class BranchManagerServiceIMPL implements BranchManagerService {
 
-    @Autowired
-    private BranchManagerRepo branchManagerRepo;
+    private final UserRepo userRepo;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public String branchManagerSave(BranchManagerDTO branchManagerDto) {
-
-        if (branchManagerDto == null) {
-            throw new IllegalArgumentException("Branch Manager data cannot be null.");
-        }
-
-
-        if (branchManagerDto.getBranchManagerName() == null || branchManagerDto.getBranchManagerName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Branch Manager name cannot be null or empty.");
-        }
-        if (branchManagerDto.getBranchManagerPassword() == null || branchManagerDto.getBranchManagerPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Branch Manager password cannot be null or empty.");
-        }
-        if (branchManagerDto.getBranchCode() == null || branchManagerDto.getBranchCode().trim().isEmpty()) {
-            throw new IllegalArgumentException("Branch code cannot be null or empty.");
-        }
-
-
-        try {
-
-        BranchManager branchManager = new BranchManager(
-                branchManagerDto.getBranchManagerName(),
-                branchManagerDto.getBranchManagerPassword(),
-                branchManagerDto.getBranchCode()
-        );
-
-
-
-            branchManagerRepo.save(branchManager);
-        }catch (Exception e){
-
-            throw  new RuntimeException("Error Occurred Saving Branch"+e.getMessage(),e);
-        }
-
-
-        return branchManagerDto.getBranchManagerName() + " has been saved successfully";
+    public String branchManagerUpdate(String id, BranchUserRequestDTO branchUserRequestDTO) {
+        return userRepo.findById(id)
+                .map(existingBranchManager -> {
+                    modelMapper.map(branchUserRequestDTO, existingBranchManager);
+                    existingBranchManager.setPassword(passwordEncoder.encode(branchUserRequestDTO.getPassword()));
+                    userRepo.save(existingBranchManager);
+                    return "Branch Manager updated successfully.";
+                })
+                .orElseThrow(() -> new UserNotFoundException("Branch Manager not found"));
     }
 
-
     @Override
-    public String branchManagerUpdate(int id, BranchManagerDTO branchManagerDto) {
-    try {
-        BranchManager existingBranchManager = branchManagerRepo.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Branch Manager not found with ID: " + id));
-
-
-        if (branchManagerDto == null) {
-            throw new IllegalArgumentException("BranchManager Fields can not be Null");
-        }
-        if (branchManagerDto.getBranchManagerName() != null) {
-            existingBranchManager.setBranchManagerName(branchManagerDto.getBranchManagerName());
-        }
-        if (branchManagerDto.getBranchManagerPassword() != null) {
-            existingBranchManager.setBranchManagerPassword(branchManagerDto.getBranchManagerPassword());
-        }
-        if (branchManagerDto.getBranchCode() != null) {
-            existingBranchManager.setBranchCode(branchManagerDto.getBranchCode());
-        }
-
-        branchManagerRepo.save(existingBranchManager);
-        return existingBranchManager.getBranchManagerName() + " has been updated Successfully";
-
-
-        }catch(UserNotFoundException ex)
-        {
-
-            throw ex;
-
-        }catch(Exception e){
-            throw new RuntimeException("Error Occure Updating Manager !");
-        }
-    }
-
-
-    @Override
-    public String branchManagerDelete(int id){
-        if (!branchManagerRepo.existsById(id) ){
-            throw new UserNotFoundException("Branch Manager not found with ID: " + id);
+    public String branchManagerDelete(String id){
+        if (!userRepo.existsById(id) ){
+            throw new UserNotFoundException("Branch Manager not found");
         }
 
         try {
-            branchManagerRepo.deleteById(id);
-
+            userRepo.deleteById(id);
             return "Branch Manager Deleted Successfully";
         }catch(Exception e){
-
             throw new RuntimeException("Error Deleting BranchManager"+e.getMessage());
         }
     }
 
     @Override
-    public List<BranchManager> getAllBranchManagers() {
-        List<BranchManager> branchManagers =  branchManagerRepo.findAll();
-        if(branchManagers.isEmpty()){
+    public List<BranchUserResponseDTO> getAllBranchManagers() {
+        List<User> users = userRepo.findAllByRole_Name(RoleEnum.BRANCH_MANAGER);
+
+        if (users.isEmpty()) {
             throw new UserNotFoundException("No Branches Found In The Database");
         }
 
-        return branchManagers;
+        return modelMapper.map(users, new TypeToken<List<BranchUserResponseDTO>>() {}.getType());
     }
 
     @Override
-    public BranchManager getBranchManagerById(int branchManagerId) {
-        return branchManagerRepo.findById(branchManagerId)
-                .orElseThrow(() -> new UserNotFoundException("Branch Manager not found with ID: " + branchManagerId));
+    public User getBranchManagerById(String id) {
+        return userRepo.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("Branch Manager not found with ID: " + id));
     }
 }
