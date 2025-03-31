@@ -23,7 +23,6 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         this.createAdmin();

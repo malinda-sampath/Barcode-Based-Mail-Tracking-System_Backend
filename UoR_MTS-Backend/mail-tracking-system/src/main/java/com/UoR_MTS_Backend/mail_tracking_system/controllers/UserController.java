@@ -2,6 +2,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.LoginUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.MailHandlerRequestDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.LoginResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
@@ -10,6 +11,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.services.UserService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,7 @@ public class UserController {
 
     private final UserService userService;
     private final JWTService jwtService;
+    private final ModelMapper modelMapper;
 
     @PostMapping("/login")
     public ResponseEntity<StandardResponse<LoginResponseDTO>> loginUser(@RequestBody LoginUserDTO loginUserDTO){
@@ -36,14 +39,6 @@ public class UserController {
         );
 
         return ResponseBuilder.success("Welcome back! You have successfully logged in.",loginResponse);
-    }
-
-    @PostMapping("/register-mail-handler")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<StandardResponse<String>> registerMailHandler(@RequestBody RegisterUserDTO registerUserDTO){
-        String message = userService.createUser(registerUserDTO, RoleEnum.MAIL_HANDLER);
-
-        return ResponseBuilder.success(message,null);
     }
 
     @PostMapping("/register-branch-manager")

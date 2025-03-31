@@ -8,15 +8,14 @@ import com.UoR_MTS_Backend.mail_tracking_system.entities.Role;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.RoleRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.UserService;
-import lombok.AllArgsConstructor;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AllArgsConstructor;
 import java.util.Optional;
 
 @Service
@@ -59,17 +58,5 @@ public class UserServiceIMPL implements UserService {
         user.setRole(optionalRole.get());
         userRepo.save(user);
         return "User created successfully";
-    }
-
-    @Override
-    public List<User> getAllMailHandlers(){
-        List<User> users = new ArrayList<>();
-
-        try{
-            modelMapper.map(userRepo.findAllByRole_Name(RoleEnum.SUPER_ADMIN), users);
-        } catch (Exception e){
-            throw new RuntimeException("Error occurred while fetching mail handlers");
-        }
-        return users;
     }
 }
