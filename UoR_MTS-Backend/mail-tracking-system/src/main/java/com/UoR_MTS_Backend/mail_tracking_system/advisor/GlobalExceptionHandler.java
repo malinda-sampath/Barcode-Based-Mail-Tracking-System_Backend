@@ -54,8 +54,8 @@ public class GlobalExceptionHandler {
         return ResponseBuilder.error(ex.getMessage(), null);
     }
 
-    @ExceptionHandler(BranchAlreadyExistsException.class)
-    public ResponseEntity<Object> handleBranchAlreadyExistsException(BranchAlreadyExistsException ex, WebRequest request) {
+    @ExceptionHandler(AlreadyExistsException.class)
+    public ResponseEntity<Object> handleAlreadyExistsException(AlreadyExistsException ex, WebRequest request) {
         StandardResponse<String> response = new StandardResponse<>(409, "CONFLICT"+ ex.getMessage(),null);
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }

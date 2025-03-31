@@ -4,7 +4,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.controllers.WebSocketController;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.BranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.RequestBranchDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.websocketResponse.WCBranchUpdateDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchAlreadyExistsException;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.AlreadyExistsException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.BranchNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.Branch;
@@ -43,7 +43,7 @@ public class BranchServiceIMPL implements BranchService {
         Optional<Branch> existingBranchOpt = branchRepo.findAllByBranchName(requestBranchDTO.getBranchName());
 
         if (existingBranchOpt.isPresent()) {
-            throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
+            throw new AlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
         }
 
         // Generate unique branch code
@@ -110,7 +110,7 @@ public class BranchServiceIMPL implements BranchService {
                 .orElseThrow(() -> new BranchNotFoundException("Branch not found!"));
 
         if (Objects.equals(existingBranch.getBranchName(), requestBranchDTO.getBranchName())) {
-            throw new BranchAlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
+            throw new AlreadyExistsException("Branch name '" + requestBranchDTO.getBranchName() + "' already exists.");
         }
 
         String oldSanitizedBranchName = existingBranch.getBranchName()
