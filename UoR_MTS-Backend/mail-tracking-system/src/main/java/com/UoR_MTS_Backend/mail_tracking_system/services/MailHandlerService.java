@@ -12,7 +12,7 @@ public interface MailHandlerService {
 
     String updateMailHandler(long id, MailHandlerRequestDTO mailHandlerRequestDTO);
 
-    String deleteMailHandler(long id);
+    String deleteMailHandler(String userID);
 
     List<MailHandlerResponseDTO> getAllMailHandlers();
 }

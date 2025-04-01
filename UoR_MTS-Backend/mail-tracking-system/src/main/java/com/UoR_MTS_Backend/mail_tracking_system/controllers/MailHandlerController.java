@@ -34,9 +34,10 @@ public class MailHandlerController {
         return ResponseBuilder.success(message, null);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<StandardResponse<String>> mailHandlerDelete(@PathVariable long id) {
-        String message = mailHandlerService.deleteMailHandler(id);
+    @DeleteMapping("/delete/{userID}")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<StandardResponse<String>> mailHandlerDelete(@PathVariable String userID) {
+        String message = mailHandlerService.deleteMailHandler(userID);
         return ResponseBuilder.success(message, null);
     }
 

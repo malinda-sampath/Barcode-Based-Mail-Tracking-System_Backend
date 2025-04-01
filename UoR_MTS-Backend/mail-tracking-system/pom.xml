@@ -155,6 +155,7 @@
 			<plugin>
 				<groupId>com.UoR_MTS-Backend</groupId>
 				<artifactId>mail-tracking-system</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
 			</plugin>
 		</plugins>
 	</build>

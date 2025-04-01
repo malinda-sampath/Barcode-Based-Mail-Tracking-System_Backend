@@ -4,6 +4,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.dtos.LoginUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.MailHandlerRequestDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.LoginResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.ProfileResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.services.JWTService;
@@ -51,9 +52,28 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<StandardResponse<User>> authenticateHandler(){
+    public ResponseEntity<StandardResponse<ProfileResponseDTO>> authenticateHandler(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-        return ResponseBuilder.success("Hello, "+currentUser.getFullName() + "! Here is your profile summary.",currentUser);
+
+        ProfileResponseDTO profileResponseDTO = new ProfileResponseDTO(
+                currentUser.getId(),
+                currentUser.getFullName(),
+                currentUser.getContact(),
+                currentUser.getEmail()
+        );
+
+        return ResponseBuilder.success("Hello, "+currentUser.getFullName() + "! Here is your profile summary.",profileResponseDTO);
+    }
+
+    @GetMapping("/update")
+    @PreAuthorize("hasAnyAuthority('BRANCH_MANAGER','SUPER_ADMIN','MAIL_HANDLER')")
+    public ResponseEntity<StandardResponse<String>> updateProfile(@RequestBody RegisterUserDTO registerUserDTO){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+//        User updatedUser = userService.updateUser(currentUser,registerUserDTO);
+
+        return ResponseBuilder.success("Your profile has been updated successfully.",null);
     }
 }
