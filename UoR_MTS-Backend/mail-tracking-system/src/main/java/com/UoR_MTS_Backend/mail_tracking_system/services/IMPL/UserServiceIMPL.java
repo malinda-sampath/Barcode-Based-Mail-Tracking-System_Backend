@@ -2,9 +2,11 @@ package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.LoginUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.ProfileUpdateRequestDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.Role;
+import com.UoR_MTS_Backend.mail_tracking_system.exception.AlreadyExistsException;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.RoleRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.UserService;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
@@ -59,4 +64,40 @@ public class UserServiceIMPL implements UserService {
         userRepo.save(user);
         return "User created successfully";
     }
+
+    @Override
+    public String updateUser(String userID, ProfileUpdateRequestDTO profileUpdateRequestDTO, MultipartFile profilePicture) {
+        User user = userRepo.findById(userID)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Ensure email uniqueness
+        Optional<User> existingUser = userRepo.findByEmail(profileUpdateRequestDTO.getEmail());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
+            throw new AlreadyExistsException("User already exists with this email");
+        }
+
+        // Update basic fields
+        user.setFullName(profileUpdateRequestDTO.getName());
+        user.setContact(profileUpdateRequestDTO.getContact());
+        user.setEmail(profileUpdateRequestDTO.getEmail());
+
+        // Update password only if provided
+        if (profileUpdateRequestDTO.getPassword() != null && !profileUpdateRequestDTO.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(profileUpdateRequestDTO.getPassword()));
+        }
+
+        // Handle profile picture update (Convert MultipartFile to byte array)
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            try {
+                user.setProfilePicture(profilePicture.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to process profile picture", e);
+            }
+        }
+
+        userRepo.save(user);
+        return "User updated successfully";
+    }
+
+
 }

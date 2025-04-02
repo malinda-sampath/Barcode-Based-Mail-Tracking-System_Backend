@@ -1,4 +1,4 @@
-package com.UoR_MTS_Backend.mail_tracking_system.dtos.response;
+package com.UoR_MTS_Backend.mail_tracking_system.dtos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProfileResponseDTO {
-    private String userID;
+public class ProfileUpdateRequestDTO {
     private String name;
     private String contact;
     private String email;
-    private byte[] profilePicture;
+    private String password;
 }

@@ -50,6 +50,10 @@ public class User implements UserDetails {
     @Column(updatable = false, name = "created_at")
     private LocalDateTime createdAt;
 
+    @Lob
+    @Column(name = "profile_picture", columnDefinition = "LONGBLOB")
+    private byte[] profilePicture;
+
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

@@ -3,6 +3,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.LoginUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.MailHandlerRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.ProfileUpdateRequestDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.LoginResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.ProfileResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
@@ -18,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/user")
@@ -60,20 +62,25 @@ public class UserController {
                 currentUser.getId(),
                 currentUser.getFullName(),
                 currentUser.getContact(),
-                currentUser.getEmail()
+                currentUser.getEmail(),
+                currentUser.getProfilePicture()
         );
 
         return ResponseBuilder.success("Hello, "+currentUser.getFullName() + "! Here is your profile summary.",profileResponseDTO);
     }
 
-    @GetMapping("/update")
-    @PreAuthorize("hasAnyAuthority('BRANCH_MANAGER','SUPER_ADMIN','MAIL_HANDLER')")
-    public ResponseEntity<StandardResponse<String>> updateProfile(@RequestBody RegisterUserDTO registerUserDTO){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+    @PutMapping("/update/{userID}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<StandardResponse<String>> updateProfile(
+            @PathVariable String userID,
+            @RequestParam String name,
+            @RequestParam String contact,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam(required = false) MultipartFile profilePicture) {
+        ProfileUpdateRequestDTO profileUpdateRequestDTO = new ProfileUpdateRequestDTO(name, contact, email, password);
 
-//        User updatedUser = userService.updateUser(currentUser,registerUserDTO);
-
-        return ResponseBuilder.success("Your profile has been updated successfully.",null);
+        String message = userService.updateUser(userID, profileUpdateRequestDTO, profilePicture);
+        return ResponseBuilder.success(message, null);
     }
 }
