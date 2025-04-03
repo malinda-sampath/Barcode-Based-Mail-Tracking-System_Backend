@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class RequestDailyMailViewAllDTO {
-    private int id;
     private String branchCode;
     private String senderName;
     private String receiverName;

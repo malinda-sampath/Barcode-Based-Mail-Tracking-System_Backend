@@ -66,7 +66,7 @@ public class DailyMailController {
     }
 
 
-    @GetMapping
+    @GetMapping("/get-all")
     public ResponseEntity<StandardResponse<List<RequestDailyMailViewAllDTO>>> getAllDailyMails() {
 
         List<RequestDailyMailViewAllDTO> dailyMails = dailyMailService.getAllDailyMails();

@@ -33,7 +33,6 @@ public class DailyMailServiceIMPL implements DailyMailService {
     private final UserRepo userRepo;
     private static String userName ;
     private static String userId;
-    //Username and user ID should get from user session
 
     @Override
     @Transactional
@@ -171,9 +170,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
         }
 
         return mailList.stream()
-                .sorted(Comparator.comparing(DailyMail::getId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
-                        mail.getId(),
                         mail.getBranch().getBranchCode(),
                         mail.getSenderName(),
                         mail.getReceiverName(),
@@ -199,9 +196,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
 
         return mailList.stream()
-                .sorted(Comparator.comparing(DailyMail::getId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
-                        mail.getId(),
                         mail.getBranch().getBranchCode(),
                         mail.getSenderName(),
                         mail.getReceiverName(),
@@ -239,9 +234,7 @@ public class DailyMailServiceIMPL implements DailyMailService {
         }
 
         return filteredMail.stream()
-                .sorted(Comparator.comparing(DailyMail::getId))
                 .map(mail -> new RequestDailyMailViewAllDTO(
-                        mail.getId(),
                         mail.getBranch().getBranchCode(),
                         mail.getSenderName(),
                         mail.getReceiverName(),

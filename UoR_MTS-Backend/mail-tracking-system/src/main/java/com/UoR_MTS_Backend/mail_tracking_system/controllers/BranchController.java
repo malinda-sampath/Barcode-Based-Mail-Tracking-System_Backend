@@ -28,7 +28,7 @@ public class BranchController {
     }
 
     @GetMapping("/get-all")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'MAIL_HANDLER')")
     public ResponseEntity<StandardResponse<List<BranchDTO>>> getAllBranches() {
         List<BranchDTO> branches = branchService.getAllBranches();
         return ResponseBuilder.success("Branches Retrieved Successfully!", branches);

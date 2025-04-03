@@ -4,6 +4,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.dtos.LoginUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.MailHandlerRequestDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.ProfileUpdateRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.HeaderResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.LoginResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.ProfileResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
@@ -82,5 +83,19 @@ public class UserController {
 
         String message = userService.updateUser(userID, profileUpdateRequestDTO, profilePicture);
         return ResponseBuilder.success(message, null);
+    }
+
+    @GetMapping("/header-details")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<StandardResponse<HeaderResponseDTO>> getHeaderDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        HeaderResponseDTO headerResponseDTO = new HeaderResponseDTO(
+                currentUser.getFullName(),
+                currentUser.getProfilePicture()
+        );
+
+        return ResponseBuilder.success("Here are your header details.", headerResponseDTO);
     }
 }
