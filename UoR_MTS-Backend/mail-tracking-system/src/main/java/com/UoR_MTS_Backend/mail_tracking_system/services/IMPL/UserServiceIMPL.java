@@ -98,6 +98,4 @@ public class UserServiceIMPL implements UserService {
         userRepo.save(user);
         return "User updated successfully";
     }
-
-
 }

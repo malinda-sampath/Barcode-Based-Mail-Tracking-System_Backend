@@ -4,10 +4,18 @@ import com.UoR_MTS_Backend.mail_tracking_system.controllers.WebSocketController;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.MailHandlerRequestDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailHandlerResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.websocketResponse.WCMailHandlerUpdateDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.RegisterUserDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.MailHandlerRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailHandlerResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.websocketResponse.WCBranchUpdateDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.websocketResponse.WCMailHandlerUpdateDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.Branch;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.Role;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.RoleEnum;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.AlreadyExistsException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.UserNotFoundException;
+import com.UoR_MTS_Backend.mail_tracking_system.repositories.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.RoleRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailHandlerService;
@@ -16,8 +24,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.rmi.AlreadyBoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -116,6 +126,7 @@ public class MailHandlerServiceIMPL implements MailHandlerService {
                 throw new RuntimeException("Error Deleting Mail Handler"+e.getMessage());
             }
         }
+
     }
 
     @Override
