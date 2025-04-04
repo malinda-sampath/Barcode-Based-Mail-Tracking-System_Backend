@@ -45,23 +45,27 @@ public class DailyMailController {
         return ResponseBuilder.success(message, null);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse<String>> updateDailyMail(@PathVariable int id,@RequestBody DailyMailDTO dailyMailDTO) throws WriterException, IOException {
+    @PutMapping("/update/{barcodeId}")
+    @PreAuthorize("hasRole('MAIL_HANDLER')")
+    public ResponseEntity<StandardResponse<String>> updateDailyMail(@PathVariable String barcodeId,@RequestBody DailyMailDTO dailyMailDTO) throws WriterException, IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String uniqueID = BarcodeIDGenerator.generateUniqueId();
         byte[] barcodeImage = BarcodeImageGenerator.generateBarcode(uniqueID);
-        String message = dailyMailService.updateDailyMail(id,dailyMailDTO, barcodeImage, uniqueID);
+        String message = dailyMailService.updateDailyMail(barcodeId,dailyMailDTO, barcodeImage, uniqueID,authentication);
         return ResponseBuilder.success(message, null);
     }
 
 
-    @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<StandardResponse<String>> deleteDailyMail(@PathVariable(value = "id") int dailyMailId) {
-        String message = dailyMailService.deleteDailyMail(dailyMailId);
+    @DeleteMapping("/delete/{barcodeId}")
+    @PreAuthorize("hasRole('MAIL_HANDLER')")
+    public ResponseEntity<StandardResponse<String>> deleteDailyMail(@PathVariable String barcodeId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String message = dailyMailService.deleteDailyMail(barcodeId, authentication);
 
         if (message != null) {
             return ResponseBuilder.success(message, null);
         } else {
-            return ResponseBuilder.notFound("Daily mail with ID " + dailyMailId + " not found.");
+            return ResponseBuilder.notFound("Mail not found.");
         }
     }
 

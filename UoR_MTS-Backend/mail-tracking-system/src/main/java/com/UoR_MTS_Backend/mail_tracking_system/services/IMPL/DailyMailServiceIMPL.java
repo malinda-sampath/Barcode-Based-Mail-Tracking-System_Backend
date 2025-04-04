@@ -31,8 +31,6 @@ public class DailyMailServiceIMPL implements DailyMailService {
     private final DailyMailRepo dailyMailRepo;
     private final MailActivityRepo mailActivityRepo;
     private final UserRepo userRepo;
-    private static String userName ;
-    private static String userId;
 
     @Override
     @Transactional
@@ -88,9 +86,10 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
     @Override
     @Transactional
-    public String updateDailyMail(int id,DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID) {
-
-        if (dailyMailRepo.existsById(id)) {
+    public String updateDailyMail(String barcodeId,DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID, Authentication authentication) {
+        try{
+             DailyMail dailyMail = dailyMailRepo.findByBarcodeId(barcodeId);
+             int id = dailyMail.getId();
 
             LocalDateTime now = LocalDateTime.now();
 
@@ -99,11 +98,15 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
             // Map the request DTO to the DailyMail entity and update fields
             modelMapper.modelMapper().map(dailyMailDTO, existingMail);
+            existingMail.setInsertDateTime(now);
             existingMail.setUpdateDateTime(now);
             existingMail.setBarcodeId(existingMail.getBarcodeId());
             existingMail.setBarcodeImage(existingMail.getBarcodeImage());
 
             dailyMailRepo.save(existingMail);
+
+            User user = userRepo.findByEmail(authentication.getName())
+                    .orElseThrow(() -> new ResourceNotFoundException("No user found with the provided username."));
 
             // Add the activity log
             MailActivity log = new MailActivity(
@@ -114,33 +117,34 @@ public class DailyMailServiceIMPL implements DailyMailService {
                     //Shows the Existing Barcode ID then
                     existingMail.getBarcodeId(),
                     now,
-                    null
+                    user
             );
 
             mailActivityRepo.save(log);
 
             return "Mail id: "+existingMail.getId()+ " Barcode: "+existingMail.getBarcodeId()+ " updated successfully";
 
-        } else {
+        } catch (Exception e) {
             throw new ResourceNotFoundException("No data found for that ID");
         }
     }
 
     @Override
     @Transactional
-    public String deleteDailyMail(int dailyMailId) {
-        if (dailyMailRepo.existsById(dailyMailId)){
+    public String deleteDailyMail(String barcodeId,Authentication authentication) {
 
-        DailyMail existingMail = dailyMailRepo.findById(dailyMailId)
-                .orElseThrow(() -> new ResourceNotFoundException("No data found for that id: " + dailyMailId));
+        DailyMail existingMail = dailyMailRepo.findByBarcodeId(barcodeId);
+
+        if (existingMail == null) {
+            throw new ResourceNotFoundException("No data found for that barcode ID: " + barcodeId);
+        }
 
         LocalDateTime now = LocalDateTime.now();
-
-
-        String existingBarcodeId = existingMail.getBarcodeId();
-
-
+        int dailyMailId = existingMail.getId();
         dailyMailRepo.deleteById(dailyMailId);
+
+        User user = userRepo.findByEmail(authentication.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("No user found with the provided username."));
 
 
         MailActivity log = new MailActivity(
@@ -148,17 +152,13 @@ public class DailyMailServiceIMPL implements DailyMailService {
                 existingMail.getBranch().getBranchCode(),
                 existingMail.getSenderName(),
                 existingMail.getReceiverName(),
-                existingBarcodeId,
+                existingMail.getBarcodeId(),
                 now,
-                null
+                user
         );
         mailActivityRepo.save(log);
 
-            return "Mail id: "+dailyMailId+ " Barcode: "+existingBarcodeId+" deleted successfully";
-
-        } else {
-            throw new RuntimeException("No data found for that id");
-        }
+        return "Mail with barcode ID: " + barcodeId + " deleted successfully";
     }
 
     @Override

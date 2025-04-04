@@ -16,6 +16,4 @@ public class DailyMailDTO {
     private String mailType;
     private String trackingNumber;
     private String mailDescription;
-    private LocalDateTime insertDateTime;
-    private LocalDateTime updateDateTime;
 }

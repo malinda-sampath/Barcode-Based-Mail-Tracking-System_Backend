@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @AllArgsConstructor
-public class DatabaseTrigger {
+public class DatabaseEvent {
 
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseTrigger.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseEvent.class);
     private final JdbcTemplate jdbcTemplate;
 
     @PostConstruct
@@ -50,11 +50,11 @@ public class DatabaseTrigger {
                     barcode_image,
                     insert_date_time,
                     update_date_time
-                FROM uor_mts.daily_mail;
+                FROM uor_mts.daily_mails;
             
                 -- Check if the insertion was successful and delete if it was
                 IF ROW_COUNT() > 0 THEN
-                    DELETE FROM uor_mts.daily_mail;
+                    DELETE FROM uor_mts.daily_mails;
                 END IF;
             END
         """;

@@ -9,9 +9,9 @@ import java.util.List;
 public interface DailyMailService {
     public String addDailyMail(DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID, Authentication authentication);
 
-    public String updateDailyMail(int id,DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID);
+    public String updateDailyMail(String barcodeId,DailyMailDTO dailyMailDTO, byte[] barcodeImage, String uniqueID,Authentication authentication);
 
-    public String deleteDailyMail(int dailyMailId);
+    public String deleteDailyMail(String barcodeId,Authentication authentication);
 
     public List<RequestDailyMailViewAllDTO> getAllDailyMails();
   

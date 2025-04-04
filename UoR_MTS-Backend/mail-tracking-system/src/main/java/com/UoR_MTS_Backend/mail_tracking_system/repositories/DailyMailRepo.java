@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -18,6 +19,8 @@ public interface DailyMailRepo extends JpaRepository<DailyMail, Integer>, JpaSpe
 
     @Modifying
     @Transactional
-    @Query(value = "ALTER TABLE daily_mail AUTO_INCREMENT = 1", nativeQuery = true)
+    @Query(value = "ALTER TABLE daily_mails AUTO_INCREMENT = 1", nativeQuery = true)
     public void resetAutoIncrement();
+
+    DailyMail findByBarcodeId(String barcodeId);
 }
