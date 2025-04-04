@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -f ./UoR_MTS-Backend/mail-tracking-system ./ -t ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system/backend:latest .
+        run: docker build -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile ./ -t ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system/backend:latest .
 
       - name: Push to Docker Hub
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system/backend:latest
