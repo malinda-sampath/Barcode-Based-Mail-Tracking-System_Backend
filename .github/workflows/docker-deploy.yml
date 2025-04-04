@@ -32,7 +32,7 @@ jobs:
           java-version: '21'
 
       - name: Build JAR with Maven using deploy profile
-        working-directory: ./UoR_MTS-Backend/mail-tracking-system
+        working-directory: ./UoR_MTS-Backend/mail-tracking-system 
         run: mvn clean package -Dspring.profiles.active=deploy -DskipTests
 
   # Job 3: Build Docker Image
@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile ./UoR_MTS-Backend/mail-tracking-system -t ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system/backend:latest
+        run: docker build -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system/backend:latest
 
   # Job 4: Push to Docker Hub
   push-docker-image:
