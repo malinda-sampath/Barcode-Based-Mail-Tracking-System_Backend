@@ -32,12 +32,15 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: Set up Docker Buildx (optional if using buildx)
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
       - name: Build Docker Image
         run: |
-            docker build --no-cache -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile . -t ${{ secrets.DOCKER_USERNAME }}/mail-tracking-system-backend:latest
+          docker build --no-cache \
+            -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile \
+            -t ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system-backend:latest \
+            ./UoR_MTS-Backend/mail-tracking-system
 
       - name: Push to Docker Hub
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system-backend:latest
