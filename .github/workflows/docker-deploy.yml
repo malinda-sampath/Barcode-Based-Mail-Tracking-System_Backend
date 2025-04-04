@@ -37,10 +37,10 @@ jobs:
 
       - name: Build Docker Image
         run: |
-            docker build --no-cache -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile . -t ${{ secrets.DOCKER_USERNAME }}/mail-tracking-system/backend:latest
+            docker build --no-cache -f ./UoR_MTS-Backend/mail-tracking-system/Dockerfile . -t ${{ secrets.DOCKER_USERNAME }}/mail-tracking-system-backend:latest
 
       - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system/backend:latest
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/mail-tracking-system-backend:latest
 
       - name: Commit deployment profile if needed
         run: |
