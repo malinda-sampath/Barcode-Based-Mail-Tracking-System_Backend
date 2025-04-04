@@ -25,7 +25,7 @@ jobs:
           java-version: '21'
 
       - name: Build JAR with Maven using deploy profile
-        working-directory : ../UoR_MTS-Backend/mail-tracking-system
+        working-directory : ./UoR_MTS-Backend/mail-tracking-system
         run: mvn clean package -Dspring.profiles.active=deploy -DskipTests
 
       - name: Log in to Docker Hub
