@@ -1,10 +1,12 @@
+
+
 spring:
     application:
         name: mail-tracking-system
     datasource:
-        url: jdbc:mysql://localhost:3306/uor_mts?createDatabaseIfNotExist=true
-        username: root
-        password: root
+        url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/uor_mts?createDatabaseIfNotExist=true}
+        username: ${SPRING_DATASOURCE_USERNAME:root}
+        password: ${SPRING_DATASOURCE_PASSWORD:root}
         driver-class-name: com.mysql.cj.jdbc.Driver
     jpa:
         hibernate:
@@ -25,14 +27,12 @@ spring:
             max-file-size: 10MB
             max-request-size: 10MB
 
-
 security:
     jwt:
         secret-key: b52aa87ef75d6672e3f281d69c2952b13c08063949e3b43224f245b3d3d177aa
-        expiration-time: 43200000  # 12 hours in milliseconds (1000 * 60 * 60 * 12)
+        expiration-time: 43200000
 
 server:
     port: 8081
-
     tomcat:
         max-http-form-post-size: 10MB
