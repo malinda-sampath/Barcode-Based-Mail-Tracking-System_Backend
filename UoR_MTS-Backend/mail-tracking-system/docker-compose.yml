@@ -8,7 +8,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: uor_mts
     ports:
-      - "3307:3306"  # host:container
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
@@ -18,13 +18,15 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: mail-tracking-system
+    container_name: mts-backend-app
     ports:
       - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/uor_mts?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
     depends_on:
       - mysql
     networks:
@@ -35,3 +37,4 @@ volumes:
 
 networks:
   mts-network:
+    driver: bridge
