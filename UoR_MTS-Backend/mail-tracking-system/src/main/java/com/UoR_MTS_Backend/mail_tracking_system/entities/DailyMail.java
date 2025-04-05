@@ -24,8 +24,8 @@ public class DailyMail {
     private String receiverName;
     private String mailType;
     private String trackingNumber;
-    private String mailDescription;
     private String barcodeId;
+    private String mailDescription;
 
     @Lob
     private byte[] barcodeImage;
