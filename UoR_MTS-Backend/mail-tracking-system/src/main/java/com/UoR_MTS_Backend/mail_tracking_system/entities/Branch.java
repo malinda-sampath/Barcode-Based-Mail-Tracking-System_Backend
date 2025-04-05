@@ -38,4 +38,6 @@ public class Branch {
             this.branchCode = "BR-" + randomNum;
         }
     }
+
+
 }
