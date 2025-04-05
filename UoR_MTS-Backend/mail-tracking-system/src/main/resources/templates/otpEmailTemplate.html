@@ -1,50 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Email Verification</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f5f5f5; }
+        .container { background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background-color: #2563eb; color: white; padding: 25px; text-align: center; }
+        .content { padding: 25px; }
+        .footer { padding: 15px; background-color: #f0f0f0; font-size: 12px; text-align: center; color: #666; }
+        .otp-card { background-color: #f8fafc; border: 2px dashed #2563eb; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }
+        .otp-code { font-size: 36px; color: #2563eb; font-weight: bold; letter-spacing: 6px; margin: 0; }
+        .otp-expiry { margin-top: 12px; font-size: 14px; color: #ef4444; }
+        .info-note { background-color: #fffaf0; border-left: 4px solid #dd6b20; padding: 15px; margin: 20px 0; font-size: 14px; }
+        .auto-badge { display: inline-block; background-color: #e6fffa; color: #234e52; font-size: 12px; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+        a { color: #2563eb; text-decoration: none; }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f3f4f6; color: #374151;">
-<table width="100%" cellspacing="0" cellpadding="0" style="margin: 0; padding: 20px; background-color: #f3f4f6;">
-    <tr>
-        <td align="center">
-            <table width="600px" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 12px; padding: 20px; text-align: left; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <tr>
-                    <td style="text-align: center; background-color: #2563eb; color: white; padding: 20px; border-radius: 12px 12px 0 0;">
-                        <h1 style="margin: 0; font-size: 20px;">Verify Your Email Address</h1>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 20px;">
-                        <p>Hello,</p>
-                        <p>Welcome! To ensure the security of your account, please verify your email address using the verification code below:</p>
-                        <div style="text-align: center; margin: 20px 0; padding: 20px; background-color: #f8fafc; border: 2px dashed #2563eb; border-radius: 8px;">
-                            <p style="font-size: 36px; color: #2563eb; font-weight: bold; margin: 0; letter-spacing: 4px;"><span th:text="${otp}"></span></p>
-                            <p style="color: #ef4444; font-size: 14px; margin-top: 10px;">This code expires in 10 minutes</p>
-                        </div>
-                        <div style="background-color: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; margin: 20px 0; font-size: 14px;">
-                            <strong>🔒 Security Note:</strong> Never share this code with anyone. Our team will never ask for this code.
-                        </div>
-                        <p>If you didn't request this verification code, please ignore this email or <a href="#" style="color: #2563eb; text-decoration: none;">let us know</a>.</p>
-                        <p>Having trouble? Try copying and pasting the code.</p>
-                        <p>Best regards,<br>The Security Team</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 20px; font-size: 12px; color: #6b7280; text-align: center; border-top: 1px solid #e5e7eb;">
-                        <p>Need help? <a href="mailto:support@example.com" style="color: #2563eb; text-decoration: none;">Contact our support team</a></p>
-                        <p>© 2025 University of Ruhuna. All rights reserved.</p>
-                        <p>
-                            <a href="#" style="color: #2563eb; text-decoration: none;">Privacy Policy</a> •
-                            <a href="#" style="color: #2563eb; text-decoration: none;">Terms of Service</a> •
-                            <a href="#" style="color: #2563eb; text-decoration: none;">Unsubscribe</a>
-                        </p>
-                    </td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Email Verification Required</h2>
+        <p>University of Ruhuna Security System</p>
+    </div>
+
+    <div class="content">
+        <div class="auto-badge">Automated Message • Do Not Reply</div>
+
+        <p>Dear User,</p>
+
+        <p>Thank you for signing up. To help secure your account, please verify your email address using the code below.</p>
+
+        <div class="otp-card">
+            <p class="otp-code"><span th:text="${otp}">123456</span></p>
+            <p class="otp-expiry">This code will expire in 10 minutes.</p>
+        </div>
+
+        <div class="info-note">
+            <strong>🔒 Important:</strong> Please do not share this code with anyone. We will never ask for it via email or phone.
+        </div>
+
+        <p>If you did not initiate this request, please ignore this email or <a href="#">report it to us</a>.</p>
+        <p>Having trouble? You can copy and paste the code manually.</p>
+
+        <p>Best regards,<br>
+            <strong>Mail Services Team</strong><br>
+            University of Ruhuna</p>
+    </div>
+
+    <div class="footer">
+        <p>©2025 University of Ruhuna Mail Tracking System. All rights reserved.</p>
+        <p>This email was automatically generated. Please do not reply.</p>
+        <p style="margin-top: 10px; font-size: 11px;">
+            <a href="[UNSUBSCRIBE_LINK]" style="color: #666;">Unsubscribe from notifications</a> |
+            <a href="[HELP_LINK]" style="color: #666;">Help Center</a>
+        </p>
+    </div>
+</div>
 </body>
 </html>

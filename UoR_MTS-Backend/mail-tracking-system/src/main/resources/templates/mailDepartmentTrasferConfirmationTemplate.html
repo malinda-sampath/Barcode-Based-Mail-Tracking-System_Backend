@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Department Transfer Notification</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 0; background-color: #f5f5f5; }
+        .container { background-color: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background-color: #0056b3; color: white; padding: 25px; text-align: center; }
+        .content { padding: 25px; }
+        .footer { padding: 15px; background-color: #f0f0f0; font-size: 12px; text-align: center; color: #666; }
+        .tracking-card { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 20px; margin: 20px 0; }
+        .tracking-number { font-size: 20px; font-weight: bold; color: #0056b3; letter-spacing: 1px; margin: 10px 0; }
+        .status-timeline { margin: 25px 0; position: relative; padding-left: 30px; }
+        .status-step { margin-bottom: 20px; position: relative; }
+        .status-step.active .step-icon { background-color: #0056b3; color: white; }
+        .status-step.completed .step-icon { background-color: #38a169; color: white; }
+        .step-icon { width: 24px; height: 24px; background-color: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: absolute; left: -35px; top: 0; font-size: 12px; }
+        .step-title { font-weight: 600; margin-bottom: 5px; }
+        .step-detail { color: #666; font-size: 14px; }
+        .action-card { background-color: #ebf8ff; border-left: 4px solid #3182ce; padding: 15px; margin: 25px 0; border-radius: 0 4px 4px 0; }
+        .button { display: inline-block; padding: 12px 24px; background-color: #0056b3; color: white; text-decoration: none; border-radius: 4px; font-weight: 600; margin-top: 10px; }
+        .info-note { background-color: #fffaf0; border-left: 4px solid #dd6b20; padding: 15px; margin: 20px 0; font-size: 14px; }
+        .auto-badge { display: inline-block; background-color: #e6fffa; color: #234e52; font-size: 12px; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header" style="background-color: #553c9a;">
+        <h2>Your Mail Has Been Transferred</h2>
+        <p>University of Ruhuna Mail Tracking System</p>
+    </div>
+
+    <div class="content">
+        <div class="auto-badge">Automated Notification • Do Not Reply</div>
+
+        <p>Dear [RECIPIENT_NAME],</p>
+
+        <p>Your tracked mail has been transferred to the <strong>[DEPARTMENT_NAME]</strong> as per your address details. Collection details are below:</p>
+
+        <div class="tracking-card">
+            <div style="font-size: 14px; color: #666;">Tracking Number</div>
+            <div class="tracking-number">[TRACKING_NUMBER]</div>
+            <div style="margin-top: 15px; font-size: 14px;">
+                <strong>Transferred On:</strong> [TRANSFER_DATE]<br>
+                <strong>Current Location:</strong> [DEPARTMENT_NAME] Office<br>
+                <strong>Department Contact:</strong> [DEPARTMENT_PHONE]
+            </div>
+        </div>
+
+        <div class="status-timeline">
+            <div class="status-step completed">
+                <div class="step-icon">✓</div>
+                <div class="step-title">General Admin Received</div>
+                <div class="step-detail">Processed on [RECEIVED_DATE]</div>
+            </div>
+
+            <div class="status-step completed">
+                <div class="step-icon">✓</div>
+                <div class="step-title">Department Transfer</div>
+                <div class="step-detail">Sent to [DEPARTMENT_NAME]</div>
+            </div>
+
+            <div class="status-step active">
+                <div class="step-icon">3</div>
+                <div class="step-title">Ready for Pickup</div>
+                <div class="step-detail">Processing at department</div>
+            </div>
+        </div>
+
+        <div class="action-card" style="background-color: #f5f0ff; border-left-color: #553c9a;">
+            <h3 style="margin-top: 0;">Where to Collect</h3>
+            <p><strong>Location:</strong> [DEPARTMENT_NAME] Office, [BUILDING_NAME]</p>
+            <p><strong>Processing Time:</strong> 1-2 working days after transfer</p>
+            <a href="[DEPARTMENT_MAP_LINK]" class="button" style="background-color: #553c9a;">View Department Location</a>
+        </div>
+
+        <div class="info-note">
+            <strong>Note:</strong> You'll receive another notification when your mail is ready for collection at the department office.
+        </div>
+
+        <p>Best regards,<br>
+            <strong>Mail Services Team</strong><br>
+            University of Ruhuna</p>
+    </div>
+
+    <div class="footer">
+        <p>©2025 University of Ruhuna Mail Tracking System. All rights reserved.</p>
+        <p>This email was automatically generated. Please do not reply.</p>
+        <p style="margin-top: 10px; font-size: 11px;">
+            <a href="[UNSUBSCRIBE_LINK]" style="color: #666;">Unsubscribe from notifications</a> |
+            <a href="[HELP_LINK]" style="color: #666;">Help Center</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>
