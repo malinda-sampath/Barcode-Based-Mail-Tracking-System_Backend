@@ -8,8 +8,6 @@ import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
-    public String createUser(RegisterUserDTO input, RoleEnum roleEnum);
-
     public User loginUser(LoginUserDTO loginUserDTO);
 
     public String updateUser(String userID, ProfileUpdateRequestDTO profileUpdateRequestDTO, MultipartFile profilePicture);

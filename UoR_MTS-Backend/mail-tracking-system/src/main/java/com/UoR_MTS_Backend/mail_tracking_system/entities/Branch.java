@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -22,9 +24,11 @@ public class Branch {
     @Column(name = "branch_name")
     private String branchName;
 
+    @CreationTimestamp
     @Column(name = "insert_date")
     private LocalDateTime insertDate;
 
+    @UpdateTimestamp
     @Column(name = "update_date")
     private LocalDateTime updateDate;
 

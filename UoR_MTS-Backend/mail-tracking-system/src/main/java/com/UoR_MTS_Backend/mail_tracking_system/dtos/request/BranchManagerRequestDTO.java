@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class BranchUserRequestDTO {
-    private String contact;
-    private String email;
+public class BranchManagerRequestDTO {
+    private String branchCode;
     private String fullName;
+    private String email;
+    private String contact;
     private String password;
 }

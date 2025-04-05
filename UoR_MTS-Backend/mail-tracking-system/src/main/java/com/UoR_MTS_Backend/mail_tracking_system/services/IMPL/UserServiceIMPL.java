@@ -47,25 +47,6 @@ public class UserServiceIMPL implements UserService {
     }
 
     @Override
-    public String createUser(RegisterUserDTO input, RoleEnum roleEnum) {
-        if (userRepo.findByEmail(input.getEmail()).isPresent()) {
-            throw new RuntimeException("User already exists");
-        }
-
-        Optional<Role> optionalRole = roleRepo.findByName(roleEnum);
-
-        if (optionalRole.isEmpty()) {
-            throw new RuntimeException("Role not found");
-        }
-
-        User user = modelMapper.map(input, User.class);
-        user.setPassword(passwordEncoder.encode(input.getPassword()));
-        user.setRole(optionalRole.get());
-        userRepo.save(user);
-        return "User created successfully";
-    }
-
-    @Override
     public String updateUser(String userID, ProfileUpdateRequestDTO profileUpdateRequestDTO, MultipartFile profilePicture) {
         User user = userRepo.findById(userID)
                 .orElseThrow(() -> new RuntimeException("User not found"));
