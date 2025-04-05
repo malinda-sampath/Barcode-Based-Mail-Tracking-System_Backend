@@ -1,13 +1,14 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.BranchUserRequestDTO;
-import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.BranchUserResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.BranchManagerRequestDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.BranchManagerResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.services.BranchManagerService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,9 +21,17 @@ public class BranchManagerController {
 
     private final BranchManagerService branchManagerService;
 
+
+    @PostMapping("/save")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<StandardResponse<String>> registerMailHandler(@RequestBody BranchManagerRequestDTO branchManagerRequestDTO) {
+        String message = branchManagerService.saveBranchManager(branchManagerRequestDTO);
+        return ResponseBuilder.success(message,null);
+    }
+
     @PutMapping("/update/{id}")
-    public ResponseEntity<StandardResponse<String>> branchManagerUpdate(@PathVariable String id, @RequestBody BranchUserRequestDTO branchUserRequestDTO) {
-        String message = branchManagerService.branchManagerUpdate(id,branchUserRequestDTO);
+    public ResponseEntity<StandardResponse<String>> branchManagerUpdate(@PathVariable String id, @RequestBody BranchManagerRequestDTO branchManagerRequestDTO) {
+        String message = branchManagerService.branchManagerUpdate(id, branchManagerRequestDTO);
         return ResponseBuilder.success(message, null);
     }
 
@@ -32,9 +41,10 @@ public class BranchManagerController {
         return ResponseBuilder.success(message, null);
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<StandardResponse<List<BranchUserResponseDTO>>> getAllBranchManagers() {
-        List<BranchUserResponseDTO> branchManagers = branchManagerService.getAllBranchManagers();
+    @GetMapping("/get")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    public ResponseEntity<StandardResponse<List<BranchManagerResponseDTO>>> getAllBranchManagers() {
+        List<BranchManagerResponseDTO> branchManagers = branchManagerService.getAllBranchManagers();
         return ResponseBuilder.success("Branch managers retrieved successfully.", branchManagers);
     }
 

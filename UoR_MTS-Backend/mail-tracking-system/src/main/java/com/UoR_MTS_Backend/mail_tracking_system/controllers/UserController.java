@@ -45,14 +45,6 @@ public class UserController {
         return ResponseBuilder.success("Welcome back! You have successfully logged in.",loginResponse);
     }
 
-    @PostMapping("/register-branch-manager")
-    @PreAuthorize("hasRole('SUPER_ADMIN')")
-    public ResponseEntity<StandardResponse<String>> registerBranchManager(@RequestBody RegisterUserDTO registerUserDTO){
-        String message = userService.createUser(registerUserDTO, RoleEnum.BRANCH_MANAGER);
-
-        return ResponseBuilder.success(message,null);
-    }
-
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<StandardResponse<ProfileResponseDTO>> authenticateHandler(){

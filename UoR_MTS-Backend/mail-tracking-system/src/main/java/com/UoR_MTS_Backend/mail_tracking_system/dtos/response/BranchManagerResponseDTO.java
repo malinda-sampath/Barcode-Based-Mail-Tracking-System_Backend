@@ -8,14 +8,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-
-public class BranchUserResponseDTO {
-    private String id;
-    private String branchCode;
+public class BranchManagerResponseDTO {
+    private String userID;
+    private String name;
     private String contact;
-    private LocalDateTime insertDate;
-    private LocalDateTime updateDate;
     private String email;
-    private String fullName;
-    private String password;
+    private String branchCode;
+    private String branchName;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }
