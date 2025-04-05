@@ -3,19 +3,24 @@ package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 import com.UoR_MTS_Backend.mail_tracking_system.configs.ModelMapperConfig;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.DailyMailDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.request.dailymail.RequestDailyMailViewAllDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.TrackingDetails;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.ResourceNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailActivity;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.MailActivityRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.repositories.TrackingDetailsRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.UserRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.specification.DailyMailSpecification;
 import com.UoR_MTS_Backend.mail_tracking_system.services.DailyMailService;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.email.EmailBody;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -31,6 +36,9 @@ public class DailyMailServiceIMPL implements DailyMailService {
     private final DailyMailRepo dailyMailRepo;
     private final MailActivityRepo mailActivityRepo;
     private final UserRepo userRepo;
+    private final TrackingDetailsRepo trackingDetailsRepo;
+    private final EmailBody emailBody;
+    private final TemplateEngine templateEngine;
 
     @Override
     @Transactional
@@ -54,7 +62,20 @@ public class DailyMailServiceIMPL implements DailyMailService {
 
         try {
 
-            dailyMailRepo.save(dailyMail);
+            DailyMail savedMail = dailyMailRepo.save(dailyMail);
+            String trackingNumber = savedMail.getTrackingNumber();
+            if(trackingDetailsRepo.findAllByMailTrackingNumber(trackingNumber).isPresent()){
+                String email= trackingDetailsRepo.findAllByMailTrackingNumber(trackingNumber).get().getEmail();
+                Context context = new Context();
+                context.setVariable("trackingNumber", trackingNumber);
+
+                String htmlContent = templateEngine.process("mailReceiveConfirmationTemplate", context);
+                String subject = "Mail Received Confirmation";
+
+                emailBody.sendEmailWithHtmlContent(subject,email,htmlContent);
+            }
+
+
         } catch (Exception e) {
 
             throw new RuntimeException("Error occurred while saving daily mail: " + e.getMessage(), e);

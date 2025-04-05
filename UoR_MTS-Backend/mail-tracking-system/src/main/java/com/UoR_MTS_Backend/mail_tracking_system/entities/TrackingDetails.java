@@ -30,6 +30,6 @@ public class TrackingDetails {
     private String mailType;
 
     @Column(name = "mail_tracking_number")
-    private int mailTrackingNumber;
+    private String mailTrackingNumber;
 
 }
