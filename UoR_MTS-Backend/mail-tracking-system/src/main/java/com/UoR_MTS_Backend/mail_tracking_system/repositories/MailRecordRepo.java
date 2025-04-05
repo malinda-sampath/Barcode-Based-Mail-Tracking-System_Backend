@@ -13,12 +13,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @EnableJpaRepositories
-public interface MailRecordRepo extends JpaRepository<MailRecord, Long>, JpaSpecificationExecutor<MailRecord> {
+public interface MailRecordRepo extends JpaRepository<MailRecord, Long>{
+    Optional<MailRecord> findAllByBarcodeId(String barcodeId);
     Page<MailRecord> findAll(Specification<MailRecord> specification, Pageable pageable);
 
     MailRecord findByBarcodeId(String barcodeId);
+
     @Modifying
     @Transactional
     @Query(value = "ALTER TABLE mail_record AUTO_INCREMENT = 1", nativeQuery = true)

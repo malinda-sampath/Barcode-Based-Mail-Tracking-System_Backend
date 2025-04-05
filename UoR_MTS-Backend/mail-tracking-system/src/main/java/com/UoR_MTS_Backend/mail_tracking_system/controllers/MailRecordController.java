@@ -1,6 +1,7 @@
 package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailRecordDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailRecordResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoMailActivitiesFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
@@ -15,6 +16,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api/mailRecord")
@@ -26,35 +29,34 @@ public class MailRecordController {
 
     @PostMapping("/transfer")
     public ResponseEntity<StandardResponse<String>> transferDailyMailsToMainCart() {
-        // Call the service method directly
-        String message = mailRecordService.transferDailyMailsToMainCart();
+        String message = mailRecordService.transferDailyMailsToMailRecord();
         return ResponseBuilder.success(message, null);
     }
 
 
-    @GetMapping("/filter/{page}")
-    public ResponseEntity<StandardResponse<Page<MailRecordDTO>>> filterMailRecords(
-            @RequestParam(required = false) String senderName,
-            @RequestParam(required = false) String receiverName,
-            @RequestParam(required = false) String mailType,
-            @RequestParam(required = false) String trackingNumber,
-            @RequestParam(required = false) String branchName,
-            @PathVariable int page) {
-
-        int pageSize = 10;
-        Pageable pageable = PageRequest.of(page, pageSize);
-
-        // Call the service method to get filtered records
-        Page<MailRecordDTO> filteredRecords = mailRecordService.filterMailRecords(
-                senderName, receiverName, mailType, trackingNumber, branchName, pageable);
-
-        if (filteredRecords.isEmpty()) {
-            throw new NoMailActivitiesFoundException("No mail activities found with the provided filters.");
-        }
-
-        // Return successful response if records are found
-        return ResponseBuilder.success("Mail records retrieved successfully.", filteredRecords);
-    }
+//    @GetMapping("/filter/{page}")
+//    public ResponseEntity<StandardResponse<Page<MailRecordDTO>>> filterMailRecords(
+//            @RequestParam(required = false) String senderName,
+//            @RequestParam(required = false) String receiverName,
+//            @RequestParam(required = false) String mailType,
+//            @RequestParam(required = false) String trackingNumber,
+//            @RequestParam(required = false) String branchName,
+//            @PathVariable int page) {
+//
+//        int pageSize = 10;
+//        Pageable pageable = PageRequest.of(page, pageSize);
+//
+//        // Call the service method to get filtered records
+//        Page<MailRecordDTO> filteredRecords = mailRecordService.filterMailRecords(
+//                senderName, receiverName, mailType, trackingNumber, branchName, pageable);
+//
+//        if (filteredRecords.isEmpty()) {
+//            throw new NoMailActivitiesFoundException("No mail activities found with the provided filters.");
+//        }
+//
+//        // Return successful response if records are found
+//        return ResponseBuilder.success("Mail records retrieved successfully.", filteredRecords);
+//    }
 
 
     @GetMapping("/search/{barcodeId}")
@@ -67,13 +69,10 @@ public class MailRecordController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<?> getAllMailRecords(@RequestParam(defaultValue = "0") int page) {
-        int size = 10;
-        Pageable pageable = PageRequest.of(page, size);
+    @GetMapping("/get-all")
+    public ResponseEntity<StandardResponse<List<MailRecordResponseDTO>>> getAllMailRecords() {
 
-        // Call the service method to fetch mail records
-        Page<MailRecord> mailRecords = mailRecordService.getAllMailRecords(pageable);
+        List<MailRecordResponseDTO> mailRecords = mailRecordService.getAllMailRecords();
 
         // Check if the result is empty
         if (mailRecords.isEmpty()) {
@@ -81,7 +80,7 @@ public class MailRecordController {
         }
 
         // Return successful response
-        return ResponseBuilder.success(null, mailRecords);
+        return ResponseBuilder.success("All Mail records retrieved successfully", mailRecords);
     }
 
 }
