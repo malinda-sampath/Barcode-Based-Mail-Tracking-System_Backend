@@ -1,5 +1,11 @@
 FROM openjdk:21-jdk-slim
 
+# Install DejaVu fonts
+RUN apt-get update && apt-get install -y \
+    fonts-dejavu-core \
+    fonts-dejavu-extra \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set the working directory inside the container
 WORKDIR /app
 
