@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                 .cors((cors)->cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests((requests)->requests
                         .requestMatchers(
+                                "api/tracking/**",
                                 "/api/email-verification/**",
                                 "/api/user/**",
                                 "/api/password/**",
