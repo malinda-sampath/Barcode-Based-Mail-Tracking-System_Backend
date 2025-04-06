@@ -1,10 +1,12 @@
 package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailRecordResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.MailRecordNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoDailyMailsFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.DailyMail;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
+import com.UoR_MTS_Backend.mail_tracking_system.repositories.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.MailRecordRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,7 +25,7 @@ public class MailRecordServiceIMPL implements MailRecordService {
 
     private final MailRecordRepo mailRecordRepo;
     private final DailyMailRepo dailyMailRepo;
-    private final ModelMapper modelMapper;
+    private final BranchRepo branchRepo;
 
     @Override
     @Transactional
@@ -115,6 +118,38 @@ public class MailRecordServiceIMPL implements MailRecordService {
     @Override
     public List<MailRecordResponseDTO> getAllMailRecords() {
         List<MailRecord> mailRecords = mailRecordRepo.findAll();
+        if (mailRecords.isEmpty()) {
+            throw new MailRecordNotFoundException("No mail records found.");
+        }
+
+        return mailRecords.stream().map(mailRecord -> {
+            MailRecordResponseDTO dto = new MailRecordResponseDTO();
+            dto.setSenderName(mailRecord.getSenderName());
+            dto.setReceiverName(mailRecord.getReceiverName());
+            dto.setMailType(mailRecord.getMailType());
+            dto.setTrackingNumber(mailRecord.getTrackingNumber());
+            dto.setBarcodeId(mailRecord.getBarcodeId());
+            dto.setMailDescription(mailRecord.getMailDescription());
+            dto.setBarcodeImage(mailRecord.getBarcodeImage());
+            dto.setInsertDateTime(mailRecord.getInsertDateTime());
+            dto.setUpdateDateTime(mailRecord.getUpdateDateTime());
+            dto.setLocation(mailRecord.getLocation());
+            dto.setStatus(mailRecord.getStatus());
+            dto.setReferenceNumber(mailRecord.getReferenceNumber());
+
+            // Manually extract branch name
+            if (mailRecord.getBranch() != null) {
+                dto.setBranchName(mailRecord.getBranch().getBranchName());
+            }
+
+            return dto;
+        }).toList();
+    }
+
+    @Override
+    public List<MailRecordResponseDTO> getByBranch(String branchCode) {
+        Branch branch =branchRepo.findByBranchCode(branchCode);
+        List<MailRecord> mailRecords = mailRecordRepo.findAllByBranch(branch);
         if (mailRecords.isEmpty()) {
             throw new MailRecordNotFoundException("No mail records found.");
         }

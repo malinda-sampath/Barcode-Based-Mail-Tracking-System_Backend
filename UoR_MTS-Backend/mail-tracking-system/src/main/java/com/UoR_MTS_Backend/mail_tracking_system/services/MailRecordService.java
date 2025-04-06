@@ -20,4 +20,6 @@ public interface MailRecordService {
 //    Page<MailRecordDTO> filterMailRecords(String senderName, String receiverName, String mailType, String trackingNumber, String branchName, Pageable pageable);
 
     List<MailRecordResponseDTO> getAllMailRecords();
+
+    List<MailRecordResponseDTO> getByBranch(String branchCode);
 }

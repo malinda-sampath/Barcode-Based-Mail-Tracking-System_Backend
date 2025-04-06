@@ -58,6 +58,20 @@ public class MailRecordController {
 //        return ResponseBuilder.success("Mail records retrieved successfully.", filteredRecords);
 //    }
 
+    @GetMapping("/get-by-branch/{branchCode}")
+    public ResponseEntity<StandardResponse<List<MailRecordResponseDTO>>> getByBranch(@PathVariable String branchCode) {
+
+        List<MailRecordResponseDTO> mailRecords = mailRecordService.getByBranch(branchCode);
+
+        // Check if the result is empty
+        if (mailRecords.isEmpty()) {
+            return ResponseBuilder.notFound("No mail records found.");
+        }
+
+        // Return successful response
+        return ResponseBuilder.success("All Mail records retrieved successfully", mailRecords);
+    }
+
 
     @GetMapping("/search/{barcodeId}")
     public ResponseEntity<StandardResponse<MailRecord>> searchMailByBarcodeId(@PathVariable String barcodeId) {
