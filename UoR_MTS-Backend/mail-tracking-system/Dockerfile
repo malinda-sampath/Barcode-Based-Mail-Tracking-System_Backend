@@ -1,19 +1,14 @@
+# Use a base image with Java (make sure it matches your Java version)
 FROM openjdk:21-jdk-slim
 
-# Install DejaVu fonts
-RUN apt-get update && apt-get install -y \
-    fonts-dejavu-core \
-    fonts-dejavu-extra \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the JAR file from the target directory
-COPY target/*.jar app.jar
+# Copy your JAR file into the container
+COPY target/mts-backend-app.jar /app/mts-backend-app.jar
 
-# Expose the application port
+# Set the Java headless mode and run the application
+ENTRYPOINT ["java", "-Djava.awt.headless=true", "-jar", "/app/mts-backend-app.jar"]
+
+# Expose the port the app runs on
 EXPOSE 8081
-
-# Command to run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
