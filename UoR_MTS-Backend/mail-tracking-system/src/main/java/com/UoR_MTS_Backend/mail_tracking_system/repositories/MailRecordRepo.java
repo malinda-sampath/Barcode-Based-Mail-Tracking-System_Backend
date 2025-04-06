@@ -1,5 +1,6 @@
 package com.UoR_MTS_Backend.mail_tracking_system.repositories;
 
+import com.UoR_MTS_Backend.mail_tracking_system.entities.Branch;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 //import org.springdoc.core.converters.models.Pageable;
 import jakarta.transaction.Transactional;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,5 +29,7 @@ public interface MailRecordRepo extends JpaRepository<MailRecord, Long>{
     @Transactional
     @Query(value = "ALTER TABLE mail_record AUTO_INCREMENT = 1", nativeQuery = true)
     public void resetAutoIncrement();
+
+    List<MailRecord> findAllByBranch(Branch branch);
 }
 
