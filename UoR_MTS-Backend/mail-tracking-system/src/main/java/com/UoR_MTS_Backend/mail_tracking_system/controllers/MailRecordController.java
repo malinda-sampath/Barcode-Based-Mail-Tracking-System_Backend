@@ -2,6 +2,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailRecordDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailRecordResponseDTO;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoMailActivitiesFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -62,6 +65,23 @@ public class MailRecordController {
     public ResponseEntity<StandardResponse<List<MailRecordResponseDTO>>> getByBranch(@PathVariable String branchCode) {
 
         List<MailRecordResponseDTO> mailRecords = mailRecordService.getByBranch(branchCode);
+
+        // Check if the result is empty
+        if (mailRecords.isEmpty()) {
+            return ResponseBuilder.notFound("No mail records found.");
+        }
+
+        // Return successful response
+        return ResponseBuilder.success("All Mail records retrieved successfully", mailRecords);
+    }
+
+    @GetMapping("/get-by-branch")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<StandardResponse<List<MailRecordResponseDTO>>> getByBranchWithoutBranchCode() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User branchUser = (User) authentication.getPrincipal();
+
+        List<MailRecordResponseDTO> mailRecords = mailRecordService.getByBranch(branchUser.getBranchCode());
 
         // Check if the result is empty
         if (mailRecords.isEmpty()) {

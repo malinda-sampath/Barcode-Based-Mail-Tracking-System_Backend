@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.modelmapper.internal.bytebuddy.implementation.bind.annotation.Default;
 
 import java.time.LocalDateTime;
 
@@ -41,6 +42,8 @@ import java.time.LocalDateTime;
         private Branch branch;
 
         private String location;
+
+
         private String status;
         private String referenceNumber;
 
