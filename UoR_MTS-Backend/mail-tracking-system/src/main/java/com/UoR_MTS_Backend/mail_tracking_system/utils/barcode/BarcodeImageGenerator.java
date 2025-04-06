@@ -38,7 +38,7 @@ public class BarcodeImageGenerator {
 
         // Set font and color for the text
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 16));
 
         // Calculate the position to center the text below the barcode
         FontMetrics fontMetrics = g.getFontMetrics();

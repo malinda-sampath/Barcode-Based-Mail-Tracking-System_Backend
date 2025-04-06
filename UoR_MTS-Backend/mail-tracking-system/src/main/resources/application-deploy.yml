@@ -1,0 +1,36 @@
+spring:
+    application:
+        name: mail-tracking-system
+    datasource:
+        url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/uor_mts?createDatabaseIfNotExist=true}
+        username: ${SPRING_DATASOURCE_USERNAME:root}
+        password: ${SPRING_DATASOURCE_PASSWORD:root}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        database-platform: org.hibernate.dialect.MySQLDialect
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQLDialect
+        generate-ddl: true
+        show-sql: true
+    sql:
+        init:
+            mode: always
+
+    servlet:
+        multipart:
+            enabled: true
+            max-file-size: 10MB
+            max-request-size: 10MB
+
+security:
+    jwt:
+        secret-key: ${JWT_SECRET}
+        expiration-time: ${JWT_EXPIRATION_TIME}
+
+server:
+    port: 8081
+    tomcat:
+        max-http-form-post-size: 10MB

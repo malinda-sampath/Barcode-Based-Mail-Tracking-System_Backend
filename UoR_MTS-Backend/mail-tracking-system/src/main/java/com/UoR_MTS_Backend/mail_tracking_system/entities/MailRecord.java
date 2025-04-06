@@ -42,8 +42,6 @@ import java.time.LocalDateTime;
         private Branch branch;
 
         private String location;
-
-
         private String status;
         private String referenceNumber;
 
