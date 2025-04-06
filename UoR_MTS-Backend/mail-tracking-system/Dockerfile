@@ -1,14 +1,13 @@
-# Use a base image with Java (make sure it matches your Java version)
 FROM openjdk:21-jdk-slim
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy your JAR file into the container
-COPY target/mts-backend-app.jar /app/mts-backend-app.jar
+# Copy the JAR file from the target directory
+COPY target/*.jar app.jar
 
-# Set the Java headless mode and run the application
-ENTRYPOINT ["java", "-Djava.awt.headless=true", "-jar", "/app/mts-backend-app.jar"]
-
-# Expose the port the app runs on
+# Expose the application port
 EXPOSE 8081
+
+# Command to run the application with headless mode enabled
+ENTRYPOINT ["java", "-Djava.awt.headless=true", "-jar", "app.jar"]
