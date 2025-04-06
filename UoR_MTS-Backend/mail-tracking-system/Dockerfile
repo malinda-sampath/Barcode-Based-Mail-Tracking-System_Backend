@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 \
     wget \
     cabextract \
-    ttf-mscorefonts-installer \
+    && apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
     && rm -rf /var/lib/apt/lists/*
 
 # Set the working directory inside the container
