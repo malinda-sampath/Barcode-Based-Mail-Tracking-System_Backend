@@ -1,7 +1,7 @@
 # Use the official OpenJDK image
 FROM openjdk:21-jdk-slim
 
-# Install necessary dependencies for font rendering and Microsoft core fonts
+# Install necessary dependencies for font rendering
 RUN apt-get update && apt-get install -y \
     fontconfig \
     fonts-dejavu \
@@ -10,8 +10,15 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 \
     wget \
     cabextract \
-    && apt-get install -y --no-install-recommends ttf-mscorefonts-installer \
     && rm -rf /var/lib/apt/lists/*
+
+# Manually install Microsoft core fonts
+RUN mkdir -p /usr/share/fonts/truetype/msttcorefonts \
+    && cd /usr/share/fonts/truetype/msttcorefonts \
+    && wget http://downloads.sourceforge.net/corefonts/andale32.exe \
+    && cabextract andale32.exe \
+    && rm andale32.exe \
+    && fc-cache -f -v
 
 # Set the working directory inside the container
 WORKDIR /app
