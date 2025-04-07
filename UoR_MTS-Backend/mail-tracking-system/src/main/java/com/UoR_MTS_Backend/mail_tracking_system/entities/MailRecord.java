@@ -42,7 +42,9 @@ import java.time.LocalDateTime;
         private Branch branch;
 
         private String location;
+        @Column(name = "status", columnDefinition = "VARCHAR(10) DEFAULT 'PENDING'")
         private String status;
+
         private String referenceNumber;
 
         public MailRecord(String senderName, String receiverName, String mailType, String trackingNumber, String barcodeId, String mailDescription, byte[] barcodeImage, Branch branch) {
