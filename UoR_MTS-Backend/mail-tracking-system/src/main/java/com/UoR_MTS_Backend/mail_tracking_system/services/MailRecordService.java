@@ -3,6 +3,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.services;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.MailRecordDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailRecordResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,7 @@ import java.util.List;
 @Service
 public interface MailRecordService {
 
-    public String transferDailyMailsToMailRecord();
+    public String transferDailyMailsToMailRecord() throws MessagingException;
 
 
     MailRecord searchMailByBarcodeId(String barcodeId);

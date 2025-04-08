@@ -35,13 +35,13 @@
     <div class="content">
         <div class="auto-badge">Automated Notification • Do Not Reply</div>
 
-        <p>Dear [RECIPIENT_NAME],</p>
+        <p>Dear <span th:text="${receiver_name}">,</span></p>
 
         <p>We're pleased to inform you that your tracked mail has been successfully received by our General Admin Unit. Here are the details:</p>
 
         <div class="tracking-card">
             <div style="font-size: 14px; color: #666;">Tracking Number</div>
-            <div class="tracking-number">[TRACKING_NUMBER]</div>
+            <div class="tracking-number"><span th:text="${tracking_number}"></span></div>
             <div style="margin-top: 15px; font-size: 14px;">
                 <strong>Received:</strong> [CURRENT_DATE]<br>
                 <strong>Location:</strong> General Admin Unit

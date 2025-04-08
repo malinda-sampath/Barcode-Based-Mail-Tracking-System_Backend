@@ -8,6 +8,7 @@ import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class MailRecordController {
     private final MailRecordService mailRecordService;
 
     @PostMapping("/transfer")
-    public ResponseEntity<StandardResponse<String>> transferDailyMailsToMainCart() {
+    public ResponseEntity<StandardResponse<String>> transferDailyMailsToMainCart() throws MessagingException {
         String message = mailRecordService.transferDailyMailsToMailRecord();
         return ResponseBuilder.success(message, null);
     }

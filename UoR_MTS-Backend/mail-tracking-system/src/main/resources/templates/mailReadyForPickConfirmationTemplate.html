@@ -35,15 +35,15 @@
     <div class="content">
         <div class="auto-badge">Automated Notification • Do Not Reply</div>
 
-        <p>Dear [RECIPIENT_NAME],</p>
+        <p>Dear <span th:text="${receiver_name}">,</span></p>
 
         <p>Your tracked mail is now ready for collection at the <strong>General Admin Unit</strong>. Here are the details:</p>
 
         <div class="tracking-card">
             <div style="font-size: 14px; color: #666;">Tracking Number</div>
-            <div class="tracking-number">[TRACKING_NUMBER]</div>
+            <div class="tracking-number"><span th:text="${tracking_number}"></span></div>
             <div style="margin-top: 15px; font-size: 14px;">
-                <strong>Ready Since:</strong> [READY_DATE]<br>
+                <strong>Ready Since:</strong> <span th:text="${insert_date}"></span><br>
                 <strong>Location:</strong> General Admin Unit, Main Building<br>
                 <strong>Reference:</strong> [LOCATION_REFERENCE]
             </div>
@@ -53,7 +53,7 @@
             <div class="status-step completed">
                 <div class="step-icon">✓</div>
                 <div class="step-title">Mail Received</div>
-                <div class="step-detail">Processed on [RECEIVED_DATE]</div>
+                <div class="step-detail">Processed on <span th:text="${insert_date}"></span></div>
             </div>
 
             <div class="status-step active">
@@ -67,12 +67,12 @@
             <h3 style="margin-top: 0;">Collection Instructions</h3>
             <p><strong>Bring:</strong> Your University ID or valid government-issued identification.</p>
             <p><strong>Hours:</strong> 8:30 AM - 4:00 PM (Monday to Friday)</p>
-            <p><strong>Contact:</strong> [ADMIN_UNIT_PHONE]</p>
+            <p><strong>Contact:</strong> +94 (45) 203-3254</p>
             <a href="[LOCATION_MAP_LINK]" class="button">View Location on Map</a>
         </div>
 
         <div class="info-note">
-            <strong>Reminder:</strong> Unclaimed mail will be returned after [RETURN_DAYS] days. Contact us if you need special arrangements.
+            <strong>Reminder:</strong> Unclaimed mail will be returned after 10 days. Contact us if you need special arrangements.
         </div>
 
         <p>Best regards,<br>

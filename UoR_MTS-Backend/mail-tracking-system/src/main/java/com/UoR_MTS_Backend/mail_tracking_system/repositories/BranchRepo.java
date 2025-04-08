@@ -13,4 +13,6 @@ public interface BranchRepo extends JpaRepository<Branch,String> {
     Optional<Branch> findAllByBranchName(String branchName);
     Branch findByBranchCode(String branchCode);
     Optional<Branch> deleteBranchByBranchCode(String branchCode);
+
+    Branch getBranchByBranchCode(String branchCode);
 }

@@ -67,7 +67,8 @@ public class DailyMailServiceIMPL implements DailyMailService {
             if(trackingDetailsRepo.findAllByMailTrackingNumber(trackingNumber).isPresent()){
                 String email= trackingDetailsRepo.findAllByMailTrackingNumber(trackingNumber).get().getEmail();
                 Context context = new Context();
-                context.setVariable("trackingNumber", trackingNumber);
+                context.setVariable("receiver_name", savedMail.getReceiverName());
+                context.setVariable("tracking_number", trackingNumber);
 
                 String htmlContent = templateEngine.process("mailReceiveConfirmationTemplate", context);
                 String subject = "Mail Received Confirmation";

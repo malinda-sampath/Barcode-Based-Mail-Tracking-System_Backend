@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("api/mail-claim")
 @AllArgsConstructor
@@ -18,7 +20,7 @@ public class MailClaimController {
     private final MailClaimService mailClaimService;
 
     @PostMapping("/save")
-    public ResponseEntity<StandardResponse<String>> saveClaimDetails(@RequestBody MailClaimDetailsDTO claimDetailsDTO){
+    public ResponseEntity<StandardResponse<String>> saveClaimDetails(@RequestBody MailClaimDetailsDTO claimDetailsDTO) throws SQLException {
         String message = mailClaimService.ClaimMailDetailsSave(claimDetailsDTO);
         return ResponseBuilder.success(message,null);
     }

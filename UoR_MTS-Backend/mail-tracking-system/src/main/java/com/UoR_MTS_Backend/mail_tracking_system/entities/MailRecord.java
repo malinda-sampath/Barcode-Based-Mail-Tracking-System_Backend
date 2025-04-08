@@ -49,13 +49,14 @@ import java.time.LocalDateTime;
 
 
         private String referenceNumber;
-        public MailRecord(String senderName, String receiverName, String mailType, String trackingNumber, String barcodeId, String mailDescription, byte[] barcodeImage, Branch branch) {
+        public MailRecord(String senderName, String receiverName, String mailType, String trackingNumber, String barcodeId, String mailDescription, String location,byte[] barcodeImage, Branch branch) {
             this.senderName = senderName;
             this.receiverName = receiverName;
             this.mailType = mailType;
             this.trackingNumber = trackingNumber;
             this.barcodeId = barcodeId;
             this.mailDescription = mailDescription;
+            this.location = location;
             this.barcodeImage = barcodeImage;
             this.branch = branch;
         }

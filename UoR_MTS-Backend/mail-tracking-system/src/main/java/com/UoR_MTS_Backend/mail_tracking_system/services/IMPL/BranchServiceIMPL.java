@@ -175,17 +175,19 @@ public class BranchServiceIMPL implements BranchService {
         // Create branch-specific mail cart table
         return "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "barcode INT ," +
-                "branch_code VARCHAR(255) NOT NULL, " +
-                "sender VARCHAR(255), " +
-                "receiver VARCHAR(255), " +
-                "description VARCHAR(255), " +
+                "sender_name VARCHAR(255), " +
+                "receiver_name VARCHAR(255), " +
                 "mail_type VARCHAR(50), " +
-                "postal_code INT, " +
-                "tracking_code INT, " +
-                "received_date DATE, " +
-                "claimed_date DATE, " +
-                "claimed_person VARCHAR(255), " +
+                "tracking_number VARCHAR(255), " +
+                "barcode_id VARCHAR(255), " +
+                "mail_description VARCHAR(255), " +
+                "barcode_image LONGBLOB, " +
+                "insert_date_time DATETIME DEFAULT CURRENT_TIMESTAMP, " +
+                "update_date_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
+                "branch_code VARCHAR(255) NOT NULL, " +
+                "location VARCHAR(255), " +
+                "status VARCHAR(10) DEFAULT 'pending', " +
+                "reference_number VARCHAR(255), " +
                 "FOREIGN KEY (branch_code) REFERENCES branches(branch_code) " +
                 "ON DELETE CASCADE " +
                 "ON UPDATE CASCADE" +

@@ -16,6 +16,6 @@ public class MailClaimDetailsDTO {
     private String personName;
     private String personContact;
     private String status;
-    private String NIC;
+    private String nic;
     private String note;
 }

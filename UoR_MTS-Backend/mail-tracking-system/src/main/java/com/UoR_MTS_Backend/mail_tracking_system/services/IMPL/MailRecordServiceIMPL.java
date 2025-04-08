@@ -2,6 +2,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.services.IMPL;
 
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailRecordResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.Branch;
+import com.UoR_MTS_Backend.mail_tracking_system.entities.TrackingDetails;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.MailRecordNotFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.exception.NoDailyMailsFoundException;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.DailyMail;
@@ -9,13 +10,19 @@ import com.UoR_MTS_Backend.mail_tracking_system.entities.MailRecord;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.BranchRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.DailyMailRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.repositories.MailRecordRepo;
+import com.UoR_MTS_Backend.mail_tracking_system.repositories.TrackingDetailsRepo;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
+import com.UoR_MTS_Backend.mail_tracking_system.utils.email.EmailBody;
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +33,13 @@ public class MailRecordServiceIMPL implements MailRecordService {
     private final MailRecordRepo mailRecordRepo;
     private final DailyMailRepo dailyMailRepo;
     private final BranchRepo branchRepo;
+    private final TrackingDetailsRepo trackingDetailsRepo;
+    private final EmailBody emailBody;
+    private final TemplateEngine templateEngine;
 
     @Override
     @Transactional
-    public String transferDailyMailsToMailRecord() {
+    public String transferDailyMailsToMailRecord() throws MessagingException {
         List<DailyMail> dailyMails = dailyMailRepo.findAll();
 
         if (dailyMails.isEmpty()) {
@@ -44,10 +54,28 @@ public class MailRecordServiceIMPL implements MailRecordService {
                         dailyMail.getTrackingNumber(),
                         dailyMail.getBarcodeId(),
                         dailyMail.getMailDescription(),
+                        "Admin Unit",
                         dailyMail.getBarcodeImage(),
                         dailyMail.getBranch()
                 );
                 mailRecordRepo.save(newRecord);
+
+            String trackingNumber = newRecord.getTrackingNumber();
+            Optional<TrackingDetails> trackingMail = trackingDetailsRepo.findAllByMailTrackingNumber(trackingNumber);
+
+            if(trackingMail.isPresent()){
+                String email= trackingMail.get().getEmail();
+                Context context = new Context();
+                context.setVariable("receiver_name",newRecord.getReceiverName());
+                context.setVariable("tracking_number",newRecord.getTrackingNumber());
+                context.setVariable("insert_date", newRecord.getInsertDateTime());
+
+                String htmlContent = templateEngine.process("mailReadyForPickConfirmationTemplate", context);
+                String subject = "Mail Ready For Pickup Confirmation";
+
+                emailBody.sendEmailWithHtmlContent(subject,email,htmlContent);
+            }
+
                 dailyMailRepo.deleteById(dailyMail.getId());
         }
 

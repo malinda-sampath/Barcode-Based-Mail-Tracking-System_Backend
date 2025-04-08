@@ -3,6 +3,7 @@ package com.UoR_MTS_Backend.mail_tracking_system.controllers;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.HeaderResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.dtos.response.MailRecordResponseDTO;
 import com.UoR_MTS_Backend.mail_tracking_system.entities.User;
+import com.UoR_MTS_Backend.mail_tracking_system.services.BranchMailService;
 import com.UoR_MTS_Backend.mail_tracking_system.services.MailRecordService;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.ResponseBuilder;
 import com.UoR_MTS_Backend.mail_tracking_system.utils.response.StandardResponse;
@@ -23,17 +24,25 @@ import java.util.List;
 public class BranchMailController {
 
     private final MailRecordService mailRecordService;
+    private final BranchMailService branchMailService;
 
     @GetMapping("mail-details")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<StandardResponse<List<MailRecordResponseDTO>>> getBranchMails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
-
         String branchCode = currentUser.getBranchCode();
-
         List<MailRecordResponseDTO> mailRecords = mailRecordService.getByBranch(branchCode);
+        return ResponseBuilder.success("Here are your mail details.", mailRecords);
+    }
 
-        return ResponseBuilder.success("Here are your header details.", mailRecords);
+    @GetMapping("branch-mail-data")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<StandardResponse<List<MailRecordResponseDTO>>> getBranchMailTable() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String branchCode = currentUser.getBranchCode();
+        List<MailRecordResponseDTO> mailRecords = branchMailService.getBranchMailTable(branchCode);
+        return ResponseBuilder.success("Here are your mail details.", mailRecords);
     }
 }

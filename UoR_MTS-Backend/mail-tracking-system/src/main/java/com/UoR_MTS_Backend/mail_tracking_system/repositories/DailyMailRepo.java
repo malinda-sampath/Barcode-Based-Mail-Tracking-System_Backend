@@ -23,4 +23,5 @@ public interface DailyMailRepo extends JpaRepository<DailyMail, Integer>, JpaSpe
     public void resetAutoIncrement();
 
     DailyMail findByBarcodeId(String barcodeId);
+    DailyMail findByTrackingNumber(String mailTrackingNumber);
 }
