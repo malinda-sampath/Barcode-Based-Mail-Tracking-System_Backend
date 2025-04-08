@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
                .setAllowedOrigins("http://68.183.246.187:3000")
-                .setAllowedOrigins("http://localhost:3000")
+//                .setAllowedOrigins("http://localhost:3000")
                 .addInterceptors(new WebSocketAuthInterceptor(jwtService,userDetailsService)) // ✅ Add JWT authentication
                 .withSockJS();
     }
