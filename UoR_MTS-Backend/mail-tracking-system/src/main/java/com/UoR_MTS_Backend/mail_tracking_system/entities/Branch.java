@@ -17,6 +17,7 @@ import java.util.Random;
 @Entity
 @Table(name = "branches")
 public class Branch {
+
     @Id
     @Column(name = "branch_code")
     private String branchCode;

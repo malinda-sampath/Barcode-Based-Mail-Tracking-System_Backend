@@ -31,5 +31,7 @@ public interface MailRecordRepo extends JpaRepository<MailRecord, Long>{
     public void resetAutoIncrement();
 
     List<MailRecord> findAllByBranch(Branch branch);
+
+    List<MailRecord> findAllByBarcodeIdIn(List<String> barcodeID);
 }
 

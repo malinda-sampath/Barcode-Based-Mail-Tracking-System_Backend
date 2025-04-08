@@ -1,0 +1,11 @@
+package com.UoR_MTS_Backend.mail_tracking_system.repositories;
+
+import com.UoR_MTS_Backend.mail_tracking_system.entities.MailClaimReference;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@EnableJpaRepositories
+public interface MailClaimRepo extends JpaRepository<MailClaimReference,Integer> {
+}

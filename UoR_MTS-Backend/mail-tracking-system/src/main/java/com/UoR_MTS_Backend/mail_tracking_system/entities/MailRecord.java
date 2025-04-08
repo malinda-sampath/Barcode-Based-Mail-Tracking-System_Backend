@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
     @Entity
     @Table(name = "mail_record")
     public class MailRecord {
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id;
@@ -42,11 +43,12 @@ import java.time.LocalDateTime;
         private Branch branch;
 
         private String location;
-        @Column(name = "status", columnDefinition = "VARCHAR(10) DEFAULT 'PENDING'")
-        private String status;
+
+        @Column(name = "status", columnDefinition = "VARCHAR(10) DEFAULT 'pending'")
+        private String status="pending";
+
 
         private String referenceNumber;
-
         public MailRecord(String senderName, String receiverName, String mailType, String trackingNumber, String barcodeId, String mailDescription, byte[] barcodeImage, Branch branch) {
             this.senderName = senderName;
             this.receiverName = receiverName;
